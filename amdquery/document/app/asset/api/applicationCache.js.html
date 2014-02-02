@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Module: base/ready</title>
+	<title>Documentation Source: html5/applicationCache.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -197,214 +197,113 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
 					
 
 
-	<h1 class="page-title">Module: base/ready</h1>
-<section>
+		<h1 class="page-title">Source: html5/applicationCache.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">﻿define( "html5/applicationCache", function( undefined ) {
+	"use strict";
+	this.describe( "HTML5 applicationCache" );
 
-<header>
-    <h2>
-    base/ready
-    </h2>
-    
-</header>
+	/**
+	 * @pubilc
+	 * @exports html5/applicationCache
+	 */
+	var applicationCache = null;
 
-<article>
-    <div class="container-overview">
-    
-        
-<dt>
-    <h4 class="name" id="module:base/ready"><span class="type-signature"></span>require("base/ready")<span class="signature">(fn)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
+	if ( window.applicationCache ) {
+		var aCache = window.applicationCache;
 
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>fn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">When AMDQuery ready to call the callback function</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2211">line 2211</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">require("base/ready", function( ready ) {
-  ready(function(){
-
-  });
+		applicationCache = /** @lends module:html5/applicationCache */ {
+			/**
+			 * @param {String} - Event name.
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			addEventListener: function( type, fun ) {
+				aCache.addEventListener( type, fun, true );
+				return this;
+			},
+			/**
+			 * @returns {this}
+			 */
+			swapCache: function() {
+				aCache.swapCache();
+				return this;
+			},
+			/**
+			 * @param {String} - Event name.
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			removeEventListener: function( type, fun ) {
+				aCache.removeEventListener( type, fun );
+				return this;
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			checking: function( fun ) {
+				return this.addEventListener( arguments[ 1 ] || "checking", function() {
+					fun.apply( this, arguments );
+				} );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			noupdate: function( fun ) {
+				return this.checking( fun, "noupdate" );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			downloading: function( fun ) {
+				return this.checking( fun, "downloading" );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			progress: function( fun ) {
+				return this.checking( fun, "progress" );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			updateready: function( fun ) {
+				return this.checking( fun, "updateready" );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			cached: function( fun ) {
+				return this.checking( fun, "cached" );
+			},
+			/**
+			 * @param {Function}
+			 * @returns {this}
+			 */
+			error: function( fun ) {
+				return this.checking( fun, "error" );
+			}
+		};
+	}
+	return applicationCache;
 } );</pre>
+        </article>
+    </section>
 
-
-    
-</dd>
-
-    
-
-    
-        
-            <div class="description">Life Cycle of AMDQuery.</div>
-        
-
-        
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2189">line 2189</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -417,15 +316,11 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Sun Feb 02 2014 17:57:53 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Sun Feb 02 2014 17:57:52 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>

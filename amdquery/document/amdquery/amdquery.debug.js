@@ -11064,6 +11064,7 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 	"use strict";
 	/**
 	 * @name replaceClass
+	 * @private
 	 * @method
 	 * @param {Element} ele
 	 * @param {String} oldClassName
@@ -11192,63 +11193,63 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 				cls.addClass( ele, className );
 			}, this );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {Boolean}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {Boolean}
+		 */
 		containsClass: function( className ) {
 			return cls.containsClass( this[ 0 ], className );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {this}
+		 */
 		removeClass: function( className ) {
 			return this.each( function( ele ) {
 				cls.removeClass( ele, className );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @returns {this}
+		 */
 		toggleClass: function( className ) {
 			return this.each( function( ele ) {
 				cls.toggleClass( ele, className );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @param {String}
-     * @returns {this}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @param {String}
+		 * @returns {this}
+		 */
 		replaceClass: function( oldClassName, newClassName ) {
 			return this.each( function( ele ) {
 				cls.replaceClass( ele, oldClassName, newClassName );
 			} );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @returns {Number}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @returns {Number}
+		 */
 		classLength: function() {
 			return cls.classLength( this[ 0 ] );
 		},
-    /**
-     * @public
-     * @memberof aQuery.prototype
-     * @param {Number}
-     * @returns {String}
-     */
+		/**
+		 * @public
+		 * @memberof aQuery.prototype
+		 * @param {Number}
+		 * @returns {String}
+		 */
 		getClassByIndex: function( index ) {
 			return cls.getClassByIndex( this[ 0 ], index );
 		}
@@ -14620,8 +14621,8 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
-/*===================module/FX===========================*/
-﻿aQuery.define( "module/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
+/*===================animation/FX===========================*/
+﻿aQuery.define( "animation/FX", [ "base/typed", "base/array", "main/css", "main/object" ], function( $, typed, array, css, object, undefined ) {
 	"use strict";
 	var rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/;
 
@@ -14737,7 +14738,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 			}
 		},
 
-		custom: {},
+		hooks: {},
 
 		cur: function( ele, name ) {
 			//var ele = this.ele;
@@ -14803,7 +14804,6 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 		tick: function() {}
 	} );
-	$.fx = FX;
 
 	return FX;
 } );
@@ -15152,8 +15152,8 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
-/*===================module/tween===========================*/
-﻿aQuery.define( "module/tween", [ "base/typed" ], function( $, typed, undefined ) {
+/*===================animation/tween===========================*/
+﻿aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
 	"use strict";
 	var math = Math,
 		// pi = math.PI,
@@ -15287,8 +15287,8 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
-/*===================module/animate===========================*/
-﻿aQuery.define( "module/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "module/FX", "module/Thread", "module/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+/*===================animation/animate===========================*/
+﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -15364,10 +15364,10 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 			$.each( property, function( value, key ) {
 				opt.easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getAnimationEasing( opt.specialEasing[ key ] ) : defaultEasing;
-				if ( typed.isFun( $.fx.custom[ key ] ) ) {
-					return $.fx.custom[ key ]( ele, opt, value, key );
+				if ( typed.isFun( FX.hooks[ key ] ) ) {
+					return FX.hooks[ key ]( ele, opt, value, key );
 				}
-				new $.fx( ele, opt, value, key );
+				new FX( ele, opt, value, key );
 			} );
 
 			return true;
@@ -15579,7 +15579,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 /*=======================================================*/
 
 /*===================html5/animate.transform===========================*/
-﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "module/FX", "html5/css3", "module/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
+﻿aQuery.define( "html5/animate.transform", [ "base/typed", "base/extend", "base/support", "main/object", "animation/FX", "html5/css3", "animation/animate" ], function( $, typed, utilExtend, support, object, FX, css3, animate, undefined ) {
 	"use strict";
 	this.describe( "Support transform to animation" );
 	var getScale = function( r ) {
@@ -15631,7 +15631,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 			}
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( FX.hooks, {
 			setRotate3d: Transfrom3dForFX,
 			setScale: Transfrom3dForFX,
 			transform3d: Transfrom3dForFX,
@@ -15693,7 +15693,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 		} );
 
-		utilExtend.easyExtend( $.fx.custom, {
+		utilExtend.easyExtend( FX.hooks, {
 			transform: TransfromForFX
 		} );
 	}
@@ -15776,7 +15776,7 @@ define( "hash/cubicBezier.tween", function() {
   "base/client",
   "main/event",
   "html5/css3",
-  "module/FX",
+  "animation/FX",
   "html5/animate.transform",
   "hash/cubicBezier.tween" ], function( $,
 	config,
@@ -15907,8 +15907,8 @@ define( "hash/cubicBezier.tween", function() {
 					//para肯定要在这里用
 					easing = opt.specialEasing && opt.specialEasing[ key ] ? $.getTransitionEasing( opt.specialEasing[ key ] ) : defaultEasing;
 					opt.easing = opt.originEasing;
-					if ( typed.isFun( $.fx.custom[ key ] ) ) {
-						ret = $.fx.custom[ key ]( ele, opt, value, key );
+					if ( typed.isFun( FX.hooks[ key ] ) ) {
+						ret = FX.hooks[ key ]( ele, opt, value, key );
 						temp = ret[ 0 ]._originCss;
 						//opt._transitionList.push(temp);
 						tran.push( temp, duration + "s", easing );
@@ -16106,8 +16106,8 @@ define( "hash/cubicBezier.tween", function() {
 
 /*=======================================================*/
 
-/*===================module/tween.extend===========================*/
-﻿aQuery.define( "module/tween.extend", [ "base/extend", "module/tween" ], function( $, utilExtend, tween, undefined ) {
+/*===================animation/tween.extend===========================*/
+﻿aQuery.define( "animation/tween.extend", [ "base/extend", "animation/tween" ], function( $, utilExtend, tween, undefined ) {
 	"use strict";
 	var math = Math;
 	utilExtend.easyExtend( tween, {
@@ -16715,14 +16715,14 @@ define( "hash/cubicBezier.tween", function() {
   "main/css",
   "main/position",
   "main/dom",
-  "module/FX",
-  "module/animate",
+  "animation/FX",
+  "animation/animate",
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "html5/css3",
   "html5/css3.position",
   "main/query",
-  "module/tween.extend" ], function( $,
+  "animation/tween.extend" ], function( $,
 	config,
 	support,
 	Widget,
@@ -17286,9 +17286,9 @@ aQuery.define( "ui/swapview", [
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "module/Widget",
-  "module/animate",
-  "module/FX",
-  "module/tween.extend",
+  "animation/animate",
+  "animation/FX",
+  "animation/tween.extend",
   "ui/swappable",
   "ui/draggable",
   "ui/swapindicator"
@@ -18176,9 +18176,9 @@ aQuery.define( "ui/scrollableview", [
   "html5/animate.transform",
   "html5/css3.transition.animate",
   "module/Widget",
-  "module/FX",
-  "module/animate",
-  "module/tween.extend",
+  "animation/FX",
+  "animation/animate",
+  "animation/tween.extend",
   "module/Keyboard",
   "ui/swappable",
   "ui/draggable",
@@ -18933,8 +18933,8 @@ aQuery.define( "ui/scrollableview", [
 
 /*=======================================================*/
 
-/*===================module/effect===========================*/
-﻿aQuery.define( "module/effect", [ "base/typed", "module/animate" ], function( $, typed, animate, undefined ) {
+/*===================animation/effect===========================*/
+﻿aQuery.define( "animation/effect", [ "base/typed", "animation/animate" ], function( $, typed, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		$.data( this, "slideOriginHeight", null );
@@ -19143,10 +19143,10 @@ aQuery.define( "ui/navitem", [
     "main/position",
     "main/dom",
     "main/attr",
-    "module/animate",
+    "animation/animate",
     "html5/css3.transition.animate",
-    "module/tween.extend",
-    "module/effect"
+    "animation/tween.extend",
+    "animation/effect"
   ],
 	function( $, typed, client, Widget, cls, event, css, position, dom, attr, src, animate ) {
 		"use strict";
