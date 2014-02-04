@@ -3534,21 +3534,34 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 /*===================main/CustomEvent===========================*/
 ﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
 	"use strict";
-	var CustomEvent = object.extend( "CustomEvent", {
+	this.describe( "A custom event" );
+	/**
+	 * @constructor
+	 * @exports main/CustomEvent
+	 */
+	var CustomEvent = object.extend( "CustomEvent", /** @lends module:main/CustomEvent.prototype */ {
 		constructor: CustomEvent,
+		/** @constructs module:main/CustomEvent */
 		init: function() {
 			this.handlers = {};
 			this._handlerMap = {};
-			this._initHandler();
 			return this;
 		},
-		_initHandler: function() {
-
-			return;
-		},
+		/**
+     * Add a handler.
+		 * @param {String}
+		 * @param {Function}
+     * @returns {this}
+		 */
 		on: function( type, handler ) {
 			return this.addHandler( type, handler );
 		},
+    /**
+     * Add a handler once.
+     * @param {String}
+     * @param {Function}
+     * @returns {this}
+     */
 		once: function( type, handler ) {
 			var self = this,
 				handlerproxy = function() {
@@ -3557,12 +3570,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				};
 			return this.on( type, handlerproxy );
 		},
+    /**
+     * Add a handler.
+     * @param {String}
+     * @param {Function}
+     * @returns {this}
+     */
 		addHandler: function( type, handler ) {
-			/// <summary>添加自定义事件</summary>
-			/// <para>例:"do undo"</para>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <returns type="self" />
 			var types = type.split( " " ),
 				i = types.length - 1;
 			for ( ; i >= 0; i-- ) {
@@ -3571,20 +3585,24 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			return this;
 		},
 		_addHandler: function( type, handler ) {
-			/// <summary>添加自定义事件</summary>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <returns type="self" />
 			var handlers = this._nameSpace( type );
 			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
 			return this;
 		},
+    /**
+     * Clear handlers.
+     * @param {String} [type] - If type is undefined, then clear all handler
+     * @returns {this}
+     */
 		clear: function( type ) {
 			return this.clearHandlers( type );
 		},
+    /**
+     * Clear handlers.
+     * @param {String} [type] - If type is undefined, then clear all handler
+     * @returns {this}
+     */
 		clearHandlers: function( type ) {
-			/// <summary>清楚所有自定义事件</summary>
-			/// <returns type="self" />
 			if ( type ) {
 				var types = type.split( " " ),
 					i = types.length - 1,
@@ -3600,13 +3618,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return this;
 		},
+    /**
+     * Return index of handlers array. -1 means not found.
+     * @param {String}
+     * @param {Function}
+     * @param {Array<Function>} [handlers]
+     * @returns {Number}
+     */
 		hasHandler: function( type, handler, handlers ) {
-			/// <summary>是否有这个事件</summary>
-			/// <para>返回序号 -1表示没有</para>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <param name="handlers" type="Array/undefinded">已有的事件集</param>
-			/// <returns type="Number" />
 			handlers = handlers || this._nameSpace( type );
 			var i = 0,
 				j = -1,
@@ -3621,10 +3640,14 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return j;
 		},
-		trigger: function( type, target, obj ) {
-			/// <summary>配置自定义事件</summary>
-			/// <param name="target" type="Object">当前对象</param>
-			/// <returns type="self" />
+    /**
+     * Trigger an event.
+     * @param {String}
+     * @param {Context}
+     * @param {...*} [args]
+     * @returns {this}
+     */
+		trigger: function( type, target, args ) {
 			var handlers = this._nameSpace( type );
 			if ( handlers instanceof Array && handlers.length ) {
 				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
@@ -3632,15 +3655,22 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return this;
 		},
+    /**
+     * Remove handler.
+     * @param {String}
+     * @param {Function}
+     * @returns {this}
+     */
 		off: function( type, handler ) {
 			return this.removeHandler( type, handler );
 		},
+    /**
+     * Remove handler.
+     * @param {String}
+     * @param {Function}
+     * @returns {this}
+     */
 		removeHandler: function( type, handler ) {
-			/// <summary>移除自定义事件</summary>
-			/// <para>例:"do undo"</para>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <returns type="self" />
 			var types = type.split( " " ),
 				i = types.length - 1;
 			for ( ; i >= 0; i-- ) {
@@ -3688,7 +3718,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			return nameList.length ? this._initSpace( nameList, nameSpace, re ) : result;
 		}
 	} );
-	$.CustomEvent = CustomEvent;
 
 	return CustomEvent;
 } );
