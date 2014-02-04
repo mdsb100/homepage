@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Module: base/Promise</title>
+	<title>Documentation Module: main/object</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -217,12 +217,12 @@
 					
 
 
-	<h1 class="page-title">Module: base/Promise</h1>
+	<h1 class="page-title">Module: main/object</h1>
 <section>
 
 <header>
     <h2>
-    base/Promise
+    main/object
     </h2>
     
 </header>
@@ -230,198 +230,6 @@
 <article>
     <div class="container-overview">
     
-        
-<dt>
-    <h4 class="name" id="module:base/Promise"><span class="type-signature"></span>new require("base/Promise")<span class="signature">(<span class="optional">todo</span>, <span class="optional">fail</span>, <span class="optional">progress</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>todo</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>fail</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>progress</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1990">line 1990</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-    
 
     
         
@@ -449,31 +257,16 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1882">line 1882</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-179">line 179</a>
     </li></ul></dd>
     
 
     
 
     
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="http://wiki.commonjs.org/wiki/Promises/A">http://wiki.commonjs.org/wiki/Promises/A</a></li>
-        </ul>
-    </dd>
-    
 
     
 </dl>
-
-
-        
-            <h3>Example</h3>
-            
-    <pre class="sunlight-highlight-javascript">new Promise(function(){}, function(){})
-new Promise(function(){})
-new Promise()</pre>
 
 
         
@@ -484,6 +277,16 @@ new Promise()</pre>
 
     
 
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li><a href="typed.html">module:base/typed</a></li>
+        
+            <li><a href="array.html">module:base/array</a></li>
+        
+            <li><a href="extend.html">module:base/extend</a></li>
+        </ul>
     
 
     
@@ -498,7 +301,7 @@ new Promise()</pre>
         <dl>
             
 <dt>
-    <h4 class="name" id="forinstance"><span class="type-signature">&lt;static> </span>forinstance<span class="signature">(promise)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="Collection"><span class="type-signature">&lt;static> </span>Collection<span class="signature">(model, prototype, statics, <span class="optional">Super</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -506,144 +309,8 @@ new Promise()</pre>
     
     
     <div class="description">
-        Whether it is "Promise" instances.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>promise</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2178">line 2178</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="and"><span class="type-signature"></span>and<span class="signature">(<span class="optional">todo</span>, <span class="optional">fail</span>, <span class="optional">progress</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#Promise">Promise</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        The new promise is siblings.
+        If model is a function, you should call "this.init()".
+<br /> Mixin <a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a> into new Collection.
     </div>
     
 
@@ -679,12 +346,15 @@ new Promise()</pre>
 
         <tr>
             
-                <td class="name"><code>todo</code></td>
+                <td class="name"><code>model</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">String</span>
+|
+
 <span class="param-type">function</span>
 
 
@@ -693,8 +363,6 @@ new Promise()</pre>
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -705,20 +373,20 @@ new Promise()</pre>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">If model is a function, then will use model.name. Then class name is name + "Collection".</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>fail</code></td>
+                <td class="name"><code>prototype</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">Object</span>
 
 
             
@@ -726,8 +394,6 @@ new Promise()</pre>
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -738,14 +404,45 @@ new Promise()</pre>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Instance methods.</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>progress</code></td>
+                <td class="name"><code>statics</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Static methods.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>Super</code></td>
             
 
             <td class="type">
@@ -803,7 +500,7 @@ new Promise()</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2102">line 2102</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-303">line 303</a>
     </li></ul></dd>
     
 
@@ -824,39 +521,14 @@ new Promise()</pre>
     
     
     
-    <h5>Returns:</h5>
     
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">new Promise().and(todo).and(todo);</pre>
-
-
     
 </dd>
 
         
             
 <dt>
-    <h4 class="name" id="call"><span class="type-signature"></span>call<span class="signature">(name, result)</span><span class="type-signature"> &rarr; {*}</span></h4>
+    <h4 class="name" id="createPropertyGetterSetter"><span class="type-signature">&lt;static> </span>createPropertyGetterSetter<span class="signature">(obj, return)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -864,7 +536,7 @@ new Promise()</pre>
     
     
     <div class="description">
-        Call todo, fail or progress.
+        Create Getter or Setter for this constructor.prototype.
     </div>
     
 
@@ -885,6 +557,187 @@ new Promise()</pre>
 
 		<th>Type</th>
 
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A constructor.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>return</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+|
+
+<span class="param-type">String</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">{obj.prototype}</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-537">line 537</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">function Person(){};
+// "u" means public, "a" means private.
+object.createPropertyGetterSetter(Person, {
+ id: "-pu -r",
+ name: "-pu -w -r",
+ age: "-pa -w -r",
+ Weight: "-wa -ru",
+ mark: {
+   purview: "-wa -ru",
+   defaultValue: 0, // set prototype.mark = 0.
+   validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+   edit: function( value ){ return value + ""; } // edit value when getting.
+ },
+ height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
+} );
+var person = new Person();
+person.getId();
+person.getName(); person.setName();
+person._getAge(); person._setAge();
+person._getWeight(); person.setWeight();
+person.getMark(); // "0"
+person._setMark( 110 );
+person.getMark(); // "0"
+person._setMark( 100 );
+person.getMark(); // "100"</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">(name, prototype, statics, <span class="optional">Super</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Define a Class.
+<br /> Mixin <a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a> into new Class.
+<br /> see <a href="object_.html#createPropertyGetterSetter">module:main/object.createPropertyGetterSetter</a>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
 		
 
 		
@@ -905,473 +758,102 @@ new Promise()</pre>
             
                 
 <span class="param-type">String</span>
+|
+
+<span class="param-type">function</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Function name.</td>
+            <td class="description last">Name or Function.</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>result</code></td>
+                <td class="name"><code>prototype</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Instance methods.</td>
         </tr>
 
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1934">line 1934</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">*</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="destroy"><span class="type-signature"></span>destroy<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Destroy self.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2027">line 2027</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">void</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="finished"><span class="type-signature"></span>finished<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2151">line 2151</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="get"><span class="type-signature"></span>get<span class="signature">(propertyName)</span><span class="type-signature"> &rarr; {*}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Get property
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
 	
 
         <tr>
             
-                <td class="name"><code>propertyName</code></td>
+                <td class="name"><code>statics</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Property name.</td>
+            <td class="description last">Static methods.</td>
         </tr>
 
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1951">line 1951</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">*</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="resolve"><span class="type-signature"></span>resolve<span class="signature">(<span class="optional">obj</span>)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
 	
 
         <tr>
             
-                <td class="name"><code>obj</code></td>
+                <td class="name"><code>Super</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">function</span>
 
 
             
@@ -1391,7 +873,7 @@ new Promise()</pre>
 
             
 
-            <td class="description last">result.</td>
+            <td class="description last">Super Class.</td>
         </tr>
 
 	
@@ -1423,7 +905,7 @@ new Promise()</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2047">line 2047</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-246">line 246</a>
     </li></ul></dd>
     
 
@@ -1455,472 +937,7 @@ new Promise()</pre>
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="root"><span class="type-signature"></span>root<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="global.html#Promise">Promise</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Get root promise.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2164">line 2164</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="then"><span class="type-signature"></span>then<span class="signature">(nextToDo, nextFail, nextProgress)</span><span class="type-signature"> &rarr; {<a href="global.html#Promise">Promise</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Then do...
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>nextToDo</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Todo.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>nextFail</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Fail next.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>nextProgress</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Progress.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1969">line 1969</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="together"><span class="type-signature"></span>together<span class="signature">(<span class="optional">promise</span>, <span class="optional">obj</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#Promise">Promise</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Relative method "and".
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-		<th>Default</th>
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>promise</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    this
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">result</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2127">line 2127</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="global.html#Promise">Promise</a></span>
 
 
 	</dd>
@@ -1932,17 +949,60 @@ new Promise()</pre>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">function delay(ms) {
-  return function (obj) {
-      var promise = new Promise;
-      var self = this;
-      setTimeout(function () {
-          promise.together(self, obj);
-      }, ms);
-      return promise;
-  };
+    <pre class="sunlight-highlight-javascript">var Super = object.extend( "Super", {
+  init: function( name ){
+    console.log( "Super", name );
+    this.name = name;
+  },
+  checkName: function( name ){
+    console.log( "Super", this.name == name );
+    return this.name == name;
+  }
+}, {
+  doSomething: function( ){ };
+} );
+
+function Sub( name ){
+  this._super( name );
+  this.name = name;
+  console.log( "Sub", name );
 };
-new Promise().and(delay(1000)).and(delay(2000));</pre>
+
+Super.extend( Sub, { // extend is created by mixin
+  checkName: function( name ){
+    // The invoke is created by object.extend
+    Super.invoke( "checkName", name );
+    console.log( "Sub", this.name == name );
+    return this.name == name;
+  }
+}, {
+  doSomething: function( ){ };
+} );
+
+var super = new Super( "Lisa" );
+// Super Lisa
+var sub = new Sub( "Iris" );
+// Super Iris
+// Sub Iris
+sub.checkName( "Iris" );
+// Super true
+// Sub true
+Sub.doSomething();
+Super.doSomething();
+
+//mixin
+Sub.joinPrototype( {
+  foo: function() {}
+}, {
+  pad: function() {}
+} );
+sub.foo();sub.pad();
+
+Super.forinstance( sub ) // true
+
+Sub.createGetterSetter( {
+  name: "-pa"
+} );</pre>
 
 
     
@@ -1951,96 +1011,16 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
         
             
 <dt>
-    <h4 class="name" id="unfinished"><span class="type-signature"></span>unfinished<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id="getObjectPropertiesCount"><span class="type-signature">&lt;static> </span>getObjectPropertiesCount<span class="signature">(obj, bool)</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
     
 </dt>
 <dd>
     
     
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-2157">line 2157</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="withContext"><span class="type-signature"></span>withContext<span class="signature">(context)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
+    <div class="description">
+        Get the object properties count.
+    </div>
     
 
     
@@ -2073,7 +1053,7 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 
         <tr>
             
-                <td class="name"><code>context</code></td>
+                <td class="name"><code>obj</code></td>
             
 
             <td class="type">
@@ -2089,7 +1069,30 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 
             
 
-            <td class="description last">Context of Promise.</td>
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>bool</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">If true , does not count prototype.</td>
         </tr>
 
 	
@@ -2121,7 +1124,167 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1958">line 1958</a>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-437">line 437</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="inheritProtypeWithCombination"><span class="type-signature">&lt;static> </span>inheritProtypeWithCombination<span class="signature">(Sub, Super)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Use classic combination to inherit prototype. Contains the same memory address.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>Sub</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sub</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>Super</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Super</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-486">line 486</a>
     </li></ul></dd>
     
 
@@ -2154,6 +1317,509 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 	<dd>
 		
 <span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="inheritProtypeWithExtend"><span class="type-signature">&lt;static> </span>inheritProtypeWithExtend<span class="signature">(Sub, Super)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Does not contain the same memory address, the constructor will not be called multiple times.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>Sub</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sub</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>Super</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Super</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-450">line 450</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="inheritProtypeWithParasitic"><span class="type-signature">&lt;static> </span>inheritProtypeWithParasitic<span class="signature">(Sub, Super, name)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Use parasitic to inherit prototype. Does not contain the same memory address.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>Sub</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sub</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>Super</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Super</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">You can see the name of the parent class in the prototype chain instead "Parasitic".</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-463">line 463</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isPrototypeProperty"><span class="type-signature">&lt;static> </span>isPrototypeProperty<span class="signature">(obj, name)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Whether it is the prototype property.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-496">line 496</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
 
 
 	</dd>
@@ -2186,7 +1852,7 @@ new Promise().and(delay(1000)).and(delay(2000));</pre>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Tue Feb 04 2014 13:38:02 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Feb 04 2014 13:38:03 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
