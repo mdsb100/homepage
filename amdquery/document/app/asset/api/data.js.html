@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Namespaces</title>
+	<title>Documentation Source: main/data.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -219,124 +219,263 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
 					
 
 
-	<h1 class="page-title">Namespaces</h1>
-<section>
-
-<header>
-    <h2>
+		<h1 class="page-title">Source: main/data.js</h1>
     
-    </h2>
-    
-</header>
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
+	"use strict";
 
-<article>
-    <div class="container-overview">
-    
+	// checks a cache object for emptiness
 
-    
-        
+	function isEmptyDataObject( obj ) {
+		var name;
+		for ( name in obj ) {
 
-        
-<dl class="details">
-    
+			// if the public data object is empty, the private is still empty
+			if ( name === "data" && typed.isEmptyObj( obj[ name ] ) ) {
+				continue;
+			}
+			if ( name !== "toJSON" ) {
+				return false;
+			}
+		}
 
-    
+		return true;
+	}
 
-    
+	var
+	expando = "AMDQuery" + $.now(),
+		uuid = 0,
+		windowData = {}, emptyObject = {};
+	/**
+	 * @pubilc
+	 * @exports main/data
+	 * @requires module:main/data
+	 */
+	var exports = {
+		/**
+		 * @type Array
+		 */
+		cache: [],
+		/**
+		 * Quote from jQuery-1.4.1 .
+		 * @deprecated
+		 */
+		data: function( ele, name, data ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return this;
 
-    
+			ele = ele == window ?
+				windowData :
+				ele;
 
-    
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
 
-    
+			if ( !name && !id )
+				return this;
 
-    
+			if ( !id )
+				id = ++uuid;
 
-    
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
+			}
 
-    
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
 
-    
+			return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+		},
 
-    
+		_getTarget: function( ele ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return null;
+			return ele == window ?
+				windowData :
+				ele;
+		},
+		/**
+		 * Get Data.It maybe return undefined.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then return whole cache.
+		 * @returns {undefined|*}
+		 */
+		get: function( ele, name ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return undefined;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
 
-    
+			if ( id && cache[ id ] ) {
+				return name ? cache[ id ][ name ] : cache[ id ];
+			} else {
+				return undefined;
+			}
+		},
+		/**
+		 * Set Data.
+		 * @param {Element|window}
+		 * @param {String} name
+		 * @param {*|Object} - If data is an plain object, then add all properties to cache.
+		 * @returns {this}
+		 */
+		set: function( ele, name, data ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return this;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
 
-    
-</dl>
+			if ( !name && !id )
+				return this;
 
+			if ( !id )
+				id = ++uuid;
 
-        
-    
-    </div>
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
+			}
 
-    
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
 
-    
+			return this;
+		},
+		/** @constant */
+		expando: expando,
+		/** A hash of Element which does not support data. */
+		noData: {
+			//quote from jQuery-1.4.1
+			"embed": true,
+			"object": true,
+			"applet": true
+		},
+		/**
+		 * Remove Data.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then remove all.
+		 * @returns {this}
+		 */
+		removeData: function( ele, name ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return this;
 
-    
+			ele = ele == window ?
+				windowData :
+				ele;
 
-    
-        <h3 class="subsection-title">Classes</h3>
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache = cache[ id ];
 
-        <dl>
-            <dt><a href="aQuery.html">aQuery</a></dt>
-            <dd></dd>
-        
-            <dt><a href="ClassModule.html">module:base/ClassModule</a></dt>
-            <dd></dd>
-        
-            <dt><a href="ClassModule.html">require("base/ClassModule")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Promise.html">module:base/Promise</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Promise.html">require("base/Promise")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="queue.html">require("base/queue")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Storage.html">require("html5/Storage")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Worker.html">require("html5/Worker")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="CustomEvent.html">require("main/CustomEvent")</a></dt>
-            <dd></dd>
-        </dl>
-    
+			if ( name ) {
+				if ( thisCache ) {
+					delete thisCache[ name ];
 
-    
-        <h3 class="subsection-title">Namespaces</h3>
+					if ( typed.isEmptyObj( thisCache ) )
+						exports.removeData( ele );
 
-        <dl>
-            <dt><a href="namespaces.html#aQuery.util"><a href="aQuery.util.html">util</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#require(namespace)"><a href="require.html">require(namespace)</a></a></dt>
-            <dd></dd>
-        </dl>
-    
+				}
 
-    
+			} else {
+				if ( support.deleteExpando ) {
+					delete ele[ expando ];
+				} else if ( ele.removeAttribute ) {
+					ele.removeAttribute( expando );
+				} else {
+					ele[ expando ] = null;
+				}
+				delete cache[ id ];
+			}
+			return this;
+		},
+		/**
+		 * @param {Element|window}
+		 * @returns {Boolean}
+		 */
+		hasData: function( ele ) {
+			ele = ele.nodeType ? exports.cache[ ele[ exports.expando ] ] : ele[ exports.expando ];
+			return !!ele && !isEmptyDataObject( ele );
+		}
+	};
 
-    
+	$.fn.extend( {
+		/**
+		 * Get or set data.
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @param {*|Object} [value] - If value is undefined then get data, else if value is plain object then add all properties to cache.
+		 * @returns {this|*}
+		 */
+		data: function( key, value ) {
+			if ( key === undefined && this.length ) {
+				return exports.get( this[ 0 ] );
+			} else if ( typed.isObj( key ) ) {
+				return this.each( function( ele ) {
+					exports.get( ele, key );
+				} );
+			}
+			return value === undefined ? exports.get( this[ 0 ], key ) : this.each( function( ele ) {
+				exports.set( ele, key, value );
+			} );
+		},
+		/**
+		 * Remove data.
+		 * @memberof aQuery.prototype
+		 * @param {String} - If key is undefined then remove all.
+		 * @returns {this}
+		 */
+		removeData: function( key ) {
+			return this.each( function( ele ) {
+				exports.removeData( ele, key );
+			} );
+		},
+		/**
+		 * @memberof aQuery.prototype
+		 * @returns {Boolean}
+		 */
+		hasData: function() {
+			return this[ 0 ] && exports.hasData( this[ 0 ] );
+		}
+	} );
 
-    
+	return exports;
+} );</pre>
+        </article>
+    </section>
 
-    
-</article>
-
-</section>
 
 
 
@@ -354,10 +493,6 @@
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>

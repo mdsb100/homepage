@@ -3018,7 +3018,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	 */
 
 	/**
-	 * This provides methods used for method "extend" handling. It will be mixed in constructor.
+	 * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
 	 * This methods is static.
 	 * @public
 	 * @mixin ObjectClassStaticMethods
@@ -3097,7 +3097,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	};
 
 	/**
-	 * This provides methods used for method "collection" handling. It will be mixed in constructor.prototype
+	 * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
 	 * This methods is prototype.
 	 * @public
 	 * @mixin CollectionClassPrototypeMethods
@@ -3536,8 +3536,11 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	"use strict";
 	this.describe( "A custom event" );
 	/**
+	 * Be defined by object.extend.
 	 * @constructor
 	 * @exports main/CustomEvent
+	 * @requires module:main/object
+	 * @mixes ObjectClassStaticMethods
 	 */
 	var CustomEvent = object.extend( "CustomEvent", /** @lends module:main/CustomEvent.prototype */ {
 		constructor: CustomEvent,
@@ -3548,20 +3551,20 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			return this;
 		},
 		/**
-     * Add a handler.
+		 * Add a handler.
 		 * @param {String}
 		 * @param {Function}
-     * @returns {this}
+		 * @returns {this}
 		 */
 		on: function( type, handler ) {
 			return this.addHandler( type, handler );
 		},
-    /**
-     * Add a handler once.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add a handler once.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		once: function( type, handler ) {
 			var self = this,
 				handlerproxy = function() {
@@ -3570,12 +3573,12 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 				};
 			return this.on( type, handlerproxy );
 		},
-    /**
-     * Add a handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add a handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		addHandler: function( type, handler ) {
 			var types = type.split( " " ),
 				i = types.length - 1;
@@ -3589,19 +3592,19 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
 			return this;
 		},
-    /**
-     * Clear handlers.
-     * @param {String} [type] - If type is undefined, then clear all handler
-     * @returns {this}
-     */
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
 		clear: function( type ) {
 			return this.clearHandlers( type );
 		},
-    /**
-     * Clear handlers.
-     * @param {String} [type] - If type is undefined, then clear all handler
-     * @returns {this}
-     */
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
 		clearHandlers: function( type ) {
 			if ( type ) {
 				var types = type.split( " " ),
@@ -3618,13 +3621,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return this;
 		},
-    /**
-     * Return index of handlers array. -1 means not found.
-     * @param {String}
-     * @param {Function}
-     * @param {Array<Function>} [handlers]
-     * @returns {Number}
-     */
+		/**
+		 * Return index of handlers array. -1 means not found.
+		 * @param {String}
+		 * @param {Function}
+		 * @param {Array<Function>} [handlers]
+		 * @returns {Number}
+		 */
 		hasHandler: function( type, handler, handlers ) {
 			handlers = handlers || this._nameSpace( type );
 			var i = 0,
@@ -3640,13 +3643,13 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return j;
 		},
-    /**
-     * Trigger an event.
-     * @param {String}
-     * @param {Context}
-     * @param {...*} [args]
-     * @returns {this}
-     */
+		/**
+		 * Trigger an event.
+		 * @param {String}
+		 * @param {Context}
+		 * @param {...*} [args]
+		 * @returns {this}
+		 */
 		trigger: function( type, target, args ) {
 			var handlers = this._nameSpace( type );
 			if ( handlers instanceof Array && handlers.length ) {
@@ -3655,21 +3658,21 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			}
 			return this;
 		},
-    /**
-     * Remove handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		off: function( type, handler ) {
 			return this.removeHandler( type, handler );
 		},
-    /**
-     * Remove handler.
-     * @param {String}
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		removeHandler: function( type, handler ) {
 			var types = type.split( " " ),
 				i = types.length - 1;
@@ -6999,169 +7002,250 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 
 	// checks a cache object for emptiness
 
-	// function isEmptyDataObject( obj ) {
-	// 	var name;
-	// 	for ( name in obj ) {
+	function isEmptyDataObject( obj ) {
+		var name;
+		for ( name in obj ) {
 
-	// 		// if the public data object is empty, the private is still empty
-	// 		if ( name === "data" && typed.isEmptyObject( obj[ name ] ) ) {
-	// 			continue;
-	// 		}
-	// 		if ( name !== "toJSON" ) {
-	// 			return false;
-	// 		}
-	// 	}
+			// if the public data object is empty, the private is still empty
+			if ( name === "data" && typed.isEmptyObj( obj[ name ] ) ) {
+				continue;
+			}
+			if ( name !== "toJSON" ) {
+				return false;
+			}
+		}
 
-	// 	return true;
-	// }
+		return true;
+	}
 
 	var
 	expando = "AMDQuery" + $.now(),
 		uuid = 0,
-		windowData = {}, emptyObject = {},
-		data = {
-			cache: [],
-
-			data: function( ele, name, data ) {
-				/// <summary>获得或设置对象的数据
-				/// <para>如果name是obj可能有风险，他会赋值所有的</para>
-				/// <para>如果data是undefined会取值</para>
-				/// </summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="name" type="String/Object/null">如果为nul则删除全部</param>
-				/// <param name="data" type="any">数据</param>
-				/// <returns type="thisCache/any/$" />
-
-				//quote from jQuery-1.4.1
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
-					return this;
-
-				ele = ele == window ?
-					windowData :
-					ele;
-
-				var id = ele[ expando ],
-					cache = $.cache,
-					thisCache;
-
-				if ( !name && !id )
-					return this;
-
-				if ( !id )
-					id = ++uuid;
-
-				if ( typeof name === "object" ) {
-					ele[ expando ] = id;
-					thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
-				} else if ( cache[ id ] ) {
-					thisCache = cache[ id ];
-				} else if ( data === undefined ) {
-					thisCache = emptyObject;
-				} else {
-					thisCache = cache[ id ] = {};
-				}
-
-				if ( data !== undefined ) {
-					ele[ expando ] = id;
-					thisCache[ name ] = data;
-				}
-
-				return typed.isStr( name ) ? thisCache[ name ] : thisCache;
-			},
-
-			expando: expando,
-
-			noData: {
-				//quote from jQuery-1.4.1
-				"embed": true,
-				"object": true,
-				"applet": true
-			},
-
-			removeData: function( ele, name ) {
-				/// <summary>删除对象的数据</summary>
-				/// <param name="ele" type="Object">对象</param>
-				/// <param name="name" type="String/undefined">如果为undefined则删除全部</param>
-				/// <returns type="self" />
-				if ( !ele || ( ele.nodeName && $.noData[ ele.nodeName.toLowerCase() ] ) )
-					return this;
-
-				ele = ele == window ?
-					windowData :
-					ele;
-
-				var id = ele[ expando ],
-					cache = $.cache,
-					thisCache = cache[ id ];
-
-				if ( name ) {
-					if ( thisCache ) {
-						delete thisCache[ name ];
-
-						if ( typed.isEmptyObj( thisCache ) )
-							$.removeData( ele );
-
-					}
-
-				} else {
-					if ( support.deleteExpando ) {
-						delete ele[ expando ];
-					} else if ( ele.removeAttribute ) {
-						ele.removeAttribute( expando );
-					} else {
-						ele[ expando ] = null;
-					}
-					delete cache[ id ];
-				}
+		windowData = {}, emptyObject = {};
+	/**
+	 * @pubilc
+	 * @exports main/data
+	 * @requires module:main/data
+	 */
+	var exports = {
+		/**
+		 * @type Array
+		 */
+		cache: [],
+		/**
+		 * Quote from jQuery-1.4.1 .
+		 * @deprecated
+		 */
+		data: function( ele, name, data ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
 				return this;
-			},
 
-			hasData: function( ele ) {
-				ele = ele.nodeType ? data.cache[ ele[ data.expando ] ] : ele[ data.expando ];
-				return !!ele;
-				//&& !isEmptyDataObject( ele );
+			ele = ele == window ?
+				windowData :
+				ele;
+
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
+
+			if ( !name && !id )
+				return this;
+
+			if ( !id )
+				id = ++uuid;
+
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
 			}
-		};
 
-	$.extend( data );
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
+
+			return typed.isStr( name ) ? thisCache[ name ] : thisCache;
+		},
+
+		_getTarget: function( ele ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return null;
+			return ele == window ?
+				windowData :
+				ele;
+		},
+		/**
+		 * Get Data.It maybe return undefined.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then return whole cache.
+		 * @returns {undefined|*}
+		 */
+		get: function( ele, name ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return undefined;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
+
+			if ( id && cache[ id ] ) {
+				return name ? cache[ id ][ name ] : cache[ id ];
+			} else {
+				return undefined;
+			}
+		},
+		/**
+		 * Set Data.
+		 * @param {Element|window}
+		 * @param {String} name
+		 * @param {*|Object} - If data is an plain object, then add all properties to cache.
+		 * @returns {this}
+		 */
+		set: function( ele, name, data ) {
+			ele = exports._getTarget( ele );
+			if ( !ele ) {
+				return this;
+			}
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache;
+
+			if ( !name && !id )
+				return this;
+
+			if ( !id )
+				id = ++uuid;
+
+			if ( typed.isPlainObj( name ) ) {
+				ele[ expando ] = id;
+				thisCache = cache[ id ] = utilExtend.extend( true, {}, name );
+			} else if ( cache[ id ] ) {
+				thisCache = cache[ id ];
+			} else if ( data === undefined ) {
+				thisCache = emptyObject;
+			} else {
+				thisCache = cache[ id ] = {};
+			}
+
+			if ( data !== undefined ) {
+				ele[ expando ] = id;
+				thisCache[ name ] = data;
+			}
+
+			return this;
+		},
+		/** @constant */
+		expando: expando,
+		/** A hash of Element which does not support data. */
+		noData: {
+			//quote from jQuery-1.4.1
+			"embed": true,
+			"object": true,
+			"applet": true
+		},
+		/**
+		 * Remove Data.
+		 * @param {Element|window}
+		 * @param {String} [name] - If name is undefined then remove all.
+		 * @returns {this}
+		 */
+		removeData: function( ele, name ) {
+			if ( !ele || ( ele.nodeName && exports.noData[ ele.nodeName.toLowerCase() ] ) )
+				return this;
+
+			ele = ele == window ?
+				windowData :
+				ele;
+
+			var id = ele[ expando ],
+				cache = exports.cache,
+				thisCache = cache[ id ];
+
+			if ( name ) {
+				if ( thisCache ) {
+					delete thisCache[ name ];
+
+					if ( typed.isEmptyObj( thisCache ) )
+						exports.removeData( ele );
+
+				}
+
+			} else {
+				if ( support.deleteExpando ) {
+					delete ele[ expando ];
+				} else if ( ele.removeAttribute ) {
+					ele.removeAttribute( expando );
+				} else {
+					ele[ expando ] = null;
+				}
+				delete cache[ id ];
+			}
+			return this;
+		},
+		/**
+		 * @param {Element|window}
+		 * @returns {Boolean}
+		 */
+		hasData: function( ele ) {
+			ele = ele.nodeType ? exports.cache[ ele[ exports.expando ] ] : ele[ exports.expando ];
+			return !!ele && !isEmptyDataObject( ele );
+		}
+	};
 
 	$.fn.extend( {
+		/**
+		 * Get or set data.
+		 * @memberof aQuery.prototype
+		 * @param {String}
+		 * @param {*|Object} [value] - If value is undefined then get data, else if value is plain object then add all properties to cache.
+		 * @returns {this|*}
+		 */
 		data: function( key, value ) {
-			/// <summary>获得或设置对象的数据
-			/// <para>如果key是obj可能有风险，他会赋值所有的</para>
-			/// <para>如果value是undefined会取值</para>
-			/// </summary>
-			/// <param name="key" type="String/Object/null">如果为nul则删除全部</param>
-			/// <param name="value" type="any">数据</param>
-			/// <returns type="thisCache/any/$" />
 			if ( key === undefined && this.length ) {
-				return $.data( this[ 0 ] );
+				return exports.get( this[ 0 ] );
 			} else if ( typed.isObj( key ) ) {
 				return this.each( function( ele ) {
-					$.data( ele, key );
+					exports.get( ele, key );
 				} );
 			}
-			return value === undefined ? $.data( this[ 0 ], key ) : this.each( function( ele ) {
-				$.data( ele, key, value );
+			return value === undefined ? exports.get( this[ 0 ], key ) : this.each( function( ele ) {
+				exports.set( ele, key, value );
 			} );
 		},
+		/**
+		 * Remove data.
+		 * @memberof aQuery.prototype
+		 * @param {String} - If key is undefined then remove all.
+		 * @returns {this}
+		 */
 		removeData: function( key ) {
-			/// <summary>删除对象的数据</summary>
-			/// <param name="key" type="String/null">如果为nul则删除全部</param>
-			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.removeData( ele, key );
+				exports.removeData( ele, key );
 			} );
+		},
+		/**
+		 * @memberof aQuery.prototype
+		 * @returns {Boolean}
+		 */
+		hasData: function() {
+			return this[ 0 ] && exports.hasData( this[ 0 ] );
 		}
 	} );
 
-	return data;
+	return exports;
 } );
 
 /*=======================================================*/
 
 /*===================main/event===========================*/
-﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, data, undefined ) {
+﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, utilData, undefined ) {
 	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
@@ -7235,6 +7319,14 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				return fun.__guid;
 			}
 		},
+		_initCustomEvent = function( ele, type ) {
+			var data;
+			if ( !( data = utilData.get( ele, type ) ) ) {
+				data = new CustomEvent();
+				utilData.set( ele, type, data );
+			}
+			return data;
+		},
 		event = {
 			addHandler: function( ele, type, fun ) {
 				/// <summary>给aQuery或元素添加事件</summary>
@@ -7252,9 +7344,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
-					}
+					data = _initCustomEvent( ele, "_handlers_" );
 					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
@@ -7276,9 +7366,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 					var data, proxy, item, types = type.split( " " ),
 						i = types.length - 1;
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
-					}
+					data = _initCustomEvent( ele, "_handlers_" );
 					proxy = eventHooks.proxy( fun, this );
 
 					for ( ; i >= 0; i-- ) {
@@ -7323,7 +7411,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				/// <param name="type" type="String/undefinded">事件类型</param>
 				/// <returns type="self" />
 				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data = $.data( ele, "_handlers_" );
+					var data = utilData.get( ele, "_handlers_" );
 					if ( !data ) {
 						return this;
 					}
@@ -7359,7 +7447,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			},
 
 			cloneHandlers: function( ele, handlerEve ) {
-				var customEvent = data.data( handlerEve, "_handlers_" );
+				var customEvent = data.set( handlerEve, "_handlers_" );
 				if ( customEvent ) {
 					var handlerMap = customEvent._handlerMap,
 						j = 0,
@@ -7373,7 +7461,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 							_domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
 						}
 					}
-					data.data( ele, "_handlers_", customEvent );
+					data.set( ele, "_handlers_", customEvent );
 				}
 			},
 
@@ -7717,7 +7805,11 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				/// <summary>初始化事件集</summary>
 				/// <param name="ele" type="Element/undefined">元素</param>
 				/// <private/>
-				$.data( ele, "_handlers_" ) || $.data( ele, "_handlers_", new CustomEvent() );
+				var data = utilData.get( ele, "_handlers_" );
+				if ( !data ) {
+					data = new CustomEvent();
+					utilData.set( ele, "_handlers_", data )
+				}
 				return this;
 			},
 
@@ -7743,10 +7835,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 						}
 					}
 
-					if ( !( data = $.data( ele, "_handlers_" ) ) ) {
-						data = $.data( ele, "_handlers_", new CustomEvent() );
-					}
-
+					data = _initCustomEvent( ele, "_handlers_" );
 					type && fun && data.removeHandler( type, fun );
 
 				} else {
@@ -7780,12 +7869,12 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 					index = 0,
 					data;
 				if ( arg.length > 1 ) {
-					if ( data = $.data( ele, "_toggle_" ) ) {
+					if ( data = utilData.get( ele, "_toggle_" ) ) {
 						arg = data.arg.concat( arg );
 						index = data.index;
 					}
 
-					$.data( ele, "_toggle_", {
+					utilData.set( ele, "_toggle_", {
 						index: index,
 						arg: arg
 					} );
@@ -7800,55 +7889,18 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			},
 			_toggle: function( e ) {
 				var self = $.event.document.getTarget( e ),
-					data = $.data( self, "_toggle_" ),
+					data = utilData.get( self, "_toggle_" ),
 					arg = data.arg,
 					len = arg.length,
 					index = data.index % len;
 
 				arg[ index ].call( self, e );
-				$.data( self, "_toggle_", {
+				utilData.set( self, "_toggle_", {
 					index: index + 1,
 					arg: arg
 				} );
 			},
 
-			// toggleClass: function(ele, classParas) {
-			//     /// <summary>切换样式</summary>
-			//     /// <param name="ele" type="Element">element元素</param>
-			//     /// <param name="classParas" type="String:[]">样式名</param>
-			//     /// <returns type="self" />
-			//     var arg = $.util.argToArray(arguments, 1),
-			//         index = 0,
-			//         data;
-			//     if(arg.length) {
-			//         if(data = $.data(ele, "_toggleClass_")) {
-			//             arg = data.arg.concat(arg);
-			//             index = data.index;
-			//         }
-
-			//         $.data(ele, "_toggleClass_", {
-			//             index: index,
-			//             arg: arg
-			//         });
-
-			//         $.addHandler(ele, "click", function(e) {
-			//             var self = $.event.document.getTarget(e),
-			//                 data = $.data(self, "_toggleClass_"),
-			//                 index = data.index,
-			//                 arg = data.arg,
-			//                 len = arg.length;
-
-			//             $.addClass(self, arg[index % len]);
-			//             $.removeClass(self, arg[index % len - 1] || arg[index % len + 1]);
-			//             $.data(self, "_toggleClass_", {
-			//                 index: index + 1,
-			//                 arg: arg
-			//             });
-			//         });
-			//     }
-			//     //移除事件 添加至event 移除arg len
-			//     return this;
-			// },
 			trigger: function( ele, type, context, paras ) {
 				/// <summary>
 				/// 触发自定义或者原生事件
@@ -7864,7 +7916,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 						type = eventHooks.type( type );
 						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
 					} else {
-						( data = $.data( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+						( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
 					}
 				} else {
 					$.bus.trigger.apply( $.bus, arguments );
@@ -7892,7 +7944,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				//                    fun = eventHooks.proxy(fun, this);
 				//                    var key, result
 				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
-				//                    key = $.data(ele, key);
+				//                    key = utilData.get(ele, key);
 				//                    key && key.addHandler(type, fun);
 				//                    return;
 				//                }
@@ -7948,7 +8000,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				//fun = fun.__guid || fun;
 				//                var key, result
 				//                if ((key = $.searchCustomEvent(type))) {
-				//                    key = $.data(ele, key);
+				//                    key = utilData.get(ele, key);
 				//                    key && key.removeHandler(type, fun);
 				//                    return;
 				//                }
@@ -8277,7 +8329,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 /*=======================================================*/
 
 /*===================main/dom===========================*/
-﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, data, event, query, undefined ) {
+﻿aQuery.define( "main/dom", [ "base/typed", "base/extend", "base/array", "base/support", "main/data", "main/event", "main/query" ], function( $, typed, utilExtend, utilArray, support, utilData, event, query, undefined ) {
 	"use strict";
   this.describe( "consult JQuery1.9.1" );
 	var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
@@ -8365,7 +8417,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			i = 0;
 		for ( ;
 			( elem = elems[ i ] ) != null; i++ ) {
-			data.data( elem, "globalEval", !refElements || data.data( refElements[ i ], "globalEval" ) );
+			utilData.set( elem, "globalEval", !refElements || utilData.get( refElements[ i ], "globalEval" ) );
 		}
 	}
 
@@ -8404,7 +8456,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			event.clearHandlers( dest );
 
 			// Event data gets referenced instead of copied if the expando gets copied too
-			//dest.removeAttribute( data.expando );
+			//dest.removeAttribute( utilData.expando );
 		}
 
 		// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
@@ -8454,12 +8506,12 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 
 	function cloneCopyEvent( src, dest ) {
 
-		if ( dest.nodeType !== 1 || !data.hasData( src ) ) {
+		if ( dest.nodeType !== 1 || !utilData.hasData( src ) ) {
 			return;
 		}
 
-		var oldData = data.data( src );
-		var curData = data.data( dest, oldData );
+		var oldData = utilData.get( src );
+		var curData = utilData.set( dest, oldData );
 
 		event.cloneHandlers( dest, src );
 
@@ -8698,7 +8750,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				if ( !keepData && ele.nodeType === 1 ) {
 					$.each( getAll( ele ), function( ele ) {
 						event.clearHandlers( ele );
-						data.removeData( ele );
+						utilData.removeData( ele );
 					} );
 				}
 
@@ -9902,7 +9954,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 	typed,
 	utilExtend,
 	array,
-	data,
+	utilData,
 	query,
 	event,
 	attr,
@@ -10379,11 +10431,12 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				var result = this,
 					arg = arguments;
 				this.each( function( ele ) {
-					var data = $.data( ele, key ); //key = nameSpace + "." + name,
+					var data = utilData.get( ele, key ); //key = nameSpace + "." + name,
 					if ( data === undefined || data === null ) {
 						//完全调用基类的构造函数 不应当在构造函数 create render
 						if ( a !== "destroy" ) {
-							data = $.data( ele, key, new Ctor( a, $( ele ) ) );
+							data = new Ctor( a, $( ele ) );
+							utilData.set( ele, key, data );
 							data._doAfterInit(); //跳出堆栈，在flex这种会用到
 						}
 					} else {
@@ -10428,7 +10481,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 
 			var destroyWidget = function() {
 				this.each( function( ele ) {
-					var data = $.data( ele, key );
+					var data = utilData.get( ele, key );
 					if ( data ) {
 						data.destroy.call( data );
 						$.removeData( ele, key );
@@ -11472,7 +11525,7 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 /*=======================================================*/
 
 /*===================main/css===========================*/
-aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, data, query, undefined ) {
+aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/support", "base/client", "main/data", "main/query" ], function( $, typed, utilExtend, utilArray, support, client, utilData, query, undefined ) {
 	"use strict";
 	this.describe( "consult JQuery1.9.1" );
 	var rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
@@ -11711,7 +11764,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			if ( visible ) {
 				ele.style.visibility = "hidden";
 			} else {
-				ele.style.dispaly && $.data( ele, "_visible_display", ele.style.dispaly );
+				ele.style.dispaly && utilData.set( ele, "_visible_display", ele.style.dispaly );
 				ele.style.display = "none";
 			}
 
@@ -11753,7 +11806,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				h = "hidden",
 				nEle, v;
 			if ( $.curCss( ele, "display" ) == n ) {
-				v = $.data( ele, "_visible_display" );
+				v = utilData.get( ele, "_visible_display" );
 				if ( !v ) {
 					nEle = $.createEle( ele.tagName );
 					if ( ele.parentNode ) {
@@ -15498,7 +15551,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 /*=======================================================*/
 
 /*===================animation/animate===========================*/
-﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, data, FX, Thread, tween, undefined ) {
+﻿aQuery.define( "animation/animate", [ "base/typed", "base/extend", "base/queue", "main/data", "animation/FX", "module/Thread", "animation/tween" ], function( $, typed, utilExtend, Queue, utilData, FX, Thread, tween, undefined ) {
 	"use strict";
 	FX.tick = function() {
 		if ( thread.getStatus() === "run" ) return;
@@ -15708,10 +15761,11 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 			}
 
 			type = ( type || "fx" ) + "queue";
-			var q = $.data( ele, type );
+			var q = utilData.get( ele, type );
 
 			if ( !q ) {
-				q = $.data( ele, type, new Queue() );
+				q = new Queue()
+				utilData.set( ele, type, q );
 			}
 
 			return q.queue( fn, ele, [ ele ] );
@@ -15985,6 +16039,7 @@ define( "hash/cubicBezier.tween", function() {
   "base/extend",
   "base/client",
   "main/event",
+  "main/data",
   "html5/css3",
   "animation/FX",
   "html5/animate.transform",
@@ -15995,6 +16050,7 @@ define( "hash/cubicBezier.tween", function() {
 	utilExtend,
 	client,
 	event,
+  utilData,
 	css3,
 	FX,
 	transform,
@@ -16059,7 +16115,7 @@ define( "hash/cubicBezier.tween", function() {
 				var opt = {},
 					p,
 					defaultEasing = option.easing,
-					easing, transitionList = $.data( ele, "_transitionList" );
+					easing, transitionList = utilData.get( ele, "_transitionList" );
 
 				if ( !transitionList ) {
 					transitionList = {};
@@ -16070,7 +16126,7 @@ define( "hash/cubicBezier.tween", function() {
 				opt._transitionEnd = function( event ) {
 					var i, ele = this,
 						item,
-						transitionList = $.data( ele, "_transitionList" );
+						transitionList = utilData.get( ele, "_transitionList" );
 
 					for ( i in transitionList ) {
 						css3.removeTransition( ele, i );
@@ -16155,7 +16211,7 @@ define( "hash/cubicBezier.tween", function() {
 
 					}
 				} );
-				$.data( ele, "_transitionList", transitionList );
+				utilData.set( ele, "_transitionList", transitionList );
 				if ( equalFlag ) {
 					opt._transitionEnd.call( ele );
 				}
@@ -16191,7 +16247,7 @@ define( "hash/cubicBezier.tween", function() {
 				return this;
 			},
 			stopAnimationByTransition: function( ele, isDequeue ) {
-				var transitionList = $.data( ele, "_transitionList" ),
+				var transitionList = utilData.get( ele, "_transitionList" ),
 					type, fx, i, item;
 				for ( type in transitionList ) {
 					fx = transitionList[ type ];
@@ -19144,21 +19200,21 @@ aQuery.define( "ui/scrollableview", [
 /*=======================================================*/
 
 /*===================animation/effect===========================*/
-﻿aQuery.define( "animation/effect", [ "base/typed", "animation/animate" ], function( $, typed, animate, undefined ) {
+﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "animation/animate" ], function( $, typed, utilData, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
-		$.data( this, "slideOriginHeight", null );
+		utilData.set( this, "slideOriginHeight", null );
 	},
 		slideUpComplete = function( opt ) {
-			$._hide( this, opt.visible ).css( this, "height", $.data( this, "slideOriginHeight" ) );
-			$.data( this, "slideOriginHeight", null );
+			$._hide( this, opt.visible ).css( this, "height", utilData.get( this, "slideOriginHeight" ) );
+			utilData.set( this, "slideOriginHeight", null );
 		},
 		fadeInComplete = function() {
-			$.data( this, "slideOriginOpacity", null );
+			utilData.set( this, "slideOriginOpacity", null );
 		},
 		fadeOutComplete = function( opt ) {
-			$._hide( this, opt.visible ).setOpacity( this, $.data( this, "slideOriginOpacity" ) );
-			$.data( this, "slideOriginOpacity", null );
+			$._hide( this, opt.visible ).setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
+			utilData.set( this, "slideOriginOpacity", null );
 		};
 
 	var effect = {
@@ -19175,10 +19231,10 @@ aQuery.define( "ui/scrollableview", [
 			}
 
 			var o, opt = $._getAnimateOpt( option );
-			o = $.data( ele, "slideOriginOpacity" );
+			o = utilData.get( ele, "slideOriginOpacity" );
 			o = o != null ? o : ( $.css( ele, "opacity" ) || 1 );
 
-			$.data( ele, "slideOriginOpacity", o );
+			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeInComplete;
 			return $.setOpacity( ele, 0 )._show( ele ).animate( ele, {
 				opacity: o
@@ -19197,10 +19253,10 @@ aQuery.define( "ui/scrollableview", [
 			};
 
 			var o, opt = $._getAnimateOpt( option );
-			o = $.data( ele, "slideOriginOpacity" );
+			o = utilData.get( ele, "slideOriginOpacity" );
 			o = o != null ? o : $.css( ele, "opacity" );
 
-			$.data( ele, "slideOriginOpacity", o );
+			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeOutComplete;
 			return $._show( ele ).animate( ele, {
 				opacity: 0
@@ -19248,9 +19304,9 @@ aQuery.define( "ui/scrollableview", [
 				return this;
 			}
 
-			var h = $.data( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
-			$.data( ele, "slideOriginHeight", h );
+			utilData.set( ele, "slideOriginHeight", h );
 			$.css( ele, "height", 0 );
 			opt.complete.push( slideDownComplete );
 			return $.css( ele, "height", 0 )._show( ele ).animate( ele, {
@@ -19262,14 +19318,14 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) || $.data( ele, "_sliedeDown" ) ) {
+			if ( !$.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
 				return this;
 			}
 
-			var h = $.data( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
 			$.css( ele, "height", h );
-			$.data( ele, "slideOriginHeight", h );
+			utilData.set( ele, "slideOriginHeight", h );
 			opt.complete.push( slideUpComplete );
 			return $._show( ele ).animate( ele, {
 				height: "0px"
