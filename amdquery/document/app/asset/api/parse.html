@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Module: main/attr</title>
+	<title>Documentation Module: main/parse</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -233,12 +233,12 @@
 					
 
 
-	<h1 class="page-title">Module: main/attr</h1>
+	<h1 class="page-title">Module: main/parse</h1>
 <section>
 
 <header>
     <h2>
-    main/attr
+    main/parse
     </h2>
     
 </header>
@@ -273,7 +273,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-30">line 30</a>
+        <a href="parse.js.html">main/parse.js</a>, <a href="parse.js.html#sunlight-1-line-29">line 29</a>
     </li></ul></dd>
     
 
@@ -297,11 +297,7 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
-            <li><a href="typed.html">module:base/typed</a></li>
-        
-            <li><a href="extend.html">module:base/extend</a></li>
-        
-            <li><a href="support.html">module:base/support</a></li>
+            <li>module:main/dom</li>
         </ul>
     
 
@@ -310,6 +306,60 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="XML"><span class="type-signature">&lt;static> </span>XML<span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="parse.js.html">main/parse.js</a>, <a href="parse.js.html#sunlight-1-line-112">line 112</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -317,163 +367,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="getAttr"><span class="type-signature">&lt;static> </span>getAttr<span class="signature">(ele, name)</span><span class="type-signature"> &rarr; {String}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>ele</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Element</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-36">line 36</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">String</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getVal"><span class="type-signature">&lt;static> </span>getVal<span class="signature">(ele)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="HTML"><span class="type-signature">&lt;static> </span>HTML<span class="signature">(data, <span class="optional">context</span>, <span class="optional">keepScripts</span>)</span><span class="type-signature"> &rarr; {JSON}</span></h4>
     
     
 </dt>
@@ -481,8 +375,7 @@
     
     
     <div class="description">
-        Exception select, checkbox, radio. <br/>
-If select is multiple choice, then return "America|England"
+        Data: string of html.
     </div>
     
 
@@ -504,138 +397,7 @@ If select is multiple choice, then return "America|England"
 		<th>Type</th>
 
 		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>ele</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Element</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-52">line 52</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">String</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="removeAttr"><span class="type-signature">&lt;static> </span>removeAttr<span class="signature">(ele, key)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
+		<th>Argument</th>
 		
 
 		
@@ -649,30 +411,7 @@ If select is multiple choice, then return "America|England"
 
         <tr>
             
-                <td class="name"><code>ele</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Element</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -685,325 +424,13 @@ If select is multiple choice, then return "America|England"
             </td>
 
             
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-75">line 75</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setAttr"><span class="type-signature">&lt;static> </span>setAttr<span class="signature">(ele, name, value)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>ele</code></td>
-            
-
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">Element</span>
 
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
                 
-<span class="param-type">String</span>
 
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
                 
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-108">line 108</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setVal"><span class="type-signature">&lt;static> </span>setVal<span class="signature">(ele, value)</span><span class="type-signature"> &rarr; {this}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Exception select, checkbox, radio. <br/>
-If select is multiple choice and value equals inner HTML of one element.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>ele</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Element</span>
-
-
-            
-            </td>
-
+                </td>
             
 
             
@@ -1015,7 +442,7 @@ If select is multiple choice and value equals inner HTML of one element.
 
         <tr>
             
-                <td class="name"><code>value</code></td>
+                <td class="name"><code>context</code></td>
             
 
             <td class="type">
@@ -1025,9 +452,182 @@ If select is multiple choice and value equals inner HTML of one element.
 |
 
 <span class="param-type">Boolean</span>
-|
 
-<span class="param-type">Number</span>
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If specified, the fragment will be created in this context, defaults to document.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>keepScripts</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">If true, will include scripts passed in the html string.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="parse.js.html">main/parse.js</a>, <a href="parse.js.html#sunlight-1-line-61">line 61</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">JSON</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="JSON"><span class="type-signature">&lt;static> </span>JSON<span class="signature">(data)</span><span class="type-signature"> &rarr; {JSON}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
 
 
             
@@ -1069,7 +669,7 @@ If select is multiple choice and value equals inner HTML of one element.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attr.js.html">main/attr.js</a>, <a href="attr.js.html#sunlight-1-line-131">line 131</a>
+        <a href="parse.js.html">main/parse.js</a>, <a href="parse.js.html#sunlight-1-line-34">line 34</a>
     </li></ul></dd>
     
 
@@ -1101,7 +701,7 @@ If select is multiple choice and value equals inner HTML of one element.
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
+<span class="param-type">JSON</span>
 
 
 	</dd>
@@ -1110,6 +710,246 @@ If select is multiple choice and value equals inner HTML of one element.
 
         
     
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="QueryString"><span class="type-signature">&lt;static> </span>QueryString<span class="signature">(str, <span class="optional">split1</span>, <span class="optional">split2</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+		<th>Default</th>
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>str</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>split1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "&"
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>split2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "="
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="parse.js.html">main/parse.js</a>, <a href="parse.js.html#sunlight-1-line-97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Object</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">parse.QueryString("name=Jarry&age=27")
+//{
+//  name: "Jarry",
+//  name: "27"
+//}</pre>
+
+
     
 </dd>
 
@@ -1134,7 +974,7 @@ If select is multiple choice and value equals inner HTML of one element.
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Feb 07 2014 22:56:10 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Fri Feb 07 2014 22:56:11 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>

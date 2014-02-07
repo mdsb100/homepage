@@ -3682,10 +3682,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 			return this;
 		},
 		_removeHandler: function( type, handler ) {
-			/// <summary>移除自定义事件</summary>
-			/// <param name="type" type="String">方法类型</param>
-			/// <param name="handler" type="Function">方法</param>
-			/// <returns type="self" />
 			var handlers = this._nameSpace( type ),
 				i = this.hasHandler( type, handler, handlers );
 			if ( i > -1 ) {
@@ -9273,8 +9269,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 	"use strict";
 	var rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
 
-	var
-	createDocument = function() {
+	function createDocument() {
 		if ( typeof createDocument.activeXString != "string" ) {
 			var i = 0,
 				versions = [ "Microsoft.XMLDOM", "MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument" ],
@@ -9291,117 +9286,131 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			}
 		}
 		return new ActiveXObject( createDocument.activeXString );
-	},
-		parse = {
-			JSON: function( data ) {
-				/// <summary>解析JSON</summary>
-				/// <param name="data" type="String">数据</param>
-				/// <returns type="String" />
-				if ( typeof data !== "string" || !data ) {
-					return null;
-				}
-				// Make sure the incoming data is actual JSON
-				// Logic borrowed from http://json.org/json2.js
-				if ( /^[\],:{}\s]*$/.test( data.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" )
-					.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" )
-					.replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) {
+	};
 
-					// Try to use the native JSON parser first
-					return window.JSON && window.JSON.parse ?
-						window.JSON.parse( data ) :
-						( new Function( "return " + data ) )();
+	/**
+	 * @pubilc
+	 * @exports main/parse
+	 * @requires module:main/dom
+	 */
+	var parse = {
+		/**
+		 * @param {String}
+		 * @returns {JSON}
+		 */
+		JSON: function( data ) {
+			if ( typeof data !== "string" || !data ) {
+				return null;
+			}
+			// Make sure the incoming data is actual JSON
+			// Logic borrowed from http://json.org/json2.js
+			if ( /^[\],:{}\s]*$/.test( data.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" )
+				.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" )
+				.replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) {
 
-				} else {
-					throw new Error( "Invalid JSON: " + data, "EvalError" );
-				}
-				return this;
-			},
-			// data: string of html
-			// context (optional): If specified, the fragment will be created in this context, defaults to document
-			// keepScripts (optional): If true, will include scripts passed in the html string
-			HTML: function( data, context, keepScripts ) {
-				if ( !data || typeof data !== "string" ) {
-					return null;
-				}
-				if ( typeof context === "boolean" ) {
-					keepScripts = context;
-					context = false;
-				}
-				context = context || document;
+				// Try to use the native JSON parser first
+				return window.JSON && window.JSON.parse ?
+					window.JSON.parse( data ) :
+					( new Function( "return " + data ) )();
 
-				var parsed = rsingleTag.exec( data ),
-					scripts = !keepScripts && [];
+			} else {
+				throw new Error( "Invalid JSON: " + data, "EvalError" );
+			}
+			return null;
+		},
+		/**
+		 * Data: string of html.
+		 * @param {String}
+		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
+		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
+		 * @returns {JSON}
+		 */
+		HTML: function( data, context, keepScripts ) {
+			if ( !data || typeof data !== "string" ) {
+				return null;
+			}
+			if ( typeof context === "boolean" ) {
+				keepScripts = context;
+				context = false;
+			}
+			context = context || document;
 
-				// Single tag
-				if ( parsed ) {
-					return [ context.createElement( parsed[ 1 ] ) ];
-				}
+			var parsed = rsingleTag.exec( data ),
+				scripts = !keepScripts && [];
 
-				parsed = dom.buildFragment( [ data ], context, scripts );
-				if ( scripts ) {
-					$( scripts ).remove();
-				}
-				return $.merge( [], parsed.childNodes );
-			},
-			QueryString: function( str, split1, split2 ) {
-				/// <summary>解析查询字符串</summary>
-				/// <param name="str" type="String/undefined">可以指定一个字符串，缺省是获得当前location</param>
-				/// <returns type="String" />
-				var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
-					args = {};
-				if ( qs ) {
-					$.each( qs.split( split1 || "&" ), function( item ) {
-						item = item.split( split2 || "=" );
-						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
-					} );
-				}
-				return args;
-			},
-			XML: ( function( xml ) {
-				//quote from written by Nicholas C.Zakas
-				var parseXML;
-				if ( typeof DOMParser != "undefined" ) {
-					parseXML = function( xml ) {
-						/// <summary>解析XML</summary>
-						/// <param name="xml" type="String">xml字符串</param>
-						/// <returns type="Document" />
-						var xmldom = ( new DOMParser() ).parseFromString( xml, "text/xml" ),
-							errors = xmldom.getElementsByTagName( "parsererror" );
-						if ( errors.length ) {
-							throw new Error( "parseXML: " + errors[ 0 ].textContent + " SyntaxError" )
-						}
-						return xmldom;
-					};
-				} else if ( document.implementation.hasFeature( "LS", "3.0" ) ) {
-					parseXML = function( xml ) {
-						/// <summary>解析XML</summary>
-						/// <param name="xml" type="String">xml字符串</param>
-						/// <returns type="Document" />
-						var implementation = document.implementation,
-							parser = implementation.createLSParser( implementation.MODE_SYNCHRONOUS, null ),
-							input = implementation.createLSInput();
-						input.stringData = xml;
-						return parser.parse( input );
-					};
-				} else if ( typeof ActiveXObject != "undefined" ) {
-					parseXML = function( xml ) {
-						/// <summary>解析XML</summary>
-						/// <param name="xml" type="String">xml字符串</param>
-						/// <returns type="Document" />
-						var xmldom = createDocument();
-						xml.async = "false";
-						xmldom.loadXML( xml );
-						if ( xmldom.parseError != 0 ) {
-							throw new Error( "parseXML: " + xmldom.parseError.reason + " SyntaxError" )
-						}
-						return xmldom;
-					};
-				} else {
-					throw ( "No XML parser available", "Error" );
-				}
-				return parseXML;
-			} )()
-		};
+			// Single tag
+			if ( parsed ) {
+				return [ context.createElement( parsed[ 1 ] ) ];
+			}
+
+			parsed = dom.buildFragment( [ data ], context, scripts );
+			if ( scripts ) {
+				$( scripts ).remove();
+			}
+			return $.merge( [], parsed.childNodes );
+		},
+		/**
+		 * @example
+		 * parse.QueryString("name=Jarry&age=27")
+		 * //{
+		 * //  name: "Jarry",
+     * //  name: "27"
+		 * //}
+		 * @param {String}
+		 * @param {String|Boolean} [split1="&"]
+		 * @param {Boolean} [split2="="]
+		 * @returns {Object}
+		 */
+		QueryString: function( str, split1, split2 ) {
+			var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
+				args = {};
+			if ( qs ) {
+				$.each( qs.split( split1 || "&" ), function( item ) {
+					item = item.split( split2 || "=" );
+					args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+				} );
+			}
+			return args;
+		},
+    /**
+     * @param {String}
+     * @returns {Document}
+     */
+		XML: ( function( xml ) {
+			var parseXML;
+			if ( typeof DOMParser != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = ( new DOMParser() ).parseFromString( xml, "text/xml" ),
+						errors = xmldom.getElementsByTagName( "parsererror" );
+					if ( errors.length ) {
+						throw new Error( "parseXML: " + errors[ 0 ].textContent + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else if ( document.implementation.hasFeature( "LS", "3.0" ) ) {
+				parseXML = function( xml ) {
+					var implementation = document.implementation,
+						parser = implementation.createLSParser( implementation.MODE_SYNCHRONOUS, null ),
+						input = implementation.createLSInput();
+					input.stringData = xml;
+					return parser.parse( input );
+				};
+			} else if ( typeof ActiveXObject != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = createDocument();
+					xml.async = "false";
+					xmldom.loadXML( xml );
+					if ( xmldom.parseError != 0 ) {
+						throw new Error( "parseXML: " + xmldom.parseError.reason + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else {
+				throw ( "No XML parser available", "Error" );
+			}
+			return parseXML;
+		} )()
+	};
 
 	return parse;
 } );
@@ -9411,35 +9420,43 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 /*===================main/communicate===========================*/
 ﻿aQuery.define( "main/communicate", [ "base/typed", "base/extend", "main/event", "main/parse" ], function( $, typed, utilExtend, parse, undefined ) {
 	"use strict";
+	/**
+	 * Export network requests.
+	 * <br /> JSONP or AJAX.
+	 * @exports main/communicate
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:main/event
+	 * @requires module:main/parse
+	 */
 	var communicate = {
+		/**
+		 * @param options {Object}
+		 * @param [options.type="GET"] {String} - "GET" or "POST"
+		 * @param options.url {String}
+		 * @param [options.data=""] {String|Object<String,String>|Array<Object<String,String>>} - See {@link module:main/communicate.getURLParam}
+		 * @param [options.async=true] {Boolean}
+		 * @param [options.complete] {Function}
+		 * @param [options.header] {Object<String,String>}
+		 * @param [options.isRandom] {Boolean}
+		 * @param [options.timeout=10000] {Number}
+		 * @param [options.routing=""] {String}
+		 * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.dataType="text"] {String} - "json"|"xml"|"text"|"html"
+		 * @param [options.contentType="application/x-www-form-urlencoded"] {String}
+		 * @param [options.context=null] {Object} - Complete context.
+		 * @returns {this}
+		 */
 		ajax: function( options ) {
-			/// <summary>AJAX数据请求
-			/// <para>如果没有参数，则直接返回生成的AJAX的对象实例</para>
-			/// <para>str options.type:"get"||"post" 缺省"get"</para>
-			/// <para>str options.url：不可缺省</para>
-			/// <para>str options.data:数据 缺省为""</para>
-			/// <para>bol options.async:true||false 缺省为true表示异步</para>
-			/// <para>fun options.complete:回调函数</para>
-			/// <para>obj options.context:complete的作用域</para>
-			/// <para>obj options.header:头信息</para>
-			/// <para>obj options.isRandom:是否带随机数以获得最新数据</para>
-			/// <para>num options.timeout:超时时间。缺省为10000</para>
-			/// <para>str options.routing:路由 缺省为""</para>
-			/// <para>fun options.timeoutFun:超时后的事件</para>
-			/// <para>str options.dataType:"json"|"xml"|"text"|"html" 缺省"text"</para>
-			/// <para>str options.contentType: 缺省"application/x-www-form-urlencoded"</para>
-			/// </summary>
-			/// <param name="options" type="Object">参数</param>
-			/// <returns type="self" />
 			var _ajax, _timeId, o;
 			if ( options ) {
-				_ajax = $.getXhrObject( options.newXhr );
+				_ajax = communicate.getXhrObject();
 
 				if ( _ajax ) {
 
-					o = utilExtend.extend( {}, $.ajaxSetting, options );
+					o = utilExtend.extend( {}, communicate.ajaxSetting, options );
 
-					o.data = $.getURLParam( o.data );
+					o.data = communicate.getURLParam( o.data );
 
 					if ( o.isRandom == true && o.type == "get" ) {
 						o.data += "&random=" + $.now();
@@ -9518,13 +9535,10 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			}
 			return this;
 		},
+		/**
+		 * @deprecated
+		 */
 		ajaxByFinal: function( list, complete, context ) {
-			/// <summary>加载几段ajax，当他们都加载完毕触发个事件
-			/// </summary>
-			/// <param name="list" type="Array:[options]">包含获取js配置的数组，参考jsonp</param>
-			/// <param name="complete" type="Function">complete</param>
-			/// <param name="context" type="Object">作用域</param>
-			/// <returns type="self" />
 			var sum = list.length,
 				count = 0;
 			return $.each( list, function( item ) {
@@ -9538,17 +9552,39 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 						sum = null;
 					}
 				};
-				$.ajax( item );
+				communicate.ajax( item );
 			} );
 		},
-		ajaxSetting: {
+
+		ajaxSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}   ajaxSetting                     - AJAX default setting.
+		 * @property {String}   ajaxSetting.url
+		 * @property {String}   ajaxSetting.dataType            - "text".
+		 * @property {String}   ajaxSetting.type                - "GET".
+		 * @property {String}   ajaxSetting.contentType         - "application/x-www-form-urlencoded".
+		 * @property {Object}   ajaxSetting.context             - Complete context.
+		 * @property {Number}   ajaxSetting.timeout             - 10000 millisecond.
+		 * @property {Function} ajaxSetting.timeoutFun          - Timeout handler.
+		 * @property {String}   ajaxSetting.routing             - "".
+		 * @property {null}     ajaxSetting.header
+		 * @property {Boolean}  ajaxSetting.isRandom            - False.
+		 * @property {Object}   ajaxSetting.accepts
+		 * @property {String}   ajaxSetting.accepts.xml         - "application/xml, text/xml".
+		 * @property {String}   ajaxSetting.accepts.html        - "text/html".
+		 * @property {String}   ajaxSetting.accepts.json        - "application/json, text/javascript".
+		 * @property {String}   ajaxSetting.accepts.text        - "text/plain".
+		 */
+		{
 			url: location.href,
 			dataType: "text",
 			type: "GET",
 			contentType: "application/x-www-form-urlencoded",
 			context: null,
 			async: true,
-			timeout: false,
+			timeout: 10000,
 			timeoutFun: function( o ) {
 				$.logger( "aQuery.ajax", o.url + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
@@ -9558,38 +9594,37 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			accepts: {
 				xml: "application/xml, text/xml",
 				html: "text/html",
-				//script: "text/javascript, application/javascript",
 				json: "application/json, text/javascript",
 				text: "text/plain",
 				_default: "*/*"
 			}
 		},
-
+		/**
+		 * @param options {Object}
+		 * @param options.url {String}
+		 * @param [options.charset="GBK"] {String}
+		 * @param [options.complete] {Function}
+     * @param [options.error] {Function} - Error handler
+		 * @param [options.isDelete=true] {Boolean} - Does delete the script.
+		 * @param [options.context=null] {Object} - Complete context.
+		 * @param [options.isRandom=false] {Boolean}
+		 * @param [options.checkString=""] {String} - Then JSONP back string.
+     * @param [options.timeout=10000] {Number}
+     * @param [options.timeoutFun] {Function} - Timeout handler.
+		 * @param [options.routing=""] {String}
+		 * @param [options.JSONP] {String|Boolean} - True is aQuery. String is JSONP.
+		 * @returns {this}
+		 */
 		jsonp: function( options ) {
-			/// <summary>加载一段script
-			/// <para>str options.url：不可缺省</para>
-			/// <para>str options.chaset:缺省为"GBK"</para>
-			/// <para>fun options.complete:回调函数</para>
-			/// <para>bol options.isDelete:是否删除这段script 缺省为true</para>
-			/// <para>obj options.context:complete的作用域</para>
-			/// <para>str/obj options.checkString:检查变量结果</para>
-			/// <para>obj options.isRandom:是否带随机数以获得最新数据</para>
-			/// <para>str options.routing:路由 缺省为""</para>
-			/// <para>str/bol options.JSONP:true为aQuery形式、str为自定义JSONP</para>
-			/// <para>str options.JSONPKey:有些时候后台不一定支持字段名为JSONP，可能叫Callback等，这提供了灵活定义</para>
-			/// </summary>
-			/// <param name="options" type="Object/String">参数或脚本内容</param>
-			/// <returns type="self" />
-
 			var _scripts = document.createElement( "script" ),
 				_head = document.getElementsByTagName( "HEAD" ).item( 0 ),
-				o = utilExtend.extend( {}, $.jsonpSetting, options ),
+				o = utilExtend.extend( {}, communicate.jsonpSetting, options ),
 				_data = "",
 				_timeId, random = "";
 			//            , _checkString = o.checkString
 			//            , isDelete = options.isDelete || false;
 
-			_data = $.getURLParam( o.data );
+			_data = communicate.getURLParam( o.data );
 
 
 			if ( o.JSONP ) {
@@ -9648,8 +9683,24 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			_head.insertBefore( _scripts, _head.firstChild );
 			return this;
 		},
-		jsonpSetting: {
-			chaset: "",
+		jsonpSetting:
+		/**
+		 * @name ajaxSetting
+		 * @memberOf module:main/communicate
+		 * @property {Object}         jsonpSetting                    - JSONP default setting.
+		 * @property {String}         ajaxSetting.url                 - "".
+		 * @property {String}         ajaxSetting.charset             - "GBK".
+		 * @property {String}         ajaxSetting.checkString         - "".
+		 * @property {Function}       ajaxSetting.error
+		 * @property {Boolean}        ajaxSetting.isDelete            - true.
+		 * @property {Boolean}        ajaxSetting.isRandom            - false.
+		 * @property {String|Boolean} ajaxSetting.JSONP               - false.
+		 * @property {String}         ajaxSetting.routing             - "".
+		 * @property {Number}         ajaxSetting.timeout             - 10000 millisecond.
+     * @property {Function}       ajaxSetting.timeoutFun          - Timeout handler.
+		 */
+		{
+			charset: "GBK",
 			checkString: "",
 			error: function() {
 				$.logger( "aQuery.jsonp", ( this.src || "(empty)" ) + " of javascript getting error" );
@@ -9657,14 +9708,16 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			isDelete: true,
 			isRandom: false,
 			JSONP: false,
-			JSONPKey: "JSONP",
 			routing: "",
-			timeout: false,
+			timeout: 10000,
 			timeoutFun: function( o ) {
 				$.logger( aQuery.jsonp, ( o.url || "(empty)" ) + "of ajax is timeout:" + ( o.timeout / 1000 ) + "second" );
 			},
 			url: ""
 		},
+		/**
+		 * @deprecated
+		 */
 		jsonpsByFinal: function( list, complete, context ) {
 			/// <summary>加载几段script，当他们都加载完毕触发个事件
 			/// </summary>
@@ -9685,14 +9738,31 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 						sum = null;
 					}
 				};
-				$.jsonp( item );
+				communicate.jsonp( item );
 			} );
 			return this;
 		},
+		/**
+		 * @example
+		 * communicate.getURLParam( {
+		 *   id: "00001",
+		 *   name: "Jarry"
+		 * } );
+		 * communicate.getURLParam( [
+		 *   {
+		 *     name: "id",
+		 *     value: "000001"
+		 *   },
+		 *   {
+		 *     name: "name",
+		 *     value: "Jarry"
+		 *   }
+		 * ] );
+		 * // output: "id=00001&name=Jarry"
+		 * @param {String|Object<String, String>|Array<Object<String,String>>}
+		 * @returns {String}
+		 */
 		getURLParam: function( content ) {
-			/// <summary>返回url参数</summary>
-			/// <param name="content" type="String/Object/$/Array[element]">内容可以是Object键值对，也可以是数组形式的element，也可以是aQuery对象</param>
-			/// <returns type="String" />
 			var list = [];
 			if ( typed.isObj( content ) ) {
 				$.each( content, function( value, name ) {
@@ -9700,7 +9770,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 					!typed.isNul( value ) && list.push( encodeURIComponent( name ) + "=" + encodeURIComponent( value ) );
 				} );
 				content = list.join( "&" );
-			} else if ( typed.is$( content ) || ( typed.isArr( content ) && typed.isEle( content[ 0 ] ) ) ) {
+			} else if ( typed.isArr( content ) ) {
 				$.each( content, function( item ) {
 					!typed.isNul( item.value ) && list.push( encodeURIComponent( item.name ) + "=" + encodeURIComponent( item.value ) );
 				} );
@@ -9708,36 +9778,35 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			} else if ( !typed.isStr( content ) ) {
 				content = "";
 			}
-			return content; //encodeURIComponent(content); //转第二次码
+			return content;
 		},
-		getXhrObject: function( xhr ) {
-			/// <summary>生成一个XMLHttpRequest</summary>
-			/// <param name="isNewXhr" type="Boolean">是否从xhr池里获得</param>
-			/// <returns type="XMLHttpRequest" />
-			if ( !xhr ) {
-				if ( window.ActiveXObject ) {
-					$.each( [ "Microsoft.XMLHttp", "MSXML2.XMLHttp", "MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0", "MSXML2.XMLHttp.3.0" ], function( value ) {
-						try {
-							xhr = new ActiveXObject( value );
-							return xhr;
-						} catch ( e ) {
-
-						}
-					}, this );
-				} else {
+		/**
+		 * If return null means it does not support XMLHttpRequest.
+		 * @returns {XMLHttpRequest|null}
+		 */
+		getXhrObject: function() {
+			var xhr = null;
+			if ( window.ActiveXObject ) {
+				$.each( [ "Microsoft.XMLHttp", "MSXML2.XMLHttp", "MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.5.0", "MSXML2.XMLHttp.4.0", "MSXML2.XMLHttp.3.0" ], function( value ) {
 					try {
-						xhr = new XMLHttpRequest();
-					} catch ( e ) {}
-				}
-				if ( !xhr ) {
-					$.logger( "getXhrObject", "broswer no support AJAX" );
-				}
+						xhr = new ActiveXObject( value );
+						return xhr;
+					} catch ( e ) {
+
+					}
+				}, this );
+			} else {
+				try {
+					xhr = new XMLHttpRequest();
+				} catch ( e ) {}
 			}
+			if ( !xhr ) {
+				$.logger( "getXhrObject", "broswer no support AJAX" );
+			}
+
 			return xhr;
 		}
 	};
-
-	$.extend( communicate );
 
 	return communicate;
 } );

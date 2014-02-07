@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Namespaces</title>
+	<title>Documentation Source: main/parse.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -227,124 +227,168 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
 					
 
 
-	<h1 class="page-title">Namespaces</h1>
-<section>
-
-<header>
-    <h2>
+		<h1 class="page-title">Source: main/parse.js</h1>
     
-    </h2>
-    
-</header>
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">﻿aQuery.define( "main/parse", [ "main/dom" ], function( $, dom ) {
+	"use strict";
+	var rsingleTag = /^&lt;(\w+)\s*\/?>(?:&lt;\/\1>|)$/;
 
-<article>
-    <div class="container-overview">
-    
+	function createDocument() {
+		if ( typeof createDocument.activeXString != "string" ) {
+			var i = 0,
+				versions = [ "Microsoft.XMLDOM", "MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0", "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument" ],
+				len = versions.length,
+				xmlDom;
+			for ( ; i &lt; len; i++ ) {
+				try {
+					xmlDom = new ActiveXObject( versions[ i ] );
+					createDocument.activeXString = versions[ i ];
+					return xmlDom;
+				} catch ( e ) {
 
-    
-        
+				}
+			}
+		}
+		return new ActiveXObject( createDocument.activeXString );
+	};
 
-        
-<dl class="details">
-    
+	/**
+	 * @pubilc
+	 * @exports main/parse
+	 * @requires module:main/dom
+	 */
+	var parse = {
+		/**
+		 * @param {String}
+		 * @returns {JSON}
+		 */
+		JSON: function( data ) {
+			if ( typeof data !== "string" || !data ) {
+				return null;
+			}
+			// Make sure the incoming data is actual JSON
+			// Logic borrowed from http://json.org/json2.js
+			if ( /^[\],:{}\s]*$/.test( data.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" )
+				.replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" )
+				.replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) {
 
-    
+				// Try to use the native JSON parser first
+				return window.JSON && window.JSON.parse ?
+					window.JSON.parse( data ) :
+					( new Function( "return " + data ) )();
 
-    
+			} else {
+				throw new Error( "Invalid JSON: " + data, "EvalError" );
+			}
+			return null;
+		},
+		/**
+		 * Data: string of html.
+		 * @param {String}
+		 * @param {String|Boolean} [context] - If specified, the fragment will be created in this context, defaults to document.
+		 * @param {Boolean} [keepScripts] - If true, will include scripts passed in the html string.
+		 * @returns {JSON}
+		 */
+		HTML: function( data, context, keepScripts ) {
+			if ( !data || typeof data !== "string" ) {
+				return null;
+			}
+			if ( typeof context === "boolean" ) {
+				keepScripts = context;
+				context = false;
+			}
+			context = context || document;
 
-    
+			var parsed = rsingleTag.exec( data ),
+				scripts = !keepScripts && [];
 
-    
+			// Single tag
+			if ( parsed ) {
+				return [ context.createElement( parsed[ 1 ] ) ];
+			}
 
-    
+			parsed = dom.buildFragment( [ data ], context, scripts );
+			if ( scripts ) {
+				$( scripts ).remove();
+			}
+			return $.merge( [], parsed.childNodes );
+		},
+		/**
+		 * @example
+		 * parse.QueryString("name=Jarry&age=27")
+		 * //{
+		 * //  name: "Jarry",
+     * //  name: "27"
+		 * //}
+		 * @param {String}
+		 * @param {String|Boolean} [split1="&"]
+		 * @param {Boolean} [split2="="]
+		 * @returns {Object}
+		 */
+		QueryString: function( str, split1, split2 ) {
+			var qs = str || ( location.search.length > 0 ? location.search.substring( 1 ) : "" ),
+				args = {};
+			if ( qs ) {
+				$.each( qs.split( split1 || "&" ), function( item ) {
+					item = item.split( split2 || "=" );
+					args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+				} );
+			}
+			return args;
+		},
+    /**
+     * @param {String}
+     * @returns {Document}
+     */
+		XML: ( function( xml ) {
+			var parseXML;
+			if ( typeof DOMParser != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = ( new DOMParser() ).parseFromString( xml, "text/xml" ),
+						errors = xmldom.getElementsByTagName( "parsererror" );
+					if ( errors.length ) {
+						throw new Error( "parseXML: " + errors[ 0 ].textContent + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else if ( document.implementation.hasFeature( "LS", "3.0" ) ) {
+				parseXML = function( xml ) {
+					var implementation = document.implementation,
+						parser = implementation.createLSParser( implementation.MODE_SYNCHRONOUS, null ),
+						input = implementation.createLSInput();
+					input.stringData = xml;
+					return parser.parse( input );
+				};
+			} else if ( typeof ActiveXObject != "undefined" ) {
+				parseXML = function( xml ) {
+					var xmldom = createDocument();
+					xml.async = "false";
+					xmldom.loadXML( xml );
+					if ( xmldom.parseError != 0 ) {
+						throw new Error( "parseXML: " + xmldom.parseError.reason + " SyntaxError" )
+					}
+					return xmldom;
+				};
+			} else {
+				throw ( "No XML parser available", "Error" );
+			}
+			return parseXML;
+		} )()
+	};
 
-    
+	return parse;
+} );</pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="aQuery.html">aQuery</a></dt>
-            <dd></dd>
-        
-            <dt><a href="ClassModule.html">module:base/ClassModule</a></dt>
-            <dd></dd>
-        
-            <dt><a href="ClassModule.html">require("base/ClassModule")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Promise.html">module:base/Promise</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Promise.html">require("base/Promise")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="queue.html">require("base/queue")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Storage.html">require("html5/Storage")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Worker.html">require("html5/Worker")</a></dt>
-            <dd></dd>
-        
-            <dt><a href="CustomEvent.html">require("main/CustomEvent")</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="namespaces.html#aQuery.util"><a href="aQuery.util.html">util</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#require(namespace)"><a href="require.html">require(namespace)</a></a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -357,15 +401,11 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Fri Feb 07 2014 22:56:08 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Fri Feb 07 2014 22:56:07 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>
