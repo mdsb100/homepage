@@ -2220,7 +2220,7 @@
 			cover = $.createEle( "div" );
 
 		image.style.cssText = "position:absolute;top:50%;left:50%";
-		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;zIndex:10001;background-color:white";
+		cover.style.cssText = "width:100%;height:100%;position:absolute;top:0;left:0;z-index:10001;background-color:white";
 
 		cover.appendChild( image );
 
@@ -2757,6 +2757,212 @@ aQuery.define( "base/extend", [ "base/typed" ], function( $, typed ) {
 
 /*=======================================================*/
 
+/*===================base/client===========================*/
+﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
+	this.describe( "Cline of Browser" );
+	/**
+	 * @public
+	 * @requires module:base/extend
+	 * @module base/client
+	 * @property {object} browser
+	 * @property {Boolean} [browser.opera=false]
+	 * @property {Boolean} [browser.chrome=false]
+	 * @property {Boolean} [browser.safari=false]
+	 * @property {Boolean} [browser.kong=false]
+	 * @property {Boolean} [browser.firefox=false]
+	 * @property {Boolean} [browser.ie=false]
+	 * @property {Boolean} [browser.ie678=false]
+	 *
+	 * @property {object} engine
+	 * @property {Boolean} [engine.opera=false]
+	 * @property {Boolean} [engine.webkit=false]
+	 * @property {Boolean} [engine.khtml=false]
+	 * @property {Boolean} [engine.gecko=false]
+	 * @property {Boolean} [engine.ie=false]
+	 * @property {Boolean} [engine.ie678=false]
+	 *
+	 * @property {object} system
+	 * @property {Boolean} [system.win=null]
+	 * @property {Boolean} [system.mac=null]
+	 * @property {Boolean} [system.linux=null]
+	 * @property {Boolean} [system.iphone=null]
+	 * @property {Boolean} [system.ipod=null]
+	 * @property {Boolean} [system.ipad=null]
+	 * @property {Boolean} [system.pad=null]
+	 * @property {Boolean} [system.nokian=null]
+	 * @property {Boolean} [system.winMobile=null]
+	 * @property {Boolean} [system.androidMobile=null]
+	 * @property {Boolean} [system.ios=null]
+	 * @property {Boolean} [system.wii=null]
+	 * @property {Boolean} [system.ps=null]
+	 * @example
+	 * if (client.system.win){}
+	 */
+	var client = {
+		browser: {
+			opera: false,
+			chrome: false,
+			safari: false,
+			kong: false,
+			firefox: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		engine: {
+			opera: false,
+			webkit: false,
+			khtml: false,
+			gecko: false,
+			ie: false,
+			ie678: "v" == "/v"
+		},
+		system: {
+			win: null,
+			mac: null,
+			linux: null,
+			iphone: null,
+			ipod: null,
+			ipad: null,
+			pad: null,
+			nokian: null,
+			winMobile: null,
+			androidMobile: null,
+			ios: null,
+			wii: null,
+			ps: null
+		},
+		language: ""
+	};
+
+	var reg = RegExp,
+		ua = navigator.userAgent,
+		p = navigator.platform || "",
+		_browser = client.browser,
+		_engine = client.engine,
+		_system = client.system;
+
+	client.language = ( navigator.browserLanguage || navigator.language ).toLowerCase();
+
+	_system.win = p.indexOf( "Win" ) == 0;
+	if ( _system.win ) {
+		if ( /Win(?:dows)? ([^do]{2})\s?(\d+\.\d+)?/.test( ua ) ) {
+			if ( reg.$1 == "NT" ) {
+				switch ( reg.$2 ) {
+					case "5.0":
+						_system.win = "2000";
+						break;
+					case "5.1":
+						_system.win = "XP";
+						break;
+					case "6.0":
+						_system.win = "Vista";
+						break;
+					default:
+						_system.win = "NT";
+						break;
+				}
+			} else if ( reg.$1 ) {
+				_system.win = "ME";
+			} else {
+				_system.win = reg.$1;
+			}
+		}
+	}
+
+	_system.mac = p.indexOf( "Mac" ) == 0;
+	_system.linux = p.indexOf( "Linux" ) == 0;
+	_system.iphone = ua.indexOf( "iPhone" ) > -1;
+	_system.ipod = ua.indexOf( "iPod" ) > -1;
+	_system.ipad = ua.indexOf( "iPad" ) > -1;
+	_system.pad = ua.indexOf( "pad" ) > -1;
+	_system.nokian = ua.indexOf( "NokiaN" ) > -1;
+	_system.winMobile = _system.win == "CE";
+	_system.androidMobile = /Android/.test( ua );
+	_system.ios = false;
+	_system.wii = ua.indexOf( "Wii" ) > -1;
+	_system.ps = /playstation/i.test( ua );
+
+	_system.x11 = p == "X11" || ( p.indexOf( "Linux" ) == 0 );
+	_system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
+	_system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test( ua ) || _system.winMobile;
+	//alert(ua)
+	if ( /OS [X ]*(\d*).(\d*)/.test( ua ) ) {
+		_system.ios = parseFloat( reg.$1 + "." + reg.$2 );
+	}
+	if ( window.opera ) {
+		_engine.opera = _browser.opera = parseFloat( window.opera.version() );
+	} else if ( /AppleWebKit\/(\S+)/.test( ua ) ) {
+		_engine.webkit = parseFloat( reg.$1 );
+		if ( /Chrome\/(\S+)/.test( ua ) ) {
+			_browser.chrome = parseFloat( reg.$1 );
+		} else if ( /Version\/(\S+)/.test( ua ) ) {
+			_browser.safari = parseFloat( reg.$1 );
+		} else {
+			var _safariVer = 1,
+				wit = _engine.webkit;
+			if ( _system.mac ) {
+				if ( wit < 100 ) {
+					_safariVer = 1;
+				} else if ( wit == 100 ) {
+					_safariVer = 1.1;
+				} else if ( wit <= 125 ) {
+					_safariVer = 1.2;
+				} else if ( wit < 313 ) {
+					_safariVer = 1.3;
+				} else if ( wit < 420 ) {
+					_safariVer = 2;
+				} else if ( wit < 529 ) {
+					_safariVer = 3;
+				} else if ( wit < 533.18 ) {
+					_safariVer = 4;
+				} else if ( wit < 536.25 ) {
+					_safariVer = 5;
+				} else {
+					_safariVer = 6;
+				}
+			} else if ( _system.win ) {
+				if ( wit == 5 ) {
+					_safariVer = 5;
+				} else if ( wit < 529 ) {
+					_safariVer = 3;
+				} else if ( wit < 531.3 ) {
+					_safariVer = 4;
+				} else {
+					_safariVer = 5;
+				}
+			} else if ( _system.appleMobile ) {
+				if ( wit < 526 ) {
+					_safariVer = 3;
+				} else if ( wit < 531.3 ) {
+					_safariVer = 4;
+				} else if ( wit < 536.25 ) {
+					_safariVer = 5;
+				} else {
+					_safariVer = 6;
+				}
+			}
+			_browser.safari = _safariVer;
+		}
+	} else if ( /KHTML\/(\S+)/.test( ua ) || /Konquersor\/([^;]+)/.test( ua ) ) {
+		_engine.khtml = _browser.kong = parseFloat( reg.$1 );
+	} else if ( /rv:([^\)]+)\) Gecko\/\d{8}/.test( ua ) ) {
+		_engine.gecko = parseFloat( reg.$1 );
+		//确定是不是Firefox
+		if ( /Firefox\/(\S+)/.test( ua ) ) {
+			_browser.firefox = parseFloat( reg.$1 );
+		}
+	} else if ( /MSIE([^;]+)/.test( ua ) ) {
+		_engine.ie = _browser.ie = parseFloat( reg.$1 );
+	}
+	if ( "\v" == "v" ) {
+		_engine.ie678 = _browser.ie678 = _browser.ie;
+	}
+
+	return client;
+} );
+
+/*=======================================================*/
+
 /*===================base/array===========================*/
 aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed, extend ) {
 	"use strict";
@@ -2927,798 +3133,6 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 	};
 
 	return array;
-} );
-
-/*=======================================================*/
-
-/*===================main/object===========================*/
-﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
-	"use strict";
-	this.describe( "Define Class" );
-	var
-	pushSuperStack = function( self ) {
-		var stack;
-		if ( !self.__superStack ) {
-			self.__superStack = [];
-		}
-
-		stack = self.__superStack;
-
-		if ( stack.length ) {
-			stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
-		} else {
-			stack.push( self.constructor.prototype.__superConstructor );
-		}
-	},
-		popSuperStack = function( self ) {
-			var stack = self.__superStack;
-			if ( stack.length ) {
-				stack.pop();
-			}
-		},
-		_getSuperConstructor = function( self ) {
-			var stack = self.__superStack,
-				tempConstructor;
-
-			if ( stack && stack.length ) {
-				tempConstructor = stack[ stack.length - 1 ];
-			} else {
-				tempConstructor = self.constructor.prototype.__superConstructor;
-			}
-			return tempConstructor;
-		},
-		_superInit = function() {
-			var tempConstructor;
-
-			pushSuperStack( this );
-			tempConstructor = _getSuperConstructor( this );
-
-			tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
-			popSuperStack( this );
-			return this;
-		},
-		_invoke = function( name, context, args ) {
-			var fn = this.prototype[ name ];
-			return fn ? fn.apply( context, typed.isArguments( args ) ? args : $.util.argToArray( arguments, 2 ) ) : undefined;
-		},
-		_getFunctionName = function( fn ) {
-			if ( fn.name !== undefined ) {
-				return fn.name;
-			} else {
-				var ret = fn.toString().match( /^function\s*([^\s(]+)/ );
-				return ( ret && ret[ 1 ] ) || "";
-			}
-		},
-		_defaultPrototype = {
-			init: function() {
-				return this;
-			}
-		},
-		defaultValidate = function() {
-			return 1;
-		},
-		inerit = function( Sub, Super, name ) {
-			object.inheritProtypeWithParasitic( Sub, Super, name );
-			Sub.prototype.__superConstructor = Super;
-			Sub.prototype._super = _superInit;
-			if ( !Super.invoke ) {
-				Super.invoke = _invoke;
-			}
-		},
-		extend = function( Sub, Super ) {
-			object.inheritProtypeWithExtend( Sub, Super );
-		},
-
-		defaultPurview = "-pu -w -r";
-
-	/**
-	 * @callback CollectionEachCallback
-   * @param item {*}
-   * @param index {Number}
-	 */
-
-	/**
-	 * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
-	 * This methods is static.
-	 * @public
-	 * @mixin ObjectClassStaticMethods
-	 */
-	var ObjectClassStaticMethods = /** @lends ObjectClassStaticMethods */ {
-		/**
-		 * This constructor inherit Super constructor if you define a class which has not inherit Super.
-		 * @public
-		 * @method
-		 * @param {Function} Super - Super constructor.
-		 * @returns {this}
-		 */
-		inherit: function( Super ) {
-			inerit( this, Super );
-			return this;
-		},
-		/**
-		 * Define a Sub Class. This constructor is Super Class.
-		 * @param {Function|String} name - Sub constructor or Sub name.
-		 * @param {Object} prototype - Instance methods.
-		 * @param {Object} statics - Static methods.
-		 * @returns {Function}
-		 */
-		extend: function( name, prototype, statics ) {
-			var arg = $.util.argToArray( arguments );
-			if ( typed.isObj( name ) ) {
-				arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
-			}
-			arg.push( this );
-			/*arg = [name, prototype, statics, constructor]*/
-			return object.extend.apply( object, arg );
-		},
-		/**
-		 * Join Object into prototype.
-		 * @param {...Object}
-		 * @returns {this}
-		 */
-		joinPrototype: function() {
-			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
-				obj = arguments[ i ];
-				typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
-			}
-			return this;
-		},
-		/**
-		 * Determine whether the target is a instance of this constructor or this ancestor constructor.
-		 * @param {Object} - A new instance.
-		 * @returns {this}
-		 */
-		forinstance: function( target ) {
-			var constructor = this,
-				ret = target instanceof this;
-
-			if ( ret == false ) {
-				constructor = target.constructor;
-				while ( !! constructor ) {
-					constructor = constructor.prototype.__superConstructor;
-					if ( constructor === target ) {
-						ret = true;
-						break;
-					}
-				}
-			}
-			return ret;
-		},
-		/**
-		 * Create Getter or Setter for this constructor.prototype.
-
-		 * @param {Object<String,Object>|String|Function}
-		 */
-		createGetterSetter: function( object ) {
-			object.createPropertyGetterSetter( this, object );
-		},
-		/** fn is pointer of this.prototype */
-		fn: null
-	};
-
-	/**
-	 * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
-	 * This methods is prototype.
-	 * @public
-	 * @mixin CollectionClassPrototypeMethods
-	 */
-
-	/**
-	 * @pubilc
-	 * @exports main/object
-	 * @requires module:base/typed
-	 * @requires module:base/array
-	 * @requires module:base/extend
-	 */
-	var object = {
-		/**
-		 * Define a Class.
-		 * <br /> Mixin {@link ObjectClassStaticMethods} into new Class.
-		 * <br /> see {@link module:main/object.createPropertyGetterSetter}
-		 * @example
-		 * var Super = object.extend( "Super", {
-		 *   init: function( name ){
-		 *     console.log( "Super", name );
-		 *     this.name = name;
-		 *   },
-		 *   checkName: function( name ){
-		 *     console.log( "Super", this.name == name );
-		 *     return this.name == name;
-		 *   }
-		 * }, {
-		 *   doSomething: function( ){ };
-		 * } );
-		 *
-		 * function Sub( name ){
-		 *   this._super( name );
-		 *   this.name = name;
-		 *   console.log( "Sub", name );
-		 * };
-		 *
-		 * Super.extend( Sub, { // extend is created by mixin
-		 *   checkName: function( name ){
-		 *     // The invoke is created by object.extend
-		 *     Super.invoke( "checkName", name );
-		 *     console.log( "Sub", this.name == name );
-		 *     return this.name == name;
-		 *   }
-		 * }, {
-		 *   doSomething: function( ){ };
-		 * } );
-		 *
-		 * var super = new Super( "Lisa" );
-		 * // Super Lisa
-		 * var sub = new Sub( "Iris" );
-		 * // Super Iris
-		 * // Sub Iris
-		 * sub.checkName( "Iris" );
-		 * // Super true
-		 * // Sub true
-		 * Sub.doSomething();
-		 * Super.doSomething();
-		 *
-		 * //mixin
-		 * Sub.joinPrototype( {
-		 *   foo: function() {}
-		 * }, {
-		 *   pad: function() {}
-		 * } );
-		 * sub.foo();sub.pad();
-		 *
-		 * Super.forinstance( sub ) // true
-		 *
-		 * Sub.createGetterSetter( {
-		 *   name: "-pa"
-		 * } );
-		 *
-		 * @param {String|Function} - Name or Function.
-		 * @param {Object} - Instance methods.
-		 * @param {Object} - Static methods.
-		 * @param {Function} [Super] - Super Class.
-		 * @returns {Function}
-		 */
-		extend: function( name, prototype, statics, Super ) {
-			var anonymous;
-			switch ( arguments.length ) {
-				case 0:
-				case 1:
-					return null;
-				case 3:
-					if ( typeof statics == "function" ) {
-						Super = statics;
-						statics = null;
-					}
-					break;
-			}
-
-			switch ( typeof name ) {
-				case "function":
-					anonymous = name;
-					break;
-				case "string":
-					anonymous = ( eval(
-            [
-              "(function ", name, "() {\n",
-              "    this.init.apply(this, arguments);\n",
-              "});\n"
-            ].join( "" ) ) || eval( "(" + name + ")" ) ) //fix ie678
-					break;
-				default:
-					anonymous = function anonymous() {
-						this.init.apply( this, arguments );
-					};
-			}
-
-			if ( Super ) {
-				inerit( anonymous, Super );
-			}
-
-			prototype = utilExtend.extend( {}, _defaultPrototype, prototype );
-			prototype.constructor = anonymous;
-
-			utilExtend.easyExtend( anonymous.prototype, prototype );
-
-			utilExtend.easyExtend( anonymous, ObjectClassStaticMethods );
-
-			utilExtend.easyExtend( anonymous, statics );
-
-			anonymous.fn = anonymous.prototype;
-
-			return anonymous;
-		},
-		/**
-		 * If model is a function, you should call "this.init()".
-		 * <br /> Mixin {@link CollectionClassPrototypeMethods} into new Collection.
-		 * @param {String|Function} - If model is a function, then will use model.name. Then class name is name + "Collection".
-		 * @param {Object} - Instance methods.
-		 * @param {Object} - Static methods.
-		 * @param {Function} [Super]
-		 */
-		Collection: function( model, prototype, statics, Super ) {
-			switch ( arguments.length ) {
-				case 0:
-				case 1:
-					return null;
-				case 3:
-					if ( typeof statics == "function" ) {
-						Super = statics;
-						statics = null;
-					}
-					break;
-			}
-
-			var CollectionClassPrototypeMethods = /** @lends CollectionClassPrototypeMethods */ {
-				/** A constructor of class */
-				init: function() {
-					this.models = [];
-					this.__modelMap = {};
-					prototype.init ? prototype.init.apply( this, arguments ) : this.add.apply( this, arguments );
-					return this;
-				},
-				/**
-				 * Add model into collection
-				 * @param {...model}
-				 * @returns {this}
-				 */
-				add: function( model ) {
-					var arg = $.util.argToArray( arguments ),
-						len = arg.length,
-						i = 0;
-
-					for ( ; i < len; i++ ) {
-						model = arg[ i ];
-						if ( !this.__modelMap[ model.id ] ) {
-							this.models.push( model );
-							this.__modelMap[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
-						}
-					}
-					return this;
-				},
-				/**
-				 * Pop model from collection
-				 * @returns {model}
-				 */
-				pop: function() {
-					return this.remove( this.models[ this.models.length - 1 ] );
-				},
-				/**
-				 * Remove model from collection
-				 * @param {model|Number|String} - String means id. Number means index. model is a model.
-				 * @returns {model}
-				 */
-				remove: function( id ) {
-					/// <summary>移除某个对象</summary>
-					/// <param name="id" type="Object/Number/String">对象的索引</param>
-					/// <returns type="Model" />
-					var model = null,
-						i;
-					switch ( typeof id ) {
-						case "number":
-							model = this.models[ id ];
-							break;
-						case "string":
-							model = this.__modelMap[ id ];
-							break;
-						case "object":
-							model = id;
-							break;
-					}
-					if ( model ) {
-						this.models.splice( array.inArray( this.models, model ), 1 );
-						for ( i in this.__modelMap ) {
-							if ( this.__modelMap[ i ] == model ) {
-								delete this.__modelMap[ i ];
-							}
-						}
-					}
-					return model;
-				},
-				/**
-				 * Get model from collection
-				 * @param {String|Number} - String means id. Number means index.
-				 * @returns {model}
-				 */
-				get: function( id ) {
-					switch ( typeof id ) {
-						case "number":
-							model = this.models[ id ];
-							break;
-						case "string":
-							model = this.__modelMap[ id ];
-							break;
-					}
-					return model;
-				},
-				/**
-				 * Clear all model
-				 * @returns {this}
-				 */
-				clear: function() {
-					this.models = [];
-					this.__modelMap = {};
-					return this;
-				},
-				/**
-				 * Iteration the list of model.
-				 * @param {CollectionEachCallback}
-				 * @param {Object} [context] - Context.
-				 * @returns {this}
-				 */
-				each: function( fn, context ) {
-					/// <summary>遍历整个model</summary>
-					/// <param name="fn" type="Function">方法</param>
-					/// <param name="context" type="Object">上下文</param>
-					/// <returns type="self" />
-					for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
-						fn.call( context || item, item, i );
-					return this;
-				}
-			};
-
-			var _expendo = 0,
-				_prototype = utilExtend.extend( {}, prototype, CollectionClassPrototypeMethods ),
-				_statics = utilExtend.extend( {}, statics ),
-				name = typeof model == "string" ? model : model.name + "Collection";
-
-			return object.extend( name, _prototype, _statics, Super );
-		},
-		/**
-		 * Get the object properties count.
-		 * @param {Object}
-		 * @param {Boolean} - If true , does not count prototype.
-		 * @returns {Number}
-		 */
-		getObjectPropertiesCount: function( obj, bool ) {
-			var count = 0;
-			for ( var i in obj ) {
-				bool == true ? object.isPrototypeProperty( obj, i ) || count++ : count++;
-			}
-			return count;
-		},
-		/**
-		 * Does not contain the same memory address, the constructor will not be called multiple times.
-		 * @param {Sub}
-		 * @param {Super}
-		 * @returns {this}
-		 */
-		inheritProtypeWithExtend: function( Sub, Super ) {
-			var con = Sub.prototype.constructor;
-			utilExtend.easyExtend( Sub.prototype, Super.prototype );
-			Sub.prototype.constructor = con || Super.prototype.constructor;
-			return this;
-		},
-		/**
-		 * Use parasitic to inherit prototype. Does not contain the same memory address.
-		 * @param {Sub}
-		 * @param {Super}
-		 * @param {String} - You can see the name of the parent class in the prototype chain instead "Parasitic".
-		 * @returns {this}
-		 */
-		inheritProtypeWithParasitic: function( Sub, Super, name ) {
-			if ( !Super ) {
-				return this;
-			}
-			var
-			originPrototype = Sub.prototype,
-				name = Super.name || name,
-				Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function() {};
-			Parasitic.prototype = Super.prototype;
-			Sub.prototype = new Parasitic();
-			//var prototype = Object(Super.prototype);
-			//Sub.prototype = prototype;
-			utilExtend.easyExtend( Sub.prototype, originPrototype );
-			//Sub.prototype.constructor = Sub;
-
-			return this;
-		},
-		/**
-		 * Use classic combination to inherit prototype. Contains the same memory address.
-		 * @param {Sub}
-		 * @param {Super}
-		 * @returns {this}
-		 */
-		inheritProtypeWithCombination: function( Sub, Super ) {
-			Sub.prototype = new Super();
-			return this;
-		},
-		/**
-		 * Whether it is the prototype property.
-		 * @param {*}
-		 * @param {String}
-		 * @returns {Boolean}
-		 */
-		isPrototypeProperty: function( obj, name ) {
-			/// <summary>是否是原型对象的属性</summary>
-			/// <param name="obj" type="any">任意对象</param>
-			/// <param name="name" type="String">属性名</param>
-			/// <returns type="Boolean" />
-			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
-		},
-		/**
-		 * Create Getter or Setter for this constructor.prototype.
-		 * @link module:main/object.createPropertyGetterSetter
-		 * @example
-		 * function Person(){};
-		 * // "u" means public, "a" means private.
-		 * object.createPropertyGetterSetter(Person, {
-		 *  id: "-pu -r",
-		 *  name: "-pu -w -r",
-		 *  age: "-pa -w -r",
-		 *  Weight: "-wa -ru",
-		 *  mark: {
-		 *    purview: "-wa -ru",
-		 *    defaultValue: 0, // set prototype.mark = 0.
-		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
-		 *    edit: function( value ){ return value + ""; } // edit value when getting.
-		 *  },
-		 *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
-		 * } );
-		 * var person = new Person();
-		 * person.getId();
-		 * person.getName(); person.setName();
-		 * person._getAge(); person._setAge();
-		 * person._getWeight(); person.setWeight();
-		 * person.getMark(); // "0"
-		 * person._setMark( 110 );
-		 * person.getMark(); // "0"
-		 * person._setMark( 100 );
-		 * person.getMark(); // "100"
-		 *
-		 * @param {Function} obj - A constructor.
-		 * @param {Object<String,Object>|String|Function}
-		 * return {obj.prototype}
-		 */
-		createPropertyGetterSetter: function( obj, object ) {
-			if ( !typed.isPlainObj( object ) ) {
-				return this;
-			}
-
-			return $.each( object, function( value, key ) {
-				var purview = defaultPurview,
-					validate = defaultValidate,
-					defaultValue,
-					edit;
-				switch ( typeof value ) {
-					case "string":
-						purview = value;
-						break;
-					case "object":
-						if ( typed.isStr( value.purview ) ) {
-							purview = value.purview;
-						}
-						if ( typed.isFun( value.validate ) ) {
-							validate = value.validate;
-						}
-						if ( typed.isFun( value.edit ) ) {
-							edit = value.edit;
-						}
-						defaultValue = value.defaultValue; //undefinded always undefinded
-						break;
-					case "function":
-						validate = value;
-						break;
-
-				}
-				this[ key ] = defaultValue;
-
-				var prefix = /\-pa[\s]?/.test( purview ) ? "_" : "",
-					setPrefix, getPrefix;
-
-				if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
-					getPrefix = RegExp.$1 == "a" ? "_" : "";
-					this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
-						if ( validate.call( this, a ) ) {
-							this[ key ] = a;
-						} else if ( defaultValidate !== undefined ) {
-							this[ key ] = defaultValue;
-						}
-
-						return this;
-					};
-				}
-				if ( purview.match( /\-r([u|a])?[\s]?/ ) ) {
-					setPrefix = RegExp.$1 == "a" ? "_" : "";
-					this[ ( setPrefix || prefix ) + $.util.camelCase( key, "get" ) ] = function() {
-						return edit ? edit.call( this, this[ key ] ) : this[ key ];
-					};
-				}
-			}, obj.prototype );
-		}
-	};
-
-	return object;
-} );
-
-/*=======================================================*/
-
-/*===================main/CustomEvent===========================*/
-﻿aQuery.define( "main/CustomEvent", [ "main/object" ], function( $, object, undefined ) {
-	"use strict";
-	this.describe( "A custom event" );
-	/**
-	 * Be defined by object.extend.
-	 * @constructor
-	 * @exports main/CustomEvent
-	 * @requires module:main/object
-	 * @mixes ObjectClassStaticMethods
-	 */
-	var CustomEvent = object.extend( "CustomEvent", /** @lends module:main/CustomEvent.prototype */ {
-		constructor: CustomEvent,
-		/** @constructs module:main/CustomEvent */
-		init: function() {
-			this.handlers = {};
-			this._handlerMap = {};
-			return this;
-		},
-		/**
-		 * Add a handler.
-		 * @param {String}
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		on: function( type, handler ) {
-			return this.addHandler( type, handler );
-		},
-		/**
-		 * Add a handler once.
-		 * @param {String}
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		once: function( type, handler ) {
-			var self = this,
-				handlerproxy = function() {
-					self.off( type, handlerproxy );
-					handler.apply( this, arguments );
-				};
-			return this.on( type, handlerproxy );
-		},
-		/**
-		 * Add a handler.
-		 * @param {String}
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		addHandler: function( type, handler ) {
-			var types = type.split( " " ),
-				i = types.length - 1;
-			for ( ; i >= 0; i-- ) {
-				this._addHandler( types[ i ], handler );
-			}
-			return this;
-		},
-		_addHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type );
-			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
-			return this;
-		},
-		/**
-		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
-		 * @returns {this}
-		 */
-		clear: function( type ) {
-			return this.clearHandlers( type );
-		},
-		/**
-		 * Clear handlers.
-		 * @param {String} [type] - If type is undefined, then clear all handler
-		 * @returns {this}
-		 */
-		clearHandlers: function( type ) {
-			if ( type ) {
-				var types = type.split( " " ),
-					i = types.length - 1,
-					item;
-				for ( ; i >= 0; i-- ) {
-					item = types[ i ];
-					this._nameSpace( item, true );
-					delete this._handlerMap[ item ];
-					delete this.handlers[ item ];
-				}
-			} else {
-				this.handlers = {};
-			}
-			return this;
-		},
-		/**
-		 * Return index of handlers array. -1 means not found.
-		 * @param {String}
-		 * @param {Function}
-		 * @param {Array<Function>} [handlers]
-		 * @returns {Number}
-		 */
-		hasHandler: function( type, handler, handlers ) {
-			handlers = handlers || this._nameSpace( type );
-			var i = 0,
-				j = -1,
-				len;
-			if ( handlers instanceof Array && handlers.length ) {
-				for ( len = handlers.length; i < len; i++ ) {
-					if ( handlers[ i ] === handler ) {
-						j = i;
-						break;
-					}
-				}
-			}
-			return j;
-		},
-		/**
-		 * Trigger an event.
-		 * @param {String}
-		 * @param {Context}
-		 * @param {...*} [args]
-		 * @returns {this}
-		 */
-		trigger: function( type, target, args ) {
-			var handlers = this._nameSpace( type );
-			if ( handlers instanceof Array && handlers.length ) {
-				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
-					handlers[ i ].apply( target, arg );
-			}
-			return this;
-		},
-		/**
-		 * Remove handler.
-		 * @param {String}
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		off: function( type, handler ) {
-			return this.removeHandler( type, handler );
-		},
-		/**
-		 * Remove handler.
-		 * @param {String}
-		 * @param {Function}
-		 * @returns {this}
-		 */
-		removeHandler: function( type, handler ) {
-			var types = type.split( " " ),
-				i = types.length - 1;
-			for ( ; i >= 0; i-- ) {
-				this._removeHandler( types[ i ], handler );
-			}
-			return this;
-		},
-		_removeHandler: function( type, handler ) {
-			var handlers = this._nameSpace( type ),
-				i = this.hasHandler( type, handler, handlers );
-			if ( i > -1 ) {
-				handlers.splice( i, 1 );
-			}
-			return this;
-		},
-		_nameSpace: function( type, re ) {
-			var nameList = type.split( "." ),
-				result = this._initSpace( nameList, this.handlers, re );
-			//, i = 0, nameSpace, name, result;
-			//nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
-
-			this._handlerMap[ type ] || ( this._handlerMap[ type ] = result );
-			return result;
-		},
-		_initSpace: function( nameList, nameSpace, re ) {
-			var name = nameList[ 0 ],
-				result;
-			//name = nameList[1];
-			if ( nameSpace ) {
-				result = nameSpace[ name ];
-				if ( !result || re ) {
-					nameSpace[ name ] = {};
-				}
-				nameSpace = nameSpace[ name ];
-				if ( !nameSpace[ "__" + name ] ) {
-					nameSpace[ "__" + name ] = [];
-				}
-				result = nameSpace[ "__" + name ];
-			}
-			nameList.splice( 0, 1 );
-			return nameList.length ? this._initSpace( nameList, nameSpace, re ) : result;
-		}
-	} );
-
-	return CustomEvent;
 } );
 
 /*=======================================================*/
@@ -6133,6 +5547,817 @@ if ( typeof define === "function" && define.amd ) {
 
 /*=======================================================*/
 
+/*===================main/object===========================*/
+﻿aQuery.define( "main/object", [ "base/typed", "base/array", "base/extend" ], function( $, typed, array, utilExtend ) {
+	"use strict";
+	this.describe( "Define Class" );
+	var
+	pushSuperStack = function( self ) {
+		var stack;
+		if ( !self.__superStack ) {
+			self.__superStack = [];
+		}
+
+		stack = self.__superStack;
+
+		if ( stack.length ) {
+			stack.push( stack[ stack.length - 1 ].prototype.__superConstructor );
+		} else {
+			stack.push( self.constructor.prototype.__superConstructor );
+		}
+	},
+		popSuperStack = function( self ) {
+			var stack = self.__superStack;
+			if ( stack.length ) {
+				stack.pop();
+			}
+		},
+		_getSuperConstructor = function( self ) {
+			var stack = self.__superStack,
+				tempConstructor;
+
+			if ( stack && stack.length ) {
+				tempConstructor = stack[ stack.length - 1 ];
+			} else {
+				tempConstructor = self.constructor.prototype.__superConstructor;
+			}
+			return tempConstructor;
+		},
+		_superInit = function() {
+			var tempConstructor;
+
+			pushSuperStack( this );
+			tempConstructor = _getSuperConstructor( this );
+
+			tempConstructor.prototype.init ? tempConstructor.prototype.init.apply( this, arguments ) : tempConstructor.apply( this, arguments );
+			popSuperStack( this );
+			return this;
+		},
+		_invoke = function( name, context, args ) {
+			var fn = this.prototype[ name ];
+			return fn ? fn.apply( context, typed.isArguments( args ) ? args : $.util.argToArray( arguments, 2 ) ) : undefined;
+		},
+		_getFunctionName = function( fn ) {
+			if ( fn.name !== undefined ) {
+				return fn.name;
+			} else {
+				var ret = fn.toString().match( /^function\s*([^\s(]+)/ );
+				return ( ret && ret[ 1 ] ) || "";
+			}
+		},
+		_defaultPrototype = {
+			init: function() {
+				return this;
+			}
+		},
+		defaultValidate = function() {
+			return 1;
+		},
+		inerit = function( Sub, Super, name ) {
+			object.inheritProtypeWithParasitic( Sub, Super, name );
+			Sub.prototype.__superConstructor = Super;
+			Sub.prototype._super = _superInit;
+			if ( !Super.invoke ) {
+				Super.invoke = _invoke;
+			}
+		},
+		extend = function( Sub, Super ) {
+			object.inheritProtypeWithExtend( Sub, Super );
+		},
+
+		defaultPurview = "-pu -w -r";
+
+	/**
+	 * @callback CollectionEachCallback
+   * @param item {*}
+   * @param index {Number}
+	 */
+
+	/**
+	 * This provides methods used for method "object.extend" handling. It will be mixed in constructor.
+	 * This methods is static.
+	 * @public
+	 * @mixin ObjectClassStaticMethods
+	 */
+	var ObjectClassStaticMethods = /** @lends ObjectClassStaticMethods */ {
+		/**
+		 * This constructor inherit Super constructor if you define a class which has not inherit Super.
+		 * @public
+		 * @method
+		 * @param {Function} Super - Super constructor.
+		 * @returns {this}
+		 */
+		inherit: function( Super ) {
+			inerit( this, Super );
+			return this;
+		},
+		/**
+		 * Define a Sub Class. This constructor is Super Class.
+		 * @param {Function|String} name - Sub constructor or Sub name.
+		 * @param {Object} prototype - Instance methods.
+		 * @param {Object} statics - Static methods.
+		 * @returns {Function}
+		 */
+		extend: function( name, prototype, statics ) {
+			var arg = $.util.argToArray( arguments );
+			if ( typed.isObj( name ) ) {
+				arg.splice( 0, 0, _getFunctionName( this ) || name.name || "anonymous" );
+			}
+			arg.push( this );
+			/*arg = [name, prototype, statics, constructor]*/
+			return object.extend.apply( object, arg );
+		},
+		/**
+		 * Join Object into prototype.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
+		joinPrototype: function() {
+			for ( var i = 0, len = arguments.length, obj; i < len; i++ ) {
+				obj = arguments[ i ];
+				typed.isPlainObj( obj ) && utilExtend.extend( this.prototype, obj );
+			}
+			return this;
+		},
+		/**
+		 * Determine whether the target is a instance of this constructor or this ancestor constructor.
+		 * @param {Object} - A new instance.
+		 * @returns {this}
+		 */
+		forinstance: function( target ) {
+			var constructor = this,
+				ret = target instanceof this;
+
+			if ( ret == false ) {
+				constructor = target.constructor;
+				while ( !! constructor ) {
+					constructor = constructor.prototype.__superConstructor;
+					if ( constructor === target ) {
+						ret = true;
+						break;
+					}
+				}
+			}
+			return ret;
+		},
+		/**
+		 * Create Getter or Setter for this constructor.prototype.
+
+		 * @param {Object<String,Object>|String|Function}
+		 */
+		createGetterSetter: function( object ) {
+			object.createPropertyGetterSetter( this, object );
+		},
+		/** fn is pointer of this.prototype */
+		fn: null
+	};
+
+	/**
+	 * This provides methods used for method "object.collection" handling. It will be mixed in constructor.prototype
+	 * This methods is prototype.
+	 * @public
+	 * @mixin CollectionClassPrototypeMethods
+	 */
+
+	/**
+	 * @pubilc
+	 * @exports main/object
+	 * @requires module:base/typed
+	 * @requires module:base/array
+	 * @requires module:base/extend
+	 */
+	var object = {
+		/**
+		 * Define a Class.
+		 * <br /> Mixin {@link ObjectClassStaticMethods} into new Class.
+		 * <br /> see {@link module:main/object.createPropertyGetterSetter}
+		 * @example
+		 * var Super = object.extend( "Super", {
+		 *   init: function( name ){
+		 *     console.log( "Super", name );
+		 *     this.name = name;
+		 *   },
+		 *   checkName: function( name ){
+		 *     console.log( "Super", this.name == name );
+		 *     return this.name == name;
+		 *   }
+		 * }, {
+		 *   doSomething: function( ){ };
+		 * } );
+		 *
+		 * function Sub( name ){
+		 *   this._super( name );
+		 *   this.name = name;
+		 *   console.log( "Sub", name );
+		 * };
+		 *
+		 * Super.extend( Sub, { // extend is created by mixin
+		 *   checkName: function( name ){
+		 *     // The invoke is created by object.extend
+		 *     Super.invoke( "checkName", name );
+		 *     console.log( "Sub", this.name == name );
+		 *     return this.name == name;
+		 *   }
+		 * }, {
+		 *   doSomething: function( ){ };
+		 * } );
+		 *
+		 * var super = new Super( "Lisa" );
+		 * // Super Lisa
+		 * var sub = new Sub( "Iris" );
+		 * // Super Iris
+		 * // Sub Iris
+		 * sub.checkName( "Iris" );
+		 * // Super true
+		 * // Sub true
+		 * Sub.doSomething();
+		 * Super.doSomething();
+		 *
+		 * //mixin
+		 * Sub.joinPrototype( {
+		 *   foo: function() {}
+		 * }, {
+		 *   pad: function() {}
+		 * } );
+		 * sub.foo();sub.pad();
+		 *
+		 * Super.forinstance( sub ) // true
+		 *
+		 * Sub.createGetterSetter( {
+		 *   name: "-pa"
+		 * } );
+		 *
+		 * @param {String|Function} - Name or Function.
+		 * @param {Object} - Instance methods.
+		 * @param {Object} - Static methods.
+		 * @param {Function} [Super] - Super Class.
+		 * @returns {Function}
+		 */
+		extend: function( name, prototype, statics, Super ) {
+			var anonymous;
+			switch ( arguments.length ) {
+				case 0:
+				case 1:
+					return null;
+				case 3:
+					if ( typeof statics == "function" ) {
+						Super = statics;
+						statics = null;
+					}
+					break;
+			}
+
+			switch ( typeof name ) {
+				case "function":
+					anonymous = name;
+					break;
+				case "string":
+					anonymous = ( eval(
+            [
+              "(function ", name, "() {\n",
+              "    this.init.apply(this, arguments);\n",
+              "});\n"
+            ].join( "" ) ) || eval( "(" + name + ")" ) ) //fix ie678
+					break;
+				default:
+					anonymous = function anonymous() {
+						this.init.apply( this, arguments );
+					};
+			}
+
+			if ( Super ) {
+				inerit( anonymous, Super );
+			}
+
+			prototype = utilExtend.extend( {}, _defaultPrototype, prototype );
+			prototype.constructor = anonymous;
+
+			utilExtend.easyExtend( anonymous.prototype, prototype );
+
+			utilExtend.easyExtend( anonymous, ObjectClassStaticMethods );
+
+			utilExtend.easyExtend( anonymous, statics );
+
+			anonymous.fn = anonymous.prototype;
+
+			return anonymous;
+		},
+		/**
+		 * If model is a function, you should call "this.init()".
+		 * <br /> Mixin {@link CollectionClassPrototypeMethods} into new Collection.
+		 * @param {String|Function} - If model is a function, then will use model.name. Then class name is name + "Collection".
+		 * @param {Object} - Instance methods.
+		 * @param {Object} - Static methods.
+		 * @param {Function} [Super]
+		 */
+		Collection: function( model, prototype, statics, Super ) {
+			switch ( arguments.length ) {
+				case 0:
+				case 1:
+					return null;
+				case 3:
+					if ( typeof statics == "function" ) {
+						Super = statics;
+						statics = null;
+					}
+					break;
+			}
+
+			var CollectionClassPrototypeMethods = /** @lends CollectionClassPrototypeMethods */ {
+				/** A constructor of class */
+				init: function() {
+					this.models = [];
+					this.__modelMap = {};
+					prototype.init ? prototype.init.apply( this, arguments ) : this.add.apply( this, arguments );
+					return this;
+				},
+				/**
+				 * Add model into collection
+				 * @param {...model}
+				 * @returns {this}
+				 */
+				add: function( model ) {
+					var arg = $.util.argToArray( arguments ),
+						len = arg.length,
+						i = 0;
+
+					for ( ; i < len; i++ ) {
+						model = arg[ i ];
+						if ( !this.__modelMap[ model.id ] ) {
+							this.models.push( model );
+							this.__modelMap[ model.id || ( model.constructor.name + _expendo++ ) ] = model;
+						}
+					}
+					return this;
+				},
+				/**
+				 * Pop model from collection
+				 * @returns {model}
+				 */
+				pop: function() {
+					return this.remove( this.models[ this.models.length - 1 ] );
+				},
+				/**
+				 * Remove model from collection
+				 * @param {model|Number|String} - String means id. Number means index. model is a model.
+				 * @returns {model}
+				 */
+				remove: function( id ) {
+					/// <summary>移除某个对象</summary>
+					/// <param name="id" type="Object/Number/String">对象的索引</param>
+					/// <returns type="Model" />
+					var model = null,
+						i;
+					switch ( typeof id ) {
+						case "number":
+							model = this.models[ id ];
+							break;
+						case "string":
+							model = this.__modelMap[ id ];
+							break;
+						case "object":
+							model = id;
+							break;
+					}
+					if ( model ) {
+						this.models.splice( array.inArray( this.models, model ), 1 );
+						for ( i in this.__modelMap ) {
+							if ( this.__modelMap[ i ] == model ) {
+								delete this.__modelMap[ i ];
+							}
+						}
+					}
+					return model;
+				},
+				/**
+				 * Get model from collection
+				 * @param {String|Number} - String means id. Number means index.
+				 * @returns {model}
+				 */
+				get: function( id ) {
+					switch ( typeof id ) {
+						case "number":
+							model = this.models[ id ];
+							break;
+						case "string":
+							model = this.__modelMap[ id ];
+							break;
+					}
+					return model;
+				},
+				/**
+				 * Clear all model
+				 * @returns {this}
+				 */
+				clear: function() {
+					this.models = [];
+					this.__modelMap = {};
+					return this;
+				},
+				/**
+				 * Iteration the list of model.
+				 * @param {CollectionEachCallback}
+				 * @param {Object} [context] - Context.
+				 * @returns {this}
+				 */
+				each: function( fn, context ) {
+					/// <summary>遍历整个model</summary>
+					/// <param name="fn" type="Function">方法</param>
+					/// <param name="context" type="Object">上下文</param>
+					/// <returns type="self" />
+					for ( var i = 0, model = this.models, item; item = model[ i++ ]; )
+						fn.call( context || item, item, i );
+					return this;
+				}
+			};
+
+			var _expendo = 0,
+				_prototype = utilExtend.extend( {}, prototype, CollectionClassPrototypeMethods ),
+				_statics = utilExtend.extend( {}, statics ),
+				name = typeof model == "string" ? model : model.name + "Collection";
+
+			return object.extend( name, _prototype, _statics, Super );
+		},
+		/**
+		 * Get the object properties count.
+		 * @param {Object}
+		 * @param {Boolean} - If true , does not count prototype.
+		 * @returns {Number}
+		 */
+		getObjectPropertiesCount: function( obj, bool ) {
+			var count = 0;
+			for ( var i in obj ) {
+				bool == true ? object.isPrototypeProperty( obj, i ) || count++ : count++;
+			}
+			return count;
+		},
+		/**
+		 * Does not contain the same memory address, the constructor will not be called multiple times.
+		 * @param {Sub}
+		 * @param {Super}
+		 * @returns {this}
+		 */
+		inheritProtypeWithExtend: function( Sub, Super ) {
+			var con = Sub.prototype.constructor;
+			utilExtend.easyExtend( Sub.prototype, Super.prototype );
+			Sub.prototype.constructor = con || Super.prototype.constructor;
+			return this;
+		},
+		/**
+		 * Use parasitic to inherit prototype. Does not contain the same memory address.
+		 * @param {Sub}
+		 * @param {Super}
+		 * @param {String} - You can see the name of the parent class in the prototype chain instead "Parasitic".
+		 * @returns {this}
+		 */
+		inheritProtypeWithParasitic: function( Sub, Super, name ) {
+			if ( !Super ) {
+				return this;
+			}
+			var
+			originPrototype = Sub.prototype,
+				name = Super.name || name,
+				Parasitic = typeof name == "string" ? ( eval( "(function " + name + "() { });" ) || eval( "(" + name + ")" ) ) : function() {};
+			Parasitic.prototype = Super.prototype;
+			Sub.prototype = new Parasitic();
+			//var prototype = Object(Super.prototype);
+			//Sub.prototype = prototype;
+			utilExtend.easyExtend( Sub.prototype, originPrototype );
+			//Sub.prototype.constructor = Sub;
+
+			return this;
+		},
+		/**
+		 * Use classic combination to inherit prototype. Contains the same memory address.
+		 * @param {Sub}
+		 * @param {Super}
+		 * @returns {this}
+		 */
+		inheritProtypeWithCombination: function( Sub, Super ) {
+			Sub.prototype = new Super();
+			return this;
+		},
+		/**
+		 * Whether it is the prototype property.
+		 * @param {*}
+		 * @param {String}
+		 * @returns {Boolean}
+		 */
+		isPrototypeProperty: function( obj, name ) {
+			/// <summary>是否是原型对象的属性</summary>
+			/// <param name="obj" type="any">任意对象</param>
+			/// <param name="name" type="String">属性名</param>
+			/// <returns type="Boolean" />
+			return "hasOwnProperty" in obj && !obj.hasOwnProperty( name ) && ( name in obj );
+		},
+		/**
+		 * Create Getter or Setter for this constructor.prototype.
+		 * @link module:main/object.createPropertyGetterSetter
+		 * @example
+		 * function Person(){};
+		 * // "u" means public, "a" means private.
+		 * object.createPropertyGetterSetter(Person, {
+		 *  id: "-pu -r",
+		 *  name: "-pu -w -r",
+		 *  age: "-pa -w -r",
+		 *  Weight: "-wa -ru",
+		 *  mark: {
+		 *    purview: "-wa -ru",
+		 *    defaultValue: 0, // set prototype.mark = 0.
+		 *    validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
+		 *    edit: function( value ){ return value + ""; } // edit value when getting.
+		 *  },
+		 *  height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
+		 * } );
+		 * var person = new Person();
+		 * person.getId();
+		 * person.getName(); person.setName();
+		 * person._getAge(); person._setAge();
+		 * person._getWeight(); person.setWeight();
+		 * person.getMark(); // "0"
+		 * person._setMark( 110 );
+		 * person.getMark(); // "0"
+		 * person._setMark( 100 );
+		 * person.getMark(); // "100"
+		 *
+		 * @param {Function} obj - A constructor.
+		 * @param {Object<String,Object>|String|Function}
+		 * return {obj.prototype}
+		 */
+		createPropertyGetterSetter: function( obj, object ) {
+			if ( !typed.isPlainObj( object ) ) {
+				return this;
+			}
+
+			return $.each( object, function( value, key ) {
+				var purview = defaultPurview,
+					validate = defaultValidate,
+					defaultValue,
+					edit;
+				switch ( typeof value ) {
+					case "string":
+						purview = value;
+						break;
+					case "object":
+						if ( typed.isStr( value.purview ) ) {
+							purview = value.purview;
+						}
+						if ( typed.isFun( value.validate ) ) {
+							validate = value.validate;
+						}
+						if ( typed.isFun( value.edit ) ) {
+							edit = value.edit;
+						}
+						defaultValue = value.defaultValue; //undefinded always undefinded
+						break;
+					case "function":
+						validate = value;
+						break;
+
+				}
+				this[ key ] = defaultValue;
+
+				var prefix = /\-pa[\s]?/.test( purview ) ? "_" : "",
+					setPrefix, getPrefix;
+
+				if ( purview.match( /\-w([u|a])?[\s]?/ ) ) {
+					getPrefix = RegExp.$1 == "a" ? "_" : "";
+					this[ ( getPrefix || prefix ) + $.util.camelCase( key, "set" ) ] = function( a ) {
+						if ( validate.call( this, a ) ) {
+							this[ key ] = a;
+						} else if ( defaultValidate !== undefined ) {
+							this[ key ] = defaultValue;
+						}
+
+						return this;
+					};
+				}
+				if ( purview.match( /\-r([u|a])?[\s]?/ ) ) {
+					setPrefix = RegExp.$1 == "a" ? "_" : "";
+					this[ ( setPrefix || prefix ) + $.util.camelCase( key, "get" ) ] = function() {
+						return edit ? edit.call( this, this[ key ] ) : this[ key ];
+					};
+				}
+			}, obj.prototype );
+		}
+	};
+
+	return object;
+} );
+
+/*=======================================================*/
+
+/*===================main/CustomEvent===========================*/
+﻿aQuery.define( "main/CustomEvent", [ "base/extend", "main/object" ], function( $, utilExtend, object, undefined ) {
+	"use strict";
+	this.describe( "A custom event" );
+	/**
+	 * Be defined by object.extend.
+	 * @constructor
+	 * @exports main/CustomEvent
+	 * @requires module:main/object
+	 * @mixes ObjectClassStaticMethods
+	 */
+	var CustomEvent = object.extend( "CustomEvent", /** @lends module:main/CustomEvent.prototype */ {
+		constructor: CustomEvent,
+		/** @constructs module:main/CustomEvent */
+		init: function() {
+			this.handlers = {};
+			this._handlerMap = {};
+			return this;
+		},
+		/**
+		 * Add a handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		on: function( type, handler ) {
+			return this.addHandler( type, handler );
+		},
+		/**
+		 * Add a handler once.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( type, handler ) {
+			var self = this,
+				handlerproxy = function() {
+					self.off( type, handlerproxy );
+					handler.apply( this, arguments );
+				};
+			return this.on( type, handlerproxy );
+		},
+		/**
+		 * Add a handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( type, handler ) {
+			var types = type.split( " " ),
+				i = types.length - 1;
+			for ( ; i >= 0; i-- ) {
+				this._addHandler( types[ i ], handler );
+			}
+			return this;
+		},
+		_addHandler: function( type, handler ) {
+			var handlers = this._nameSpace( type );
+			this.hasHandler( type, handler, handlers ) == -1 && handlers.push( handler );
+			return this;
+		},
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
+		clear: function( type ) {
+			return this.clearHandlers( type );
+		},
+		/**
+		 * Clear handlers.
+		 * @param {String} [type] - If type is undefined, then clear all handler
+		 * @returns {this}
+		 */
+		clearHandlers: function( type ) {
+			if ( type ) {
+				var types = type.split( " " ),
+					i = types.length - 1,
+					item;
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					this._nameSpace( item, true );
+					delete this._handlerMap[ item ];
+					delete this.handlers[ item ];
+				}
+			} else {
+				this.handlers = {};
+			}
+			return this;
+		},
+		/**
+		 * Return index of handlers array. -1 means not found.
+		 * @param {String}
+		 * @param {Function}
+		 * @param {Array<Function>} [handlers]
+		 * @returns {Number}
+		 */
+		hasHandler: function( type, handler, handlers ) {
+			handlers = handlers || this._nameSpace( type );
+			var i = 0,
+				j = -1,
+				len;
+			if ( handlers instanceof Array && handlers.length ) {
+				for ( len = handlers.length; i < len; i++ ) {
+					if ( handlers[ i ] === handler ) {
+						j = i;
+						break;
+					}
+				}
+			}
+			return j;
+		},
+		/**
+		 * Trigger an event.
+		 * @param {String}
+		 * @param {Context}
+		 * @param {...*} [args]
+		 * @returns {this}
+		 */
+		trigger: function( type, target, args ) {
+			var handlers = this._nameSpace( type );
+			if ( handlers instanceof Array && handlers.length ) {
+				for ( var i = 0, len = handlers.length, arg = $.util.argToArray( arguments, 2 ); i < len; i++ )
+					handlers[ i ].apply( target, arg );
+			}
+			return this;
+		},
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		off: function( type, handler ) {
+			return this.removeHandler( type, handler );
+		},
+		/**
+		 * Remove handler.
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( type, handler ) {
+			var types = type.split( " " ),
+				i = types.length - 1;
+			for ( ; i >= 0; i-- ) {
+				this._removeHandler( types[ i ], handler );
+			}
+			return this;
+		},
+		/** @returns {CustomEvent} */
+		clone: function() {
+			var customEvent = new CustomEvent(),
+				name, list, i, len;
+
+			for ( name in this._handlerMap ) {
+				list = this._handlerMap[ name ];
+				len = list.length;
+				if ( len > 0 ) {
+					for ( i = 0; i < len; i++ ) {
+						customEvent.on( name, list[ i ] );
+					}
+				} else {
+					customEvent._nameSpace( name );
+				}
+			}
+
+			return customEvent;
+		},
+		_removeHandler: function( type, handler ) {
+			var handlers = this._nameSpace( type ),
+				i = this.hasHandler( type, handler, handlers );
+			if ( i > -1 ) {
+				handlers.splice( i, 1 );
+			}
+			return this;
+		},
+		_nameSpace: function( type, re ) {
+			var nameList = type.split( "." ),
+				result = this._initSpace( nameList, this.handlers, re );
+			//, i = 0, nameSpace, name, result;
+			//nameList.length > 2 && tools.error({ fn: "CustomEvent._nameSpace", msg: "nameSpace is too long" });
+
+			this._handlerMap[ type ] || ( this._handlerMap[ type ] = result );
+			return result;
+		},
+		_initSpace: function( nameList, nameSpace, re ) {
+			var name = nameList[ 0 ],
+				result;
+			//name = nameList[1];
+			if ( nameSpace ) {
+				result = nameSpace[ name ];
+				if ( !result || re ) {
+					nameSpace[ name ] = {};
+				}
+				nameSpace = nameSpace[ name ];
+				if ( !nameSpace[ "__" + name ] ) {
+					nameSpace[ "__" + name ] = [];
+				}
+				result = nameSpace[ "__" + name ];
+			}
+			nameList.splice( 0, 1 );
+			return nameList.length ? this._initSpace( nameList, nameSpace, re ) : result;
+		}
+	} );
+
+	return CustomEvent;
+} );
+
+/*=======================================================*/
+
 /*===================base/support===========================*/
 ﻿aQuery.define( "base/support", [ "base/extend" ], function( $, utilExtend ) {
 	"use strict";
@@ -6518,480 +6743,6 @@ if ( typeof define === "function" && define.amd ) {
 
 /*=======================================================*/
 
-/*===================main/attr===========================*/
-﻿aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
-	"use strict";
-	//暂不要那么多hooks
-	var fixSpecified = {
-		name: true,
-		id: true,
-		coords: true
-	},
-		propFix = {
-			tabindex: "tabIndex",
-			readonly: "readOnly",
-			"for": "htmlFor",
-			"class": "className",
-			maxlength: "maxLength",
-			cellspacing: "cellSpacing",
-			cellpadding: "cellPadding",
-			rowspan: "rowSpan",
-			colspan: "colSpan",
-			usemap: "useMap",
-			frameborder: "frameBorder",
-			contenteditable: "contentEditable"
-		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i;
-	/**
-	 * @pubilc
-	 * @exports main/attr
-	 * @requires module:base/typed
-	 * @requires module:base/extend
-	 * @requires module:base/support
-	 */
-	var attr = {
-		/**
-		 * @param {Element}
-		 * @param {String}
-		 * @returns {String}
-		 */
-		getAttr: function( ele, name ) {
-			var ret;
-			if ( !support.getSetAttribute ) {
-				ret = ele.getAttributeNode( name );
-				return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
-					ret.nodeValue :
-					undefined;
-			}
-			return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
-		},
-		/**
-		 * Exception select, checkbox, radio. <br/>
-		 * If select is multiple choice, then return "America|England"
-		 * @param {Element}
-		 * @returns {String}
-		 */
-		getVal: function( ele ) {
-			var type = ele.type.toUpperCase(),
-				result;
-			if ( typed.isNode( ele, "select" ) ) {
-				result = ele.value;
-				if ( typed.isNul( result ) || ele.multiple == true ) {
-					result = [];
-					$( ele ).posterity( ":selected" ).each( function( ele ) {
-						result.push( ele.innerHTML );
-					} );
-					result = result.join( "|" );
-				}
-				return result;
-			} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
-				return ele.checked.toString();
-			else
-				return ele.value.toString();
-		},
-		/**
-		 * @param {Element}
-		 * @param {String}
-		 * @returns {this}
-		 */
-		removeAttr: function( ele, key ) {
-			var propName, attrNames, name, l, isBool, i = 0;
-
-			if ( key && ele.nodeType === 1 ) {
-				attrNames = key.toLowerCase().split( /\s+/ );
-				l = attrNames.length;
-
-				for ( ; i < l; i++ ) {
-					name = attrNames[ i ];
-
-					if ( name ) {
-						propName = propFix[ name ] || name;
-						isBool = rboolean.test( name );
-
-						if ( !isBool ) {
-							$.setAttr( ele, name, "" );
-						}
-						ele.removeAttribute( support.getSetAttribute ? name : propName );
-
-						if ( isBool && propName in ele ) {
-							ele[ propName ] = false;
-						}
-					}
-				}
-			}
-			return this;
-		},
-		/**
-		 * @param {Element}
-		 * @param {String}
-     * @param {String|Number}
-		 * @returns {this}
-		 */
-		setAttr: function( ele, name, value ) {
-			if ( value == null ) {
-				return $.removeAttr( ele, name );
-			}
-			if ( !support.getSetAttribute ) {
-				var ret = ele.getAttributeNode( name );
-				if ( !ret ) {
-					ret = document.createAttribute( name );
-					ele.setAttributeNode( ret );
-				}
-				ret.nodeValue = value + "";
-			} else {
-				ele.setAttribute( name, value );
-			}
-			return this;
-		},
-		/**
-		 * Exception select, checkbox, radio. <br/>
-		 * If select is multiple choice and value equals inner HTML of one element.
-		 * @param {Element}
-		 * @param {String|Boolean|Number}
-		 * @returns {this}
-		 */
-		setVal: function( ele, value ) {
-			var type = ele.type.toUpperCase();
-			if ( typed.isNode( ele, "select" ) ) {
-				if ( typed.isStr( value ) || typed.isNum( value ) )
-					value = [ value ];
-				$( ele ).find( "option" ).each( function( ele ) {
-					ele.selected = false;
-				} ).each( function( ele, index ) {
-					$.each( value, function( val ) {
-						if ( index === val || ele.innerHTML === val )
-							ele.selected = true;
-					}, this );
-				} );
-			} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) {
-				if ( value === "checked" || value === "true" || value === true )
-					ele.checked = true;
-				else
-					ele.value = value.toString();
-			} else
-				ele.value = value.toString();
-			return this;
-		}
-	};
-
-	$.extend( attr );
-
-	$.fn.extend( {
-    /**
-     * Set or get attribute.
-     * @example
-     * $("#img").attr({
-     *   width: "100px",
-     *   height: "100px"
-     * }).attr("title", "Flower");
-     * $("#div1").attr("title", "Hello");
-     * $("#div2").attr("title", "World");
-     * $("#div1, #div2").attr("title"); // return "Hello"
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String|Object}
-     * @param {String|Number} [value]
-     * @returns {this|String}
-     */
-		attr: function( attr, value ) {
-			if ( typed.isObj( attr ) ) {
-				for ( var i in attr ) {
-					this.each( function( ele ) {
-						$.setAttr( ele, i, attr[ i ] );
-					} );
-				}
-			} else if ( typed.isStr( attr ) ) {
-				if ( value == undefined ) {
-					return $.getAttr( this[ 0 ], attr );
-				} else {
-					this.each( function( ele ) {
-						$.setAttr( ele, attr, value );
-					} );
-				}
-			}
-			return this;
-		},
-    /**
-     * Remove attribute.
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String}
-     * @returns {this}
-     */
-		removeAttr: function( name ) {
-			return this.each( function( ele ) {
-				$.removeAttr( ele, name );
-			} );
-		},
-    /**
-     * Get or set value.
-     * @public
-     * @memberof aQuery.prototype
-     * @param {String|Boolean|Number} [value]
-     * @returns {this|String}
-     */
-		val: function( value ) {
-			return value ? this.each( function( ele ) {
-				$.setVal( ele, value );
-			} ) : $.getVal( this[ 0 ] );
-		}
-	} );
-
-	return attr;
-} );
-
-/*=======================================================*/
-
-/*===================app/Model===========================*/
-aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], function( $, attr, object, CustomEvent, undefined ) {
-	"use strict";
-  this.describe( "Super Model Class" );
-	//有instance 则需要去查找
-	var Model = CustomEvent.extend( {
-		init: function( modelElement ) {
-			this._super();
-			this.element = modelElement;
-			this.id = attr.getAttr( modelElement, "id" ) || null;
-			this.src = attr.getAttr( modelElement, "src" );
-			Model.collection.add( this );
-		},
-		destroy: function() {
-			Model.collection.remove( this );
-		}
-	}, {
-		// getInstance: function( modelElement, ModelObject ) {
-		//   var instance = attr.getAttr( modelElement, "instance" ),
-		//   src = attr.getAttr( modelElement, "src" ),
-		//   model = this.getModel( src );
-
-		//   if ( instance || !model) {
-		//     return ModelObject ? new ModelObject( modelElement ) : new Model( modelElement );
-		//   }
-
-		//   return model;
-		// },
-	} );
-
-	var ModelCollection = object.Collection( Model, {} );
-
-	Model.collection = new ModelCollection;
-
-	object.createPropertyGetterSetter( Model, {
-		element: "-pu -r",
-		id: "-pu -r",
-		src: "-pu -r"
-	} );
-
-	return Model;
-} );
-
-/*=======================================================*/
-
-/*===================base/client===========================*/
-﻿aQuery.define( "base/client", [ "base/extend" ], function( $, extend ) {
-	this.describe( "Cline of Browser" );
-	/**
-	 * @public
-	 * @requires module:base/extend
-	 * @module base/client
-	 * @property {object} browser
-	 * @property {Boolean} [browser.opera=false]
-	 * @property {Boolean} [browser.chrome=false]
-	 * @property {Boolean} [browser.safari=false]
-	 * @property {Boolean} [browser.kong=false]
-	 * @property {Boolean} [browser.firefox=false]
-	 * @property {Boolean} [browser.ie=false]
-	 * @property {Boolean} [browser.ie678=false]
-	 *
-	 * @property {object} engine
-	 * @property {Boolean} [engine.opera=false]
-	 * @property {Boolean} [engine.webkit=false]
-	 * @property {Boolean} [engine.khtml=false]
-	 * @property {Boolean} [engine.gecko=false]
-	 * @property {Boolean} [engine.ie=false]
-	 * @property {Boolean} [engine.ie678=false]
-	 *
-	 * @property {object} system
-	 * @property {Boolean} [system.win=null]
-	 * @property {Boolean} [system.mac=null]
-	 * @property {Boolean} [system.linux=null]
-	 * @property {Boolean} [system.iphone=null]
-	 * @property {Boolean} [system.ipod=null]
-	 * @property {Boolean} [system.ipad=null]
-	 * @property {Boolean} [system.pad=null]
-	 * @property {Boolean} [system.nokian=null]
-	 * @property {Boolean} [system.winMobile=null]
-	 * @property {Boolean} [system.androidMobile=null]
-	 * @property {Boolean} [system.ios=null]
-	 * @property {Boolean} [system.wii=null]
-	 * @property {Boolean} [system.ps=null]
-	 * @example
-	 * if (client.system.win){}
-	 */
-	var client = {
-		browser: {
-			opera: false,
-			chrome: false,
-			safari: false,
-			kong: false,
-			firefox: false,
-			ie: false,
-			ie678: "v" == "/v"
-		},
-		engine: {
-			opera: false,
-			webkit: false,
-			khtml: false,
-			gecko: false,
-			ie: false,
-			ie678: "v" == "/v"
-		},
-		system: {
-			win: null,
-			mac: null,
-			linux: null,
-			iphone: null,
-			ipod: null,
-			ipad: null,
-			pad: null,
-			nokian: null,
-			winMobile: null,
-			androidMobile: null,
-			ios: null,
-			wii: null,
-			ps: null
-		},
-		language: ""
-	};
-
-	var reg = RegExp,
-		ua = navigator.userAgent,
-		p = navigator.platform || "",
-		_browser = client.browser,
-		_engine = client.engine,
-		_system = client.system;
-
-	client.language = ( navigator.browserLanguage || navigator.language ).toLowerCase();
-
-	_system.win = p.indexOf( "Win" ) == 0;
-	if ( _system.win ) {
-		if ( /Win(?:dows)? ([^do]{2})\s?(\d+\.\d+)?/.test( ua ) ) {
-			if ( reg.$1 == "NT" ) {
-				switch ( reg.$2 ) {
-					case "5.0":
-						_system.win = "2000";
-						break;
-					case "5.1":
-						_system.win = "XP";
-						break;
-					case "6.0":
-						_system.win = "Vista";
-						break;
-					default:
-						_system.win = "NT";
-						break;
-				}
-			} else if ( reg.$1 ) {
-				_system.win = "ME";
-			} else {
-				_system.win = reg.$1;
-			}
-		}
-	}
-
-	_system.mac = p.indexOf( "Mac" ) == 0;
-	_system.linux = p.indexOf( "Linux" ) == 0;
-	_system.iphone = ua.indexOf( "iPhone" ) > -1;
-	_system.ipod = ua.indexOf( "iPod" ) > -1;
-	_system.ipad = ua.indexOf( "iPad" ) > -1;
-	_system.pad = ua.indexOf( "pad" ) > -1;
-	_system.nokian = ua.indexOf( "NokiaN" ) > -1;
-	_system.winMobile = _system.win == "CE";
-	_system.androidMobile = /Android/.test( ua );
-	_system.ios = false;
-	_system.wii = ua.indexOf( "Wii" ) > -1;
-	_system.ps = /playstation/i.test( ua );
-
-	_system.x11 = p == "X11" || ( p.indexOf( "Linux" ) == 0 );
-	_system.appleMobile = _system.iphone || _system.ipad || _system.ipod;
-	_system.mobile = _system.appleMobile || _system.androidMobile || /AppleWebKit.*Mobile./.test( ua ) || _system.winMobile;
-	//alert(ua)
-	if ( /OS [X ]*(\d*).(\d*)/.test( ua ) ) {
-		_system.ios = parseFloat( reg.$1 + "." + reg.$2 );
-	}
-	if ( window.opera ) {
-		_engine.opera = _browser.opera = parseFloat( window.opera.version() );
-	} else if ( /AppleWebKit\/(\S+)/.test( ua ) ) {
-		_engine.webkit = parseFloat( reg.$1 );
-		if ( /Chrome\/(\S+)/.test( ua ) ) {
-			_browser.chrome = parseFloat( reg.$1 );
-		} else if ( /Version\/(\S+)/.test( ua ) ) {
-			_browser.safari = parseFloat( reg.$1 );
-		} else {
-			var _safariVer = 1,
-				wit = _engine.webkit;
-			if ( _system.mac ) {
-				if ( wit < 100 ) {
-					_safariVer = 1;
-				} else if ( wit == 100 ) {
-					_safariVer = 1.1;
-				} else if ( wit <= 125 ) {
-					_safariVer = 1.2;
-				} else if ( wit < 313 ) {
-					_safariVer = 1.3;
-				} else if ( wit < 420 ) {
-					_safariVer = 2;
-				} else if ( wit < 529 ) {
-					_safariVer = 3;
-				} else if ( wit < 533.18 ) {
-					_safariVer = 4;
-				} else if ( wit < 536.25 ) {
-					_safariVer = 5;
-				} else {
-					_safariVer = 6;
-				}
-			} else if ( _system.win ) {
-				if ( wit == 5 ) {
-					_safariVer = 5;
-				} else if ( wit < 529 ) {
-					_safariVer = 3;
-				} else if ( wit < 531.3 ) {
-					_safariVer = 4;
-				} else {
-					_safariVer = 5;
-				}
-			} else if ( _system.appleMobile ) {
-				if ( wit < 526 ) {
-					_safariVer = 3;
-				} else if ( wit < 531.3 ) {
-					_safariVer = 4;
-				} else if ( wit < 536.25 ) {
-					_safariVer = 5;
-				} else {
-					_safariVer = 6;
-				}
-			}
-			_browser.safari = _safariVer;
-		}
-	} else if ( /KHTML\/(\S+)/.test( ua ) || /Konquersor\/([^;]+)/.test( ua ) ) {
-		_engine.khtml = _browser.kong = parseFloat( reg.$1 );
-	} else if ( /rv:([^\)]+)\) Gecko\/\d{8}/.test( ua ) ) {
-		_engine.gecko = parseFloat( reg.$1 );
-		//确定是不是Firefox
-		if ( /Firefox\/(\S+)/.test( ua ) ) {
-			_browser.firefox = parseFloat( reg.$1 );
-		}
-	} else if ( /MSIE([^;]+)/.test( ua ) ) {
-		_engine.ie = _browser.ie = parseFloat( reg.$1 );
-	}
-	if ( "\v" == "v" ) {
-		_engine.ie678 = _browser.ie678 = _browser.ie;
-	}
-
-	return client;
-} );
-
-/*=======================================================*/
-
 /*===================main/data===========================*/
 ﻿aQuery.define( "main/data", [ "base/extend", "base/typed", "base/support" ], function( $, utilExtend, typed, support, undefined ) {
 	"use strict";
@@ -7195,10 +6946,9 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
 		 * Get or set data.
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @param {*|Object} [value] - If value is undefined then get data, else if value is plain object then add all properties to cache.
 		 * @returns {this|*}
@@ -7217,7 +6967,6 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 		},
 		/**
 		 * Remove data.
-		 * @memberof aQuery.prototype
 		 * @param {String} - If key is undefined then remove all.
 		 * @returns {this}
 		 */
@@ -7227,7 +6976,6 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			} );
 		},
 		/**
-		 * @memberof aQuery.prototype
 		 * @returns {Boolean}
 		 */
 		hasData: function() {
@@ -7241,7 +6989,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 /*=======================================================*/
 
 /*===================main/event===========================*/
-﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, CustomEvent, utilData, undefined ) {
+﻿aQuery.define( "main/event", [ "base/config", "base/typed", "base/extend", "base/client", "base/array", "main/query", "main/CustomEvent", "main/data" ], function( $, config, typed, utilExtend, client, array, query, CustomEvent, utilData, undefined ) {
 	"use strict";
 	var mouse = "contextmenu click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave mousewheel DOMMouseScroll".split( " " ),
 		/*DOMMouseScroll firefox*/
@@ -7249,13 +6997,10 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 		html = "blur focus focusin focusout".split( " " ),
 		key = "keydown keypress keyup".split( " " ),
 		other = "resize scroll change select submit DomNodeInserted DomNodeRemoved".split( " " ),
-		_eventNameList = [].concat( mouse, mutation, html, key, other ),
-		_domEventList = {},
+		// _eventNameList = [].concat( mouse, mutation, html, key, other ),
+		domEventList = {},
 		eventHooks = {
 			type: function( type ) {
-				/// <summary>兼容事件类型名</summary>
-				/// <param name="type" type="String"></param>
-				/// <returns type="String" />
 				var temp;
 				switch ( type ) {
 					case "focus":
@@ -7276,7 +7021,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				return type;
 			},
 			compatibleEvent: function( e ) {
-				var eventDoc = $.event.document;
+				var eventDoc = event.document;
 				e.getCharCode = function() {
 					eventDoc.getCharCode( this );
 				};
@@ -7290,18 +7035,21 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 					eventDoc.getButton( this );
 				};
 			},
-			proxy: function( fun ) {
-				/// <summary>代理，主要是用于addHandler</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="Function" />
-				if ( !fun.__guid ) {
+			/**
+			 * @inner
+			 * Proxy of event handler.
+			 * @param {Function}
+			 * @returns {Function}
+			 */
+			proxy: function( fn ) {
+				if ( !fn.__guid ) {
 					var temp;
-					fun.__guid = function( e ) {
-						var evt = $.event.document.getEvent( e ),
+					fn.__guid = function( e ) {
+						var evt = event.document.getEvent( e ),
 							target = this;
 
 						if ( typed.isEvent( evt ) ) {
-							target = $.event.document.getTarget( e );
+							target = event.document.getTarget( e );
 							if ( ( temp = $.interfaces.trigger( "proxy", evt, target ) ) ) {
 								evt = temp.event;
 								target = temp.target;
@@ -7309,10 +7057,10 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 							config.module.compatibleEvent && eventHooks.compatibleEvent( evt );
 						}
 
-						fun.call( target, evt || {} );
+						fn.call( target, evt || {} );
 					};
 				}
-				return fun.__guid;
+				return fn.__guid;
 			}
 		},
 		_initCustomEvent = function( ele, type ) {
@@ -7323,895 +7071,1034 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			}
 			return data;
 		},
-		event = {
-			addHandler: function( ele, type, fun ) {
-				/// <summary>给aQuery或元素添加事件</summary>
-				/// <para>$.addHandler(ele,"click",function(){})</para>
-				/// <para>$.addHandler("ajaxStart",function(){})</para>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法或空</param>
-				/// <returns type="self" />
-				if ( fun === null || type === null ) {
-					return this.clearHandlers( ele, type );
-				}
-
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy, item, types = type.split( " " ),
-						i = types.length - 1;
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					proxy = eventHooks.proxy( fun, this );
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document._addHandler( ele, item, proxy );
-						}
-					}
-
-					type && fun && data.addHandler( type, fun );
-				} else {
-					$.bus.addHandler( ele, type );
-				}
-				return this;
-			},
-			once: function( ele, type, fun ) {
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy, item, types = type.split( " " ),
-						i = types.length - 1;
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					proxy = eventHooks.proxy( fun, this );
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( data.hasHandler( item, fun ) == -1 && _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document.once( ele, item, proxy );
-						}
-					}
-
-					type && fun && data.once( type, proxy );
-				} else {
-					$.bus.once( ele, type );
-				}
-			},
-
-			ajaxStart: function( fun ) {
-				/// <summary>ajax开始</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				$.bus.addHandler( arguments[ 1 ] || "ajaxStart", fun );
-				return this;
-			},
-			ajaxStop: function( fun ) {
-				/// <summary>ajax停止</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "ajaxStop" );
-			},
-			ajaxTimeout: function( fun ) {
-				/// <summary>ajax超时</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "ajaxTimeout" );
-			},
-
-			bus: ( new CustomEvent() ),
-
-			clearHandlers: function( ele, type ) {
-				/// <summary>移除dom元素的所有事件或所有aQuery提供的事件，如果类型存在则删除这种类型</summary>
-				/// <param name="ele" type="Element/undefined">元素</param>
-				/// <param name="type" type="String/undefinded">事件类型</param>
-				/// <returns type="self" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data = utilData.get( ele, "_handlers_" );
-					if ( !data ) {
-						return this;
-					}
-					var handlerMap = data._handlerMap,
-						map = {},
-						j = 0,
-						len = 0,
-						i, item, fun;
-
-					if ( type ) {
-						var types = type.split( " " ),
-							z = types.length - 1;
-						for ( ; z >= 0; z-- ) {
-							item = types[ z ];
-							if ( item in handlerMap ) {
-								map[ item ] = 1;
-							}
-						}
-					}
-
-					for ( i in map ) {
-						item = data._nameSpace( i );
-						for ( j = 0, len = item.length; j < len; j++ ) {
-							fun = item[ j ];
-							_domEventList[ i ] && $.event.document._removeHandler( ele, i, fun.__guid || fun );
-						}
-					}
-					data.clearHandlers( type );
-				} else {
-					$.bus.clearHandlers( ele );
-				}
-				return this;
-			},
-
-			cloneHandlers: function( ele, handlerEve ) {
-				var customEvent = data.set( handlerEve, "_handlers_" );
-				if ( customEvent ) {
-					var handlerMap = customEvent._handlerMap,
-						j = 0,
-						len = 0,
-						i, item, fun;
-
-					for ( i in handlerMap ) {
-						item = customEvent._nameSpace( i );
-						for ( j = 0, len = item.length; j < len; j++ ) {
-							fun = item[ j ];
-							_domEventList[ i ] && $.event.document._addHandler( ele, i, fun.__guid || fun );
-						}
-					}
-					data.set( ele, "_handlers_", customEvent );
-				}
-			},
-
-			getJSStart: function( fun ) {
-				/// <summary>加载js开始</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSStart" );
-			},
-			getJSStop: function( fun ) {
-				/// <summary>加载js停止</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSStop" );
-			},
-			getJSTimeout: function( fun ) {
-				/// <summary>加载js超时</summary>
-				/// <param name="fun" type="Function">方法</param>
-				/// <returns type="self" />
-				return $.ajaxStart( fun, "getJSTimeout" );
-			},
-
-			hasHandler: function( ele, type, fun ) {
-				/// <summary>查找aQuery或元素事件</summary>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法</param>
-				/// <returns type="Number" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var proxy;
-					if ( _domEventList[ type ] ) {
-						proxy = fun.__guid || fun;
-						type = eventHooks.type( type );
-						return $.event.document.hasHandler( ele, type, proxy );
-					}
-
-					return -1;
-				} else {
-					return $.bus.hasHandler( ele, type );
-				}
-			},
-
-			event: {
-				custom: CustomEvent,
-
-				document: {
-					addHandler: function( ele, type, fn ) {
-						/// <summary>给DOM元素添加事件</summary>
-						/// <para>例:"mousedown mouseup"</para>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <param name="fn" type="Function">事件方法</param>
-						/// <returns type="null" />
-						var types = type.split( " " ),
-							i = types.length - 1;
-						for ( ; i >= 0; i-- ) {
-							this._addHandler( ele, types[ i ], fn );
-						}
-
-					},
-					_addHandler: function( ele, type, fn ) {
-						if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
-						else if ( ele.attachEvent ) ele.attachEvent( "on" + type, fn );
-						else {
-							ele[ "on" + type ] = fn;
-							ele = null;
-						}
-					},
-					once: function( ele, type, fn ) {
-						var self = this,
-							fnproxy = function() {
-								self._removeHandler( ele, type, fnproxy );
-								fn.apply( this, arguments );
-							};
-						return this._addHandler( type, fnproxy );
-					},
-					removeHandler: function( ele, type, fn ) {
-						/// <summary>给DOM元素移除事件</summary>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <param name="fn" type="Function">事件方法</param>
-						/// <returns type="null" />
-						var types = type.split( " " ),
-							i = types.length - 1;
-						for ( ; i >= 0; i-- ) {
-							this._removeHandler( ele, types[ i ], fn );
-						}
-					},
-					_removeHandler: function( ele, type, fn ) {
-						if ( ele.removeEventListener ) ele.removeEventListener( type, fn, false );
-						else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
-						else ele[ "on" + type ] = null;
-					},
-					// , clearHandlers: function (ele) {
-					//     /// <summary>移除dom元素的所有事件</summary>
-					//     /// <param name="ele" type="Element">元素</param>
-					// }
-
-					createEvent: function( type ) {
-						/// <summary>创建原生事件对象</summary>
-						/// <param name="type" type="String">事件类型</param>
-						/// <returns type="Event" />
-						var e;
-						if ( document.createEvent ) {
-							e = document.createEvent( type );
-						} else if ( document.createEventObject ) {
-							e = document.createEventObject();
-						}
-						return e;
-					},
-					dispatchEvent: function( ele, event, type ) {
-						/// <summary>触发事件</summary>
-						/// <param name="ele" type="Element">元素</param>
-						/// <param name="event" type="Event">事件对象</param>
-						/// <param name="type" type="String">事件类型</param>
-						/// <returns type="null" />
-						if ( ele.dispatchEvent ) {
-							ele.dispatchEvent( event );
-						} else if ( ele.fireEvent ) {
-							ele.fireEvent( "on" + type, event, false );
-						}
-					},
-					getCharCode: function( e ) {
-						/// <summary>获得兼容的charCode对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Number" />
-						return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
-					},
-					getEvent: function( e ) {
-						/// <summary>获得兼容的事件event对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="event" />
-						return e || window.event;
-					},
-					getTarget: function( e ) {
-						/// <summary>获得事件对象</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Element" />
-						return e.srcElement || e.target;
-					},
-					imitation: {
-						_keySettings: {
-							bubbles: true,
-							cancelable: true,
-							view: document.defaultView,
-							detail: 0,
-							ctrlKey: false,
-							altKey: false,
-							shiftKey: false,
-							metaKey: false,
-							keyCode: 0,
-							charCode: 0
-						},
-						_editKeyCharCode: function( setting ) {
-							var code = event.event.document.getCharCode( setting );
-							delete setting.charCode;
-							delete setting.keyCode;
-							delete setting.which;
-
-							if ( client.engine.webkit ) {
-								setting.charCode = code;
-							} else if ( client.engine.ie ) {
-								setting.charCode = code;
-							} else {
-								setting.keyCode = setting.which = code;
-							}
-						},
-						key: function( ele, type, paras ) {
-							/// <summary>触发DOM元素key事件</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = i = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
-								e, i, name;
-							eventF.imitation._editKeyCharCode( settings );
-							if ( client.browser.firefox ) {
-								e = createEvent( "KeyEvents" );
-								e.initKeyEvent( type, i.bubbles, i.cancelable, i.view, i.ctrlKey, i.altKey, i.shiftKey, i.metaKey, i.keyCode, i.charCode );
-							} else if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								name = "Events";
-								client.browser.safari && client.browser.safari < 3 && ( name = "UIEvents" );
-								e = createEvent( name );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							}
-							eventF.dispatchEvent( ele, e, type );
-
-						},
-						_mouseSettings: {
-							bubbles: true,
-							cancelable: true,
-							view: document.defaultView,
-							detail: 0,
-							screenX: 0,
-							screenY: 0,
-							clientX: 0,
-							clientY: 0,
-							ctrlKey: false,
-							altKey: false,
-							metaKey: false,
-							shiftKey: false,
-							button: 0,
-							relatedTarget: null
-						},
-						mouse: function( ele, type, paras ) {
-							/// <summary>触发DOM元素Mouse事件</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
-								e, i = settings;
-							if ( client.browser.safari && client.browser.safari < 3 ) {
-								e = createEvent( "UIEvents" );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								e = createEvent( "MouseEvents" );
-								e.initMouseEvent( type, i.bubbles, i.cancelable, i.view, i.detail, i.screenX, i.screenY, i.clientX, i.clientY, i.ctrlKey, i.altKey, i.metaKey, i.shiftKey, i.button, i.relatedTarget );
-							}
-							eventF.dispatchEvent( ele, e, type );
-
-						},
-						_htmlSettings: {
-							bubbles: true,
-							cancelable: true
-						},
-						html: function( ele, type, paras ) {
-							/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
-							/// <param name="ele" type="Element">dom元素</param>
-							/// <param name="type" type="String">事件类型</param>
-							/// <param name="paras" type="Object">模拟事件参数</param>
-							/// <returns type="null" />
-							var eventF = event.event.document,
-								createEvent = eventF.createEvent,
-								settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
-								e, i = settings;
-
-							if ( client.browser.ie678 ) {
-								e = createEvent();
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							} else {
-								e = createEvent( "HTMLEvents" );
-								e.initEvent( type, settings.bubbles, settings.cancelable );
-								delete settings.bubbles;
-								delete settings.cancelable;
-								for ( i in settings ) {
-									e[ i ] = settings[ i ];
-								}
-							}
-
-							eventF.dispatchEvent( ele, e, type );
-
-						}
-					},
-					preventDefault: function( e ) {
-						/// <summary>阻止Element对象默认行为</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="null" />
-						if ( e.preventDefault ) e.preventDefault();
-						else e.returnValue = false;
-					},
-					stopPropagation: function( e ) {
-						/// <summary>阻止Element对象事件的冒泡</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="null" />
-						if ( e.stopPropagation ) e.stopPropagation();
-						else e.cancelBubble = true;
-					},
-					getButton: function( e ) {
-						/// <summary>获得鼠标的正确点击类型</summary>
-						/// <param name="e" type="Event">event对象</param>
-						/// <returns type="Number" />
-						if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
-						else {
-							switch ( e.button ) {
-								case 0:
-								case 1:
-								case 3:
-								case 5:
-								case 7:
-									return 0;
-								case 2:
-								case 6:
-									return 2;
-								case 4:
-									return 1;
-							}
-						}
-					},
-					on: function( ele, type, fn ) {
-						return this.addHandler( ele, type, fn );
-					},
-					off: function( ele, type, fn ) {
-						return this.removeHandler( ele, type, fn );
-					}
-				},
-				domEventList: _domEventList
-
-				//aQuery的事件
-			},
-			error: function( isMsgDiv ) {
-				/// <summary>抛出异常</summary>
-				/// <param name="isMsgDiv" type="Boolean">是否以div内容出现否则为title</param>
-				/// <returns type="self" />
-				$.event.document.addHandler( window, "error", function( e, url, line ) {
-					var msg = e.message || "no message",
-						filename = e.filename || e.sourceURL || e.stacktrace || url;
-					line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
-				} );
-				return this;
-			},
-
-			_initHandler: function( ele ) {
-				/// <summary>初始化事件集</summary>
-				/// <param name="ele" type="Element/undefined">元素</param>
-				/// <private/>
-				var data = utilData.get( ele, "_handlers_" );
-				if ( !data ) {
-					data = new CustomEvent();
-					utilData.set( ele, "_handlers_", data )
-				}
-				return this;
-			},
-
-			removeHandler: function( ele, type, fun ) {
-				/// <summary>给aQuery或元素添加事件</summary>
-				/// <para>$.removeHandler(ele,"click",fun)</para>
-				/// <para>$.removeHandler("ajaxStart",fun)</para>
-				/// <param name="ele" type="Element/String">元素或类型</param>
-				/// <param name="type" type="String/Function">方法或类型</param>
-				/// <param name="fun" type="Function/undefined">方法或空</param>
-				/// <returns type="self" />
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data, proxy = fun.__guid || fun,
-						types = type.split( " " ),
-						i = types.length - 1,
-						item;
-
-					for ( ; i >= 0; i-- ) {
-						item = types[ i ];
-						if ( _domEventList[ item ] ) {
-							item = eventHooks.type( item );
-							$.event.document._removeHandler( ele, item, proxy );
-						}
-					}
-
-					data = _initCustomEvent( ele, "_handlers_" );
-					type && fun && data.removeHandler( type, fun );
-
-				} else {
-					$.bus.removeHandler( ele, type );
-				}
-				return this;
-			},
-
-			searchCustomEvent: function( type ) {
-				/// <summary>搜索注册的自定义事件</summary>
-				/// <param name="type" type="String">事件名</param>
-				/// <returns type="String" />
-				var key = $.event.customEventName[ type ];
-				//要改。为了addevent。
-				//            $.each(, function (value, name) {
-				//                if (type === name) {
-				//                    key = value
-				//                    return false;
-				//                }
-				//            }, this);
-				return key || "";
-			},
-
-			toggle: function( ele, funParas ) {
-				/// <summary>切换点击或解除绑定</summary>
-				/// <para>若只有ele 就解除绑定</para>
-				/// <param name="ele" type="Element">element元素</param>
-				/// <param name="funParas" type="Function:[]/undefined">方法组</param>
-				/// <returns type="self" />
-				var arg = $.util.argToArray( arguments, 1 ),
-					index = 0,
-					data;
-				if ( arg.length > 1 ) {
-					if ( data = utilData.get( ele, "_toggle_" ) ) {
-						arg = data.arg.concat( arg );
-						index = data.index;
-					}
-
-					utilData.set( ele, "_toggle_", {
-						index: index,
-						arg: arg
-					} );
-
-					$.addHandler( ele, "click", this._toggle );
-				} else {
-					$.removeHandler( ele, "click", this._toggle );
-					$.removeData( ele, "_toggle_" );
-				}
-				//移除事件 添加至event 移除 arg len
-				return this;
-			},
-			_toggle: function( e ) {
-				var self = $.event.document.getTarget( e ),
-					data = utilData.get( self, "_toggle_" ),
-					arg = data.arg,
-					len = arg.length,
-					index = data.index % len;
-
-				arg[ index ].call( self, e );
-				utilData.set( self, "_toggle_", {
-					index: index + 1,
-					arg: arg
-				} );
-			},
-
-			trigger: function( ele, type, context, paras ) {
-				/// <summary>
-				/// 触发自定义或者原生事件
-				/// </summary>
-				/// <param name="ele" type="Element">dom对象</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <param name="context" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
-				/// <param name="paras" type="para:[any]">当为自定义事件时 为参数列表</param>
-				/// <returns type="self"></returns>
-				if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
-					var data;
-					if ( data = _domEventList[ type ] ) {
-						type = eventHooks.type( type );
-						typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
-					} else {
-						( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
-					}
-				} else {
-					$.bus.trigger.apply( $.bus, arguments );
-				}
-				return this;
-			}
-		},
 		i = 0,
 		len;
 
-	event.on = event.addHandler;
-	event.off = event.removeHandler;
-	event.clear = event.clearHandlers;
+	/**
+	 * Export event util.
+	 * <br /> It create bus to send or listion message for aQuery life-cycle.
+	 * @exports main/event
+	 * @requires module:base/config
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/client
+	 * @requires module:base/array
+	 * @requires module:main/query
+	 * @requires module:main/CustomEvent
+	 * @requires module:main/data
+	 */
+	var event = {
+		/**
+		 * Add an event Handler to element.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( ele, type, fn ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy, item, types = type.split( " " ),
+					i = types.length - 1;
 
-	$.extend( event );
+				data = _initCustomEvent( ele, "_handlers_" );
+				proxy = eventHooks.proxy( fn, this );
 
-	$.fn.extend( {
-		addHandler: function( type, fun ) {
-			/// <summary>给当前$所有DOM元素添加事件</summary>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
-			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
-			return this.each( function( ele ) {
-				//                    fun = eventHooks.proxy(fun, this);
-				//                    var key, result
-				//                if ((key = $.searchCustomEvent(type))) {//直接绑定在 container ele上的事件
-				//                    key = utilData.get(ele, key);
-				//                    key && key.addHandler(type, fun);
-				//                    return;
-				//                }
-				//type = eventHooks.type(type);
-				$.addHandler( ele, type, fun );
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document._addHandler( ele, item, proxy );
+					}
+				}
+
+				type && fn && data.addHandler( type, fn );
+			}
+			return this;
+		},
+		/**
+		 * Add a event Handler to element and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( ele, type, fn ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy, item, types = type.split( " " ),
+					i = types.length - 1;
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				proxy = eventHooks.proxy( fn, this );
+
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( data.hasHandler( item, fn ) == -1 && domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document.once( ele, item, proxy );
+					}
+				}
+
+				type && fn && data.once( type, proxy );
+			}
+			return this;
+		},
+		/**
+		 * Remove an event Handler from element.
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( ele, type, fn ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data, proxy = fn.__guid || fn,
+					types = type.split( " " ),
+					i = types.length - 1,
+					item;
+
+				for ( ; i >= 0; i-- ) {
+					item = types[ i ];
+					if ( domEventList[ item ] ) {
+						item = eventHooks.type( item );
+						event.document._removeHandler( ele, item, proxy );
+					}
+				}
+
+				data = _initCustomEvent( ele, "_handlers_" );
+				type && fn && data.removeHandler( type, fn );
+
+			}
+			return this;
+		},
+		/**
+		 * Remove all event Handler from element.
+		 * @param {Element}
+		 * @param {String} [type] - If type is undefined then clear all handlers.
+		 * @returns {this}
+		 */
+		clearHandlers: function( ele, type ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data = utilData.get( ele, "_handlers_" );
+				if ( !data ) {
+					return this;
+				}
+				var handlerMap = data._handlerMap,
+					map = {},
+					j = 0,
+					len = 0,
+					i, item, fun;
+
+				if ( type ) {
+					var types = type.split( " " ),
+						z = types.length - 1;
+					for ( ; z >= 0; z-- ) {
+						item = types[ z ];
+						if ( item in handlerMap ) {
+							map[ item ] = 1;
+						}
+					}
+				}
+
+				for ( i in map ) {
+					item = data._nameSpace( i );
+					for ( j = 0, len = item.length; j < len; j++ ) {
+						fun = item[ j ];
+						domEventList[ i ] && event.document._removeHandler( ele, i, fun.__guid || fun );
+					}
+				}
+				data.clearHandlers( type );
+			}
+			return this;
+		},
+		/**
+		 * Clone the current element`s handler to another element.
+		 * @param {Element}
+		 * @param {Element}
+		 * @returns {this}
+		 */
+		cloneHandlers: function( ele, handlerEve ) {
+			var customEvent = utilData.get( handlerEve, "_handlers_" );
+			if ( customEvent ) {
+				var handlerMap = customEvent._handlerMap,
+					j = 0,
+					len = 0,
+					i, item, fun;
+
+				for ( i in handlerMap ) {
+					item = customEvent._nameSpace( i );
+					for ( j = 0, len = item.length; j < len; j++ ) {
+						fun = item[ j ];
+						domEventList[ i ] && event.document._addHandler( ele, i, fun.__guid || fun );
+					}
+				}
+				event.clearHandlers( ele );
+				utilData.set( ele, "_handlers_", customEvent );
+			}
+			return this;
+		},
+		/**
+		 * Has the element an event handler.
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Function}
+		 * @returns {Number} fn - "-1" means has not.
+		 */
+		hasHandler: function( ele, type, fn ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var proxy;
+				if ( domEventList[ type ] ) {
+					proxy = fn.__guid || fn;
+					type = eventHooks.type( type );
+					return event.document.hasHandler( ele, type, proxy );
+				}
+			}
+			return -1;
+		},
+
+		document: {
+			addHandler: function( ele, type, fn ) {
+				/// <summary>给DOM元素添加事件</summary>
+				/// <para>例:"mousedown mouseup"</para>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <param name="fn" type="Function">事件方法</param>
+				/// <returns type="null" />
+				var types = type.split( " " ),
+					i = types.length - 1;
+				for ( ; i >= 0; i-- ) {
+					this._addHandler( ele, types[ i ], fn );
+				}
+
+			},
+			_addHandler: function( ele, type, fn ) {
+				if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
+				else if ( ele.attachEvent ) ele.attachEvent( "on" + type, fn );
+				else {
+					ele[ "on" + type ] = fn;
+					ele = null;
+				}
+			},
+			once: function( ele, type, fn ) {
+				var self = this,
+					fnproxy = function() {
+						self._removeHandler( ele, type, fnproxy );
+						fn.apply( this, arguments );
+					};
+				return this._addHandler( ele, type, fnproxy );
+			},
+			removeHandler: function( ele, type, fn ) {
+				/// <summary>给DOM元素移除事件</summary>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <param name="fn" type="Function">事件方法</param>
+				/// <returns type="null" />
+				var types = type.split( " " ),
+					i = types.length - 1;
+				for ( ; i >= 0; i-- ) {
+					this._removeHandler( ele, types[ i ], fn );
+				}
+			},
+			_removeHandler: function( ele, type, fn ) {
+				if ( ele.removeEventListener ) ele.removeEventListener( type, fn, false );
+				else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
+				else ele[ "on" + type ] = null;
+			},
+			// , clearHandlers: function (ele) {
+			//     /// <summary>移除dom元素的所有事件</summary>
+			//     /// <param name="ele" type="Element">元素</param>
+			// }
+
+			createEvent: function( type ) {
+				/// <summary>创建原生事件对象</summary>
+				/// <param name="type" type="String">事件类型</param>
+				/// <returns type="Event" />
+				var e;
+				if ( document.createEvent ) {
+					e = document.createEvent( type );
+				} else if ( document.createEventObject ) {
+					e = document.createEventObject();
+				}
+				return e;
+			},
+			dispatchEvent: function( ele, event, type ) {
+				/// <summary>触发事件</summary>
+				/// <param name="ele" type="Element">元素</param>
+				/// <param name="event" type="Event">事件对象</param>
+				/// <param name="type" type="String">事件类型</param>
+				/// <returns type="null" />
+				if ( ele.dispatchEvent ) {
+					ele.dispatchEvent( event );
+				} else if ( ele.fireEvent ) {
+					ele.fireEvent( "on" + type, event, false );
+				}
+			},
+			getCharCode: function( e ) {
+				/// <summary>获得兼容的charCode对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Number" />
+				return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
+			},
+			getEvent: function( e ) {
+				/// <summary>获得兼容的事件event对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="event" />
+				return e || window.event;
+			},
+			getTarget: function( e ) {
+				/// <summary>获得事件对象</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Element" />
+				return e.srcElement || e.target;
+			},
+			imitation: {
+				_keySettings: {
+					bubbles: true,
+					cancelable: true,
+					view: document.defaultView,
+					detail: 0,
+					ctrlKey: false,
+					altKey: false,
+					shiftKey: false,
+					metaKey: false,
+					keyCode: 0,
+					charCode: 0
+				},
+				eventList: domEventList,
+				_editKeyCharCode: function( setting ) {
+					var code = event.document.getCharCode( setting );
+					delete setting.charCode;
+					delete setting.keyCode;
+					delete setting.which;
+
+					if ( client.engine.webkit ) {
+						setting.charCode = code;
+					} else if ( client.engine.ie ) {
+						setting.charCode = code;
+					} else {
+						setting.keyCode = setting.which = code;
+					}
+				},
+				key: function( ele, type, paras ) {
+					/// <summary>触发DOM元素key事件</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = utilExtend.extend( {}, eventF.imitation._keySettings, paras ),
+						opt = settings,
+						e, i, name;
+					eventF.imitation._editKeyCharCode( settings );
+					if ( client.browser.firefox ) {
+						e = createEvent( "KeyEvents" );
+						e.initKeyEvent( type, opt.bubbles, opt.cancelable, opt.view, opt.ctrlKey, opt.altKey, opt.shiftKey, opt.metaKey, opt.keyCode, opt.charCode );
+					} else if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						name = "Events";
+						client.browser.safari && client.browser.safari < 3 && ( name = "UIEvents" );
+						e = createEvent( name );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					}
+					eventF.dispatchEvent( ele, e, type );
+
+				},
+				_mouseSettings: {
+					bubbles: true,
+					cancelable: true,
+					view: document.defaultView,
+					detail: 0,
+					screenX: 0,
+					screenY: 0,
+					clientX: 0,
+					clientY: 0,
+					ctrlKey: false,
+					altKey: false,
+					metaKey: false,
+					shiftKey: false,
+					button: 0,
+					relatedTarget: null
+				},
+				mouse: function( ele, type, paras ) {
+					/// <summary>触发DOM元素Mouse事件</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = utilExtend.extend( {}, eventF.imitation._mouseSettings, paras ),
+						e, i = settings;
+					if ( client.browser.safari && client.browser.safari < 3 ) {
+						e = createEvent( "UIEvents" );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						e = createEvent( "MouseEvents" );
+						e.initMouseEvent( type, i.bubbles, i.cancelable, i.view, i.detail, i.screenX, i.screenY, i.clientX, i.clientY, i.ctrlKey, i.altKey, i.metaKey, i.shiftKey, i.button, i.relatedTarget );
+					}
+					eventF.dispatchEvent( ele, e, type );
+
+				},
+				_htmlSettings: {
+					bubbles: true,
+					cancelable: true
+				},
+				html: function( ele, type, paras ) {
+					/// <summary>触发DOM元素html事件:blur focus focusin focusout</summary>
+					/// <param name="ele" type="Element">dom元素</param>
+					/// <param name="type" type="String">事件类型</param>
+					/// <param name="paras" type="Object">模拟事件参数</param>
+					/// <returns type="null" />
+					var eventF = event.document,
+						createEvent = eventF.createEvent,
+						settings = utilExtend.extend( {}, eventF.imitation._htmlSettings, paras ),
+						e, i = settings;
+
+					if ( client.browser.ie678 ) {
+						e = createEvent();
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					} else {
+						e = createEvent( "HTMLEvents" );
+						e.initEvent( type, settings.bubbles, settings.cancelable );
+						delete settings.bubbles;
+						delete settings.cancelable;
+						for ( i in settings ) {
+							e[ i ] = settings[ i ];
+						}
+					}
+
+					eventF.dispatchEvent( ele, e, type );
+
+				}
+			},
+			preventDefault: function( e ) {
+				/// <summary>阻止Element对象默认行为</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="null" />
+				if ( e.preventDefault ) e.preventDefault();
+				else e.returnValue = false;
+			},
+			stopPropagation: function( e ) {
+				/// <summary>阻止Element对象事件的冒泡</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="null" />
+				if ( e.stopPropagation ) e.stopPropagation();
+				else e.cancelBubble = true;
+			},
+			getButton: function( e ) {
+				/// <summary>获得鼠标的正确点击类型</summary>
+				/// <param name="e" type="Event">event对象</param>
+				/// <returns type="Number" />
+				if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
+				else {
+					switch ( e.button ) {
+						case 0:
+						case 1:
+						case 3:
+						case 5:
+						case 7:
+							return 0;
+						case 2:
+						case 6:
+							return 2;
+						case 4:
+							return 1;
+					}
+				}
+			},
+			on: function( ele, type, fn ) {
+				return this.addHandler( ele, type, fn );
+			},
+			off: function( ele, type, fn ) {
+				return this.removeHandler( ele, type, fn );
+			}
+		},
+
+		/**
+		 * Listen error form window.
+		 * @returns {this}
+		 */
+		error: function() {
+			event.document.addHandler( window, "error", function( e, url, line ) {
+				var msg = e.message || "no message",
+					filename = e.filename || e.sourceURL || e.stacktrace || url;
+				line = e.lineno || e.lineNumber || e.number || e.lineNumber || e.line || line;
+				$.logger( "line", line, "message", msg, "at", filename );
+			} );
+			return this;
+		},
+
+		_initHandler: function( ele ) {
+			var data = utilData.get( ele, "_handlers_" );
+			if ( !data ) {
+				data = new CustomEvent();
+				utilData.set( ele, "_handlers_", data );
+			}
+			return this;
+		},
+		/**
+		 * Toggle event.
+		 * @example
+		 * var test1 = $("#a")[0];
+		 * event.toggle( test1, function() {
+		 *   alert(1)
+		 * }, function() {
+		 *   alert(2)
+		 * });
+		 * @param {Element}
+		 * @param {...Function} - Handelrs.
+		 * @returns {this}
+		 */
+		toggle: function( ele, funParas ) {
+			var arg = $.util.argToArray( arguments, 1 ),
+				index = 0,
+				data;
+			if ( arg.length > 1 ) {
+				if ( data = utilData.get( ele, "_toggle_" ) ) {
+					arg = data.arg.concat( arg );
+					index = data.index;
+				}
+
+				utilData.set( ele, "_toggle_", {
+					index: index,
+					arg: arg
+				} );
+
+				event.addHandler( ele, "click", this._toggle );
+			} else {
+				event.removeHandler( ele, "click", this._toggle );
+				event.removeData( ele, "_toggle_" );
+			}
+			//移除事件 添加至event 移除 arg len
+			return this;
+		},
+		_toggle: function( e ) {
+			var self = event.document.getTarget( e ),
+				data = utilData.get( self, "_toggle_" ),
+				arg = data.arg,
+				len = arg.length,
+				index = data.index % len;
+
+			arg[ index ].call( self, e );
+			utilData.set( self, "_toggle_", {
+				index: index + 1,
+				arg: arg
 			} );
 		},
-		once: function( type, fun ) {
-			if ( !typed.isStr( type ) || !( typed.isFun( fun ) || fun === null ) ) return this;
-			return this.each( function( ele ) {
-				$.once( ele, type, fun );
-			} );
-		},
+		/**
+		 * Trigger an native or custom event.
+		 * @example
+		 * var test1 = $("#a");
+		 * var fn1 = function(str) {
+		 *   $.logger(typed.isEvent(str));
+		 *   $.logger({}.toString.call(str));
+		 * }
+		 * test1.on("mousedown", fn1);
+		 * test1.trigger("mousedown", {
+		 *   screenX: 4
+		 * });
+		 * test1.on("my.test1", fn1);
+		 * test1.trigger("my.test1", {
+		 *   screenX: 5
+		 * });
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
+		trigger: function( ele, type, context, paras ) {
+			if ( typed.isEle( ele ) || typed.isWindow( ele ) ) {
+				var data;
+				if ( data = domEventList[ type ] ) {
+					type = eventHooks.type( type );
+					typed.isFun( data ) ? data( ele, type, context ) : $.logger( "trigger", "triggering" + type + " is not supported" );
+				} else {
+					( data = utilData.get( ele, "_handlers_" ) ) && data.trigger.apply( data, [ type, context ].concat( $.util.argToArray( arguments, 3 ) ) );
+				}
+			}
+			return this;
+		}
+	};
 
+	utilExtend.easyExtend( event, {
+		/**
+		 * Alias addHandler.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		on: event.addHandler,
+		/**
+		 * Alias removeHandler.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		off: event.removeHandler,
+		/**
+		 * Alias clearHandlers.
+		 * @memberOf module:main/event
+		 * @method
+		 * @param {Element}
+		 * @param {String} [type] - If type is undefined then clear all handlers.
+		 * @returns {this}
+		 */
+		clear: event.clearHandlers
+	} );
+
+	var bus = new CustomEvent();
+
+	$.extend( /** @lends aQuery */ {
+		/**
+		 * Add an event Handler to bus.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( type, fn ) {
+			bus.addHandler( type, fn );
+			return this;
+		},
+		/**
+		 * Remove an event Handler from bus.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( type, fn ) {
+			bus.removeHandler( type, fn );
+		},
+		/**
+		 * Clear all event Handler from bus.
+		 * @param {String} - "click", "swap.down"
+		 * @returns {this}
+		 */
 		clearHandlers: function( type ) {
-			/// <summary>移除dom元素的所有事件或单独某一类事件</summary>
-			/// <param name="type" type="String/undefinded">事件类型</param>
-			/// <returns type="self" />
-			return this.each( function( ele ) {
-				$.clearHandlers( ele, type );
-			} );
+			bus.clearHandlers( type );
+			return this;
+		},
+		/**
+		 * Has the element an event handler.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		hasHandler: function( type, fn ) {
+			return bus.hasHandler( type, fn );
+		},
+		/**
+		 * Trigger an event to bus.
+		 * @param {Element}
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
+		trigger: function() {
+			bus.trigger.apply( bus, arguments );
+			return this;
+		},
+		/**
+		 * Add a event Handler to element and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( type, fn ) {
+			bus.once( type, fn );
+			return this;
 		},
 
-		delegate: function( selector, type, fun ) {
-			/// <summary>作为委托监听子元素</summary>
-			/// <param name="selector" type="String">查询语句</param>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
+		/** {CustomEvent} */
+		bus: bus,
+
+		/**
+		 * Add "ajaxStart" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxStart: function( fn ) {
+			return $.addHandler( "ajaxStart", fn );
+		},
+		/**
+		 * Add "ajaxStop" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxStop: function( fn ) {
+			return $.addHandler( "ajaxStop", fn );
+		},
+		/**
+		 * Add "ajaxTimeout" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		ajaxTimeout: function( fn ) {
+			return $.addHandler( "ajaxTimeout", fn );
+		},
+		/**
+		 * Add "getJSStart" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSStart: function( fn ) {
+			return $.addHandler( "getJSStart", fn );
+		},
+		/**
+		 * Add "getJSStop" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSStop: function( fn ) {
+			return $.addHandler( "getJSStop", fn );
+		},
+		/**
+		 * Add "getJSTimeout" event Handler to bus.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		getJSTimeout: function( fn ) {
+			return $.addHandler( "getJSTimeout", fn );
+		},
+	} );
+
+	$.extend( {
+		/**
+		 * Add an event Handler to bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		on: $.addHandler,
+		/**
+		 * Remove an event Handler from bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		off: $.removeHandler,
+		/**
+		 * Clear all event Handler from bus.
+		 * @memberOf aQuery
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		clear: $.clearHandlers
+	} );
+
+
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Add an event Handler to elements.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		addHandler: function( type, fn ) {
+			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			return this.each( function( ele ) {
+				event.addHandler( ele, type, fn );
+			} );
+		},
+		/**
+		 * Add a event Handler to elements and do once.
+		 * <br /> It will remove handler after done.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		once: function( type, fn ) {
+			if ( !typed.isStr( type ) || !( typed.isFun( fn ) || fn === null ) ) return this;
+			return this.each( function( ele ) {
+				event.once( ele, type, fn );
+			} );
+		},
+		/**
+		 * Clear all event Handler from elements.
+		 * @param {String} - "click", "swap.down"
+		 * @returns {this}
+		 */
+		clearHandlers: function( type ) {
+			return this.each( function( ele ) {
+				event.clearHandlers( ele, type );
+			} );
+		},
+		/**
+		 * Delegate children event handler from parentNode.
+		 * @param {String} - "div>a"
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		delegate: function( selector, type, fn ) {
 			return this.each( function( parentNode ) {
-				$.addHandler( parentNode, type, function( e ) {
+				event.addHandler( parentNode, type, function( e ) {
 					var
-					eleCollection = $.find( selector, parentNode ),
-						target = event.event.document.getTarget( e ),
+					eleCollection = query.find( selector, parentNode ),
+						target = event.document.getTarget( e ),
 						ret = array.inArray( eleCollection || [], target );
 
 					if ( ret > -1 ) {
-						fun.call( target, e );
+						fn.call( target, e );
 					}
 
 				} );
 			} );
 		},
-
-		removeHandler: function( type, fun ) {
-			/// <summary>给所有DOM元素移除事件</summary>
-			/// <para>例:"mousedown mouseup"</para>
-			/// <param name="type" type="String">事件类型</param>
-			/// <param name="fun" type="Function">事件方法</param>
-			/// <returns type="self" />
-			if ( !typed.isStr( type ) || !typed.isFun( fun ) ) return this;
+		/**
+		 * Remove an event Handler from elements.
+		 * @param {String} - "click", "swap.down"
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		removeHandler: function( type, fn ) {
+			if ( !typed.isStr( type ) || !typed.isFun( fn ) ) return this;
 			return this.each( function( ele ) {
-				//fun = fun.__guid || fun;
-				//                var key, result
-				//                if ((key = $.searchCustomEvent(type))) {
-				//                    key = utilData.get(ele, key);
-				//                    key && key.removeHandler(type, fun);
-				//                    return;
-				//                }
-				//type = eventHooks.type(type);
-				$.removeHandler( ele, type, fun );
+				event.removeHandler( ele, type, fn );
 			} );
 		},
-
 		_initHandler: function() {
-			/// <summary>初始化事件集</summary>
-			/// <private/>
 			return this.each( function( ele ) {
-				$._initHandler( ele );
+				event._initHandler( ele );
 			} );
 		},
-
+		/**
+		 * Toggle event.
+		 * @example
+		 * var test1 = $("#a");
+		 * test1.toggle(function() {
+		 *   alert(1)
+		 * }, function() {
+		 *   alert(2)
+		 * });
+		 * @param {Element}
+		 * @param {...Function} - Handelrs.
+		 * @returns {this}
+		 */
 		toggle: function( funParas ) {
-			/// <summary>切换点击或解除绑定</summary>
-			/// <para>若没有funParas 就解除绑定</para>
-			/// <param name="funParas" type="Function:[]/Array[Function]">方法组</param>
-			/// <returns type="self" />
 			var arg = typed.isArr( funParas ) ? funParas : $.util.argToArray( arguments, 0 ),
 				temp, i = 0,
 				ele;
 			for ( ; ele = this.eles[ i++ ]; ) {
 				temp = arg.concat();
 				temp.splice( 0, 0, ele );
-				$.toggle.apply( $, temp );
+				event.toggle.apply( event, temp );
 			}
 			return this;
 		},
-		// toggleClass: function(ele, classParas) {
-		//     /// <summary>切换样式</summary>
-		//     /// <param name="ele" type="Element">element元素</param>
-		//     /// <param name="classParas" type="String:[]">样式名</param>
-		//     /// <returns type="self" />
-		//     var arg = typed.isArr(classParas) ? classParas : $.util.argToArray(arguments, 0),
-		//         temp;
-		//     for(; ele = this.eles[i++];) {
-		//         temp = arg.concat();
-		//         temp.splice(0, 0, ele);
-		//         $.toggleClass.apply($, temp);
-		//     }
-		//     return this;
-		//     //            return this.each(function (ele) {
-		//     //                temp = arg.concat();
-		//     //                temp.splice(0, 0, ele)
-		//     //                $.toggleClass.apply($, temp);
-		//     //            });
-		//     //移除事件 添加至event 移除arg len
-		// },
+		/**
+		 * Trigger an event from elements.
+		 * @param {String}
+		 * @param {Object} - Function context.
+		 * @param {...Object}
+		 * @returns {this}
+		 */
 		trigger: function( type, a, b, c ) {
-			/// <summary>
-			/// 触发自定义或者原生事件
-			/// </summary>
-			/// <param name="ele" type="Element">dom对象</param>
-			/// <param name="a" type="String">事件类型</param>
-			/// <param name="b" type="Object">当为自定义事件时 为作用域 否则为事件参数</param>
-			/// <param name="c" type="para:[any]">当为自定义事件时 为参数列表</param>
-			/// <returns type="self"></returns>
 			var arg = $.util.argToArray( arguments );
 			return this.each( function( ele ) {
-				$.trigger.apply( null, [ ele ].concat( arg ) );
+				event.trigger.apply( null, [ ele ].concat( arg ) );
 			} );
 		},
-
-		blur: function( fun ) {
-			/// <summary>绑定或触发mousedown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			var type = arguments[ 1 ] || "blur";
-			return typed.isFun( fun ) ? this.addHandler( type, fun ) : this.trigger( type, fun );
+		/**
+		 * Add "blur" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		blur: function( fn ) {
+			return this.addHandler( "blur", fn );
 		},
-
-		focus: function( fun ) {
-			/// <summary>绑定或触发focus事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focus" );
+		/**
+		 * Add "focus" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focus: function( fn ) {
+			return this.addHandler( "focus", fn );
 		},
-
-		focusin: function( fun ) {
-			/// <summary>绑定或触发focusin事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focusin" );
+		/**
+		 * Add "focusin" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focusin: function( fn ) {
+			return this.addHandler( "focusin", fn );
 		},
-
-		focusout: function( fun ) {
-			/// <summary>绑定或触发focusout事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "focusout" );
+		/**
+		 * Add "focusout" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		focusout: function( fn ) {
+			return this.addHandler( "focusout", fn );
 		},
-
-		load: function( fun ) {
-			/// <summary>绑定或触发load事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "load" );
+		/**
+		 * Add "load" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		load: function( fn ) {
+			return this.addHandler( "load", fn );
 		},
-
-		resize: function( fun ) {
-			/// <summary>绑定或触发resize事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "resize" );
+		/**
+		 * Add "resize" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		resize: function( fn ) {
+			return this.addHandler( "resize", fn );
 		},
-
-		scroll: function( fun ) {
-			/// <summary>绑定或触发scroll事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "scroll" );
+		/**
+		 * Add "resize" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		scroll: function( fn ) {
+			return this.addHandler( "scroll", fn );
 		},
-
-		unload: function( fun ) {
-			/// <summary>绑定或触发unload事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "unload" );
+		/**
+		 * Add "unload" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		unload: function( fn ) {
+			return this.addHandler( "unload", fn );
 		},
-
-		click: function( fun ) {
-			/// <summary>绑定或触发click事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "click" );
+		/**
+		 * Add "click" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		click: function( fn ) {
+			return this.addHandler( "click", fn );
 		},
-
-		dblclick: function( fun ) {
-			/// <summary>绑定或触发dblclick事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "dblclick" );
+		/**
+		 * Add "dblclick" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		dblclick: function( fn ) {
+			return this.addHandler( "dblclick", fn );
 		},
-
-		mousedown: function( fun ) {
-			/// <summary>绑定或触发mousedown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mousedown" );
+		/**
+		 * Add "mousedown" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousedown: function( fn ) {
+			return this.addHandler( "dblclick", fn );
 		},
-
-		mouseup: function( fun ) {
-			/// <summary>绑定或触发mouseup事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseup" );
+		/**
+		 * Add "mouseup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseup: function( fn ) {
+			return this.addHandler( "mouseup", fn );
 		},
-
-		mousemove: function( fun ) {
-			/// <summary>绑定或触发mousemove事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mousemove" );
+		/**
+		 * Add "mousemove" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousemove: function( fn ) {
+			return this.addHandler( "mousemove", fn );
 		},
-
-		mouseover: function( fun ) {
-			/// <summary>绑定或触发mouseover事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseover" );
+		/**
+		 * Add "mouseover" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseover: function( fn ) {
+			return this.addHandler( "mouseover", fn );
 		},
-
-		mouseout: function( fun ) {
-			/// <summary>绑定或触发mouseout事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "mouseout" );
+		/**
+		 * Add "mouseout" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseout: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		mouseenter: function( fun ) {
-			/// <summary>绑定或触发mouseenter事件</summary>
-			/// <para>不冒泡</para>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( function( e ) {
-				fun.apply( this, arguments );
-				event.event.document.stopPropagation( e );
-			}, "mouseover" );
+		/**
+		 * Add "mouseenter" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseenter: function( fn ) {
+			return this.addHandler( "mouseover", function( e ) {
+				fn.apply( this, arguments );
+				event.document.stopPropagation( e );
+			} );
 		},
-
-		mouseleave: function( fun ) {
-			/// <summary>绑定或触发mouseleave事件</summary>
-			/// <para>不冒泡</para>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( function( e ) {
-				fun.apply( this, arguments );
-				event.event.document.stopPropagation( e );
-			}, "mouseout" );
+		/**
+		 * Add "mouseleave" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mouseleave: function( fn ) {
+			return this.blur( "mouseout", function( e ) {
+				fn.apply( this, arguments );
+				event.document.stopPropagation( e );
+			} );
 		},
-
-		mousewheel: function( fun ) {
-			/// <summary>添加兼容滚轮事件或触发</summary>
-			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
-				e = $.event.document.getEvent( e );
+		/**
+		 * Add "mousewheel" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		mousewheel: function( fn ) {
+			return this.addHandler( "mousewheel", function( e ) {
+				e = event.document.getEvent( e );
 				var delta = 0;
 				if ( e.wheelDelta ) delta = e.wheelDelta / 120;
 				if ( e.detail ) delta = -e.detail / 3;
 				delta = Math.round( delta );
-				if ( delta ) fun.call( this, delta );
-				$.event.document.stopPropagation( e );
-			} ) : this.trigger( "mousewheel", fun );
+				if ( delta ) fn.call( this, delta );
+				event.document.stopPropagation( e );
+			} );
 		},
-
-		touchwheel: function( fun ) {
-			/// <summary>触摸板事件或触发</summary>
-			/// <param name="fun" type="Function/Object/undefined">事件方法</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "mousewheel", function( e ) {
-				e = $.event.document.getEvent( e );
+		/**
+		 * Add "touchwheel" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		touchwheel: function( fn ) {
+			return this.addHandler( "mousewheel", function( e ) {
+				e = event.document.getEvent( e );
 				var delta = 0,
 					direction = "y";
 				if ( e.wheelDelta ) {
@@ -8231,95 +8118,366 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				e.delta = delta;
 				e.direction = direction;
 
-				$.event.document.stopPropagation( e );
-				$.event.document.preventDefault( e );
+				event.document.stopPropagation( e );
+				event.document.preventDefault( e );
 
 				// if (e.type == "DOMMouseScroll") {
 				//     e.type = "mousewheel";
 				// };
-				fun.call( this, e );
-			} ) : this.trigger( "mousewheel", fun );
+				fn.call( this, e );
+			} );
 		},
-
-		change: function( fun ) {
-			/// <summary>绑定或触发change事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "change" );
+		/**
+		 * Add "change" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		change: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		select: function( fun ) {
-			/// <summary>绑定或触发select事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "select" );
+		/**
+		 * Add "select" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		select: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		submit: function( fun ) {
-			/// <summary>绑定或触发submit事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "submit" );
+		/**
+		 * Add "submit" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		submit: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		keydown: function( fun ) {
-			/// <summary>绑定或触发keydown事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "keydown", function( e ) {
+		/**
+		 * Add "keydown" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		keydown: function( fn ) {
+			return this.addHandler( "keydown", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
-				e.charCode == undefined && ( e.charCode = e.keyCode );
-				fun.call( this, e );
-			} ) : this.trigger( "keydown", fun );
+				e.charCode === undefined && ( e.charCode = e.keyCode );
+				fn.call( this, e );
+			} );
 		},
-
-		keypress: function( fun ) {
-			/// <summary>绑定或触发keypress事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return typed.isFun( fun ) ? this.addHandler( "keypress", function( e ) {
+		/**
+		 * Add "keypress" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
+		keypress: function( fn ) {
+			return this.addHandler( "keypress", function( e ) {
 				client.browser.firefox && e.keyCode || ( e.keyCode = e.which );
-				e.charCode == undefined && ( e.charCode = e.keyCode );
-				fun.call( this, e, String.fromCharCode( e.charCode ) );
-			} ) : this.trigger( "keypress", fun );
+				e.charCode === undefined && ( e.charCode = e.keyCode );
+				fn.call( this, e, String.fromCharCode( e.charCode ) );
+			} );
 		},
-
-		keyup: function( fun ) {
-			/// <summary>绑定或触发keyup事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "keyup" );
+    /**
+     * Add "keyup" event handler to elements.
+     * @param {Function}
+     * @returns {this}
+     */
+		keyup: function( fn ) {
+			return this.addHandler( "mouseout", fn );
 		},
-
-		error: function( fun ) {
-			/// <summary>绑定或触发error事件</summary>
-			/// <param name="fun" type="Function/Object/undefined">不存在则触发</param>
-			/// <returns type="self" />
-			return this.blur( fun, "error" );
+    /**
+     * Add "keyup" event handler to elements.
+     * @param {Function}
+     * @returns {this}
+     */
+		error: function( fn ) {
+			return this.addHandler( "error", fn );
 		}
 	} );
 
-	$.fn.on = $.fn.addHandler;
-	$.fn.off = $.fn.removeHandler;
-	$.fn.clear = $.fn.clearHandlers;
+	$.fn.extend( {
+		on: $.fn.addHandler,
+		off: $.fn.removeHandler,
+		clear: $.fn.clearHandlers
+	} );
 
 	for ( i = 0, len = mouse.length; i < len; i++ ) {
-		_domEventList[ mouse[ i ] ] = event.event.document.imitation.mouse;
+		domEventList[ mouse[ i ] ] = event.document.imitation.mouse;
 	}
 	for ( i = 0, len = mutation.length; i < len; i++ ) {
-		_domEventList[ mutation[ i ] ] = 1;
+		domEventList[ mutation[ i ] ] = 1;
 	}
 	for ( i = 0, len = key.length; i < len; i++ ) {
-		_domEventList[ key[ i ] ] = event.event.document.imitation.key;
+		domEventList[ key[ i ] ] = event.document.imitation.key;
 	}
 	for ( i = 0, len = html.length; i < len; i++ ) {
-		_domEventList[ html[ i ] ] = event.event.document.imitation.html;
+		domEventList[ html[ i ] ] = event.document.imitation.html;
 	}
 	for ( i = 0, len = other.length; i < len; i++ ) {
-		_domEventList[ other[ i ] ] = 1;
+		domEventList[ other[ i ] ] = 1;
 	}
 
 	return event;
+} );
+
+/*=======================================================*/
+
+/*===================main/attr===========================*/
+﻿aQuery.define( "main/attr", [ "base/typed", "base/extend", "base/support" ], function( $, typed, utilExtend, support, undefined ) {
+	"use strict";
+	//暂不要那么多hooks
+	var fixSpecified = {
+		name: true,
+		id: true,
+		coords: true
+	},
+		propFix = {
+			tabindex: "tabIndex",
+			readonly: "readOnly",
+			"for": "htmlFor",
+			"class": "className",
+			maxlength: "maxLength",
+			cellspacing: "cellSpacing",
+			cellpadding: "cellPadding",
+			rowspan: "rowSpan",
+			colspan: "colSpan",
+			usemap: "useMap",
+			frameborder: "frameBorder",
+			contenteditable: "contentEditable"
+		}, rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i;
+	/**
+	 * @pubilc
+	 * @exports main/attr
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/support
+	 */
+	var attr = {
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {String}
+		 */
+		getAttr: function( ele, name ) {
+			var ret;
+			if ( !support.getSetAttribute ) {
+				ret = ele.getAttributeNode( name );
+				return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
+					ret.nodeValue :
+					undefined;
+			}
+			return ( ret = ele.getAttributeNode( name ) ) ? ret.nodeValue : undefined;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice, then return "America|England"
+		 * @param {Element}
+		 * @returns {String}
+		 */
+		getVal: function( ele ) {
+			var type = ele.type.toUpperCase(),
+				result;
+			if ( typed.isNode( ele, "select" ) ) {
+				result = ele.value;
+				if ( typed.isNul( result ) || ele.multiple == true ) {
+					result = [];
+					$( ele ).posterity( ":selected" ).each( function( ele ) {
+						result.push( ele.innerHTML );
+					} );
+					result = result.join( "|" );
+				}
+				return result;
+			} else if ( typed.isNode( ele, "select" ) && ( type == "CHECKBOX" || type == "RADIO" ) )
+				return ele.checked.toString();
+			else
+				return ele.value.toString();
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @returns {this}
+		 */
+		removeAttr: function( ele, key ) {
+			var propName, attrNames, name, l, isBool, i = 0;
+
+			if ( key && ele.nodeType === 1 ) {
+				attrNames = key.toLowerCase().split( /\s+/ );
+				l = attrNames.length;
+
+				for ( ; i < l; i++ ) {
+					name = attrNames[ i ];
+
+					if ( name ) {
+						propName = propFix[ name ] || name;
+						isBool = rboolean.test( name );
+
+						if ( !isBool ) {
+							$.setAttr( ele, name, "" );
+						}
+						ele.removeAttribute( support.getSetAttribute ? name : propName );
+
+						if ( isBool && propName in ele ) {
+							ele[ propName ] = false;
+						}
+					}
+				}
+			}
+			return this;
+		},
+		/**
+		 * @param {Element}
+		 * @param {String}
+		 * @param {String|Number}
+		 * @returns {this}
+		 */
+		setAttr: function( ele, name, value ) {
+			if ( value == null ) {
+				return $.removeAttr( ele, name );
+			}
+			if ( !support.getSetAttribute ) {
+				var ret = ele.getAttributeNode( name );
+				if ( !ret ) {
+					ret = document.createAttribute( name );
+					ele.setAttributeNode( ret );
+				}
+				ret.nodeValue = value + "";
+			} else {
+				ele.setAttribute( name, value );
+			}
+			return this;
+		},
+		/**
+		 * Exception select, checkbox, radio. <br/>
+		 * If select is multiple choice and value equals inner HTML of one element.
+		 * @param {Element}
+		 * @param {String|Boolean|Number}
+		 * @returns {this}
+		 */
+		setVal: function( ele, value ) {
+			var type = ele.type.toUpperCase();
+			if ( typed.isNode( ele, "select" ) ) {
+				if ( typed.isStr( value ) || typed.isNum( value ) )
+					value = [ value ];
+				$( ele ).find( "option" ).each( function( ele ) {
+					ele.selected = false;
+				} ).each( function( ele, index ) {
+					$.each( value, function( val ) {
+						if ( index === val || ele.innerHTML === val )
+							ele.selected = true;
+					}, this );
+				} );
+			} else if ( typed.isNode( ele, "input" ) && ( type == "CHECKBOX" || type == "RADIO" ) ) {
+				if ( value === "checked" || value === "true" || value === true )
+					ele.checked = true;
+				else
+					ele.value = value.toString();
+			} else
+				ele.value = value.toString();
+			return this;
+		}
+	};
+
+	$.extend( attr );
+
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Set or get attribute.
+		 * @example
+		 * $("#img").attr({
+		 *   width: "100px",
+		 *   height: "100px"
+		 * }).attr("title", "Flower");
+		 * $("#div1").attr("title", "Hello");
+		 * $("#div2").attr("title", "World");
+		 * $("#div1, #div2").attr("title"); // return "Hello"
+		 * @param {String|Object}
+		 * @param {String|Number} [value]
+		 * @returns {this|String}
+		 */
+		attr: function( attr, value ) {
+			if ( typed.isObj( attr ) ) {
+				for ( var i in attr ) {
+					this.each( function( ele ) {
+						$.setAttr( ele, i, attr[ i ] );
+					} );
+				}
+			} else if ( typed.isStr( attr ) ) {
+				if ( value == undefined ) {
+					return $.getAttr( this[ 0 ], attr );
+				} else {
+					this.each( function( ele ) {
+						$.setAttr( ele, attr, value );
+					} );
+				}
+			}
+			return this;
+		},
+		/**
+		 * Remove attribute.
+		 * @param {String}
+		 * @returns {this}
+		 */
+		removeAttr: function( name ) {
+			return this.each( function( ele ) {
+				$.removeAttr( ele, name );
+			} );
+		},
+		/**
+		 * Get or set value.
+		 * @param {String|Boolean|Number} [value]
+		 * @returns {this|String}
+		 */
+		val: function( value ) {
+			return value ? this.each( function( ele ) {
+				$.setVal( ele, value );
+			} ) : $.getVal( this[ 0 ] );
+		}
+	} );
+
+	return attr;
+} );
+
+/*=======================================================*/
+
+/*===================app/Model===========================*/
+aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], function( $, attr, object, CustomEvent, undefined ) {
+	"use strict";
+  this.describe( "Super Model Class" );
+	//有instance 则需要去查找
+	var Model = CustomEvent.extend( {
+		init: function( modelElement ) {
+			this._super();
+			this.element = modelElement;
+			this.id = attr.getAttr( modelElement, "id" ) || null;
+			this.src = attr.getAttr( modelElement, "src" );
+			Model.collection.add( this );
+		},
+		destroy: function() {
+			Model.collection.remove( this );
+		}
+	}, {
+		// getInstance: function( modelElement, ModelObject ) {
+		//   var instance = attr.getAttr( modelElement, "instance" ),
+		//   src = attr.getAttr( modelElement, "src" ),
+		//   model = this.getModel( src );
+
+		//   if ( instance || !model) {
+		//     return ModelObject ? new ModelObject( modelElement ) : new Model( modelElement );
+		//   }
+
+		//   return model;
+		// },
+	} );
+
+	var ModelCollection = object.Collection( Model, {} );
+
+	Model.collection = new ModelCollection;
+
+	object.createPropertyGetterSetter( Model, {
+		element: "-pu -r",
+		id: "-pu -r",
+		src: "-pu -r"
+	} );
+
+	return Model;
 } );
 
 /*=======================================================*/
@@ -10788,12 +10946,12 @@ aQuery.define( "app/View", [
 
 	function getHtmlSrc( id ) {
 		//都只能小写
-		var index = id.lastIndexOf( "view/" );
+		var index = id.lastIndexOf( "views/" );
 
 		if ( index > -1 ) {
-			return id.substring( 0, index ) + id.substring( index, id.length ).replace( /view\//, "xml/" );
+			return id.substring( 0, index ) + id.substring( index, id.length ).replace( /views\//, "xml/" );
 		} else {
-			throw new Error( "View need htmlSrc or path need contains view/'" );
+			throw new Error( "View need htmlSrc or path need contains views/'" );
 		}
 
 	}
@@ -10836,7 +10994,7 @@ aQuery.define( "app/View", [
 				//fix ie7
 				for ( var i = parentNode.childNodes.length - 1, node; i >= 0; i-- ) {
 					node = parentNode.childNodes[ i ];
-					if ( typed.isNode( node, "/controller" ) ) {
+					if ( typed.isNode( node, "/controllers" ) ) {
 						parentNode.removeChild( node );
 					}
 				};
@@ -11318,7 +11476,7 @@ aQuery.define( "app/Application", [
 					type: "ready"
 				} );
 
-				promiseCallback.resolve();
+				promiseCallback && promiseCallback.resolve();
 
 			} );
 
@@ -11514,10 +11672,8 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 
 	$.extend( cls );
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -11527,8 +11683,6 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 			}, this );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {Boolean}
 		 */
@@ -11536,8 +11690,6 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 			return cls.containsClass( this[ 0 ], className );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -11547,8 +11699,6 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @returns {this}
 		 */
@@ -11558,8 +11708,6 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {String}
 		 * @param {String}
 		 * @returns {this}
@@ -11570,16 +11718,12 @@ aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
 			} );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @returns {Number}
 		 */
 		classLength: function() {
 			return cls.classLength( this[ 0 ] );
 		},
 		/**
-		 * @public
-		 * @memberof aQuery.prototype
 		 * @param {Number}
 		 * @returns {String}
 		 */
@@ -13893,14 +14037,14 @@ aQuery.define( "ui/flex", [
 				},
 				enable: function() {
 					// if ( !this.findParent( ) ) {
-					event.event.document.addHandler( window, "resize", this.flexEvent );
+					event.document.addHandler( window, "resize", this.flexEvent );
 					// }
 					this.options.disabled = false;
 					return this;
 				},
 				disable: function() {
 					// if ( !this.findParent( ) ) {
-					event.event.document.removeHandler( window, "resize", this.flexEvent );
+					event.document.removeHandler( window, "resize", this.flexEvent );
 					// }
 					this.options.disabled = true;
 					return this;
@@ -14022,7 +14166,7 @@ aQuery.define( "ui/flex", [
 				},
 				enable: function() {
 					if ( !this.findParent() ) {
-						event.event.document.addHandler( window, "resize", this.resizeEvent );
+						event.document.addHandler( window, "resize", this.resizeEvent );
 						this.target.on( "widget.detect", this.flexEvent );
 					}
 					this.options.disabled = false;
@@ -14030,7 +14174,7 @@ aQuery.define( "ui/flex", [
 				},
 				disable: function() {
 					if ( !this.findParent() ) {
-						event.event.document.removeHandler( window, "resize", this.resizeEvent );
+						event.document.removeHandler( window, "resize", this.resizeEvent );
 						this.target.off( "widget.detect", this.flexEvent );
 					}
 					this.options.disabled = true;
@@ -16948,7 +17092,7 @@ define( "hash/cubicBezier.tween", function() {
 
 				switch ( e.type ) {
 					case "mousedown":
-						if ( !client.system.mobile ) event.event.document.preventDefault( e );
+						if ( !client.system.mobile ) event.document.preventDefault( e );
 					case "touchstart":
 						//event.document.stopPropagation(e);
 						if ( !self.isDown ) {
@@ -17111,7 +17255,7 @@ define( "hash/cubicBezier.tween", function() {
 		};
 	}
 
-	var eventFuns = event.event.document,
+	var eventFuns = event.document,
 		draggable = Widget.extend( "ui.draggable", {
 			container: null,
 			create: function() {
@@ -17410,7 +17554,7 @@ aQuery.define( "ui/swapindicator", [
 	Widget.fetchCSS( "ui/css/swapindicator" );
 	var HORIZONTAL = "H",
 		VERTICAL = "V";
-	var eventFuns = event.event.document;
+	var eventFuns = event.document;
 
 	var swapindicator = Widget.extend( "ui.swapindicator", {
 		create: function() {
@@ -17974,11 +18118,11 @@ aQuery.define( "ui/swapview", [
 
 /*=======================================================*/
 
-/*===================../document/app/view/index===========================*/
-aQuery.define( "@app/view/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swapview" ], function( $, SuperView ) {
+/*===================../document/app/views/index===========================*/
+aQuery.define( "@app/views/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swapview" ], function( $, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/index";
-	SuperView.getStyle( "@app/css/index" );
+	SuperView.getStyle( "@app/styles/index" );
 
 	var View = SuperView.extend( {
 		init: function( contollerElement ) {
@@ -18281,7 +18425,7 @@ aQuery.define( "@app/view/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swa
 			return false;
 		},
 		routing: function( target, e ) {
-			e = event.event.document.getEvent( e );
+			e = event.document.getEvent( e );
 			var item;
 			if ( item = this.iterationKeyList( e ) ) {
 				//item.todo.call(this, e);i
@@ -18292,8 +18436,8 @@ aQuery.define( "@app/view/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swa
 					event: e,
 					keyItem: item
 				} );
-				event.event.document.preventDefault( e );
-				event.event.document.stopPropagation( e );
+				event.document.preventDefault( e );
+				event.document.stopPropagation( e );
 			}
 		}
 	}, {
@@ -18766,8 +18910,8 @@ aQuery.define( "ui/scrollableview", [
 						self.render( x, y, true, opt.boundary );
 						break;
 					case "click":
-						event.event.document.preventDefault( e );
-						event.event.document.stopPropagation( e );
+						event.document.preventDefault( e );
+						event.document.stopPropagation( e );
 
 						self.refreshPosition();
 
@@ -19498,7 +19642,7 @@ aQuery.define( "ui/navitem", [
 				this.navitemEvent = function( e ) {
 					switch ( e.type ) {
 						case "click":
-							if ( $.event.document.getTarget( e ) == self.$arrow[ 0 ] ) {
+							if ( event.document.getTarget( e ) == self.$arrow[ 0 ] ) {
 								self.toggle();
 							} else {
 								self.select();
@@ -20024,11 +20168,11 @@ aQuery.define( "ui/navmenu", [
 
 /*=======================================================*/
 
-/*===================../document/app/view/navmenu===========================*/
-aQuery.define( "@app/view/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
+/*===================../document/app/views/navmenu===========================*/
+aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/navmenu";
-	SuperView.getStyle( "@app/css/navmenu" );
+	SuperView.getStyle( "@app/styles/navmenu" );
 
 	var View = SuperView.extend( {
 		init: function( contollerElement ) {
@@ -20049,8 +20193,8 @@ aQuery.define( "@app/view/navmenu", [ "base/client", "main/css", "app/View", "ui
 
 /*=======================================================*/
 
-/*===================../document/app/controller/navmenu===========================*/
-aQuery.define( "@app/controller/navmenu", [ "main/attr", "hash/locationHash", "app/Controller", "@app/view/navmenu" ], function( $, attr, locationHash, SuperController, NavmenuView ) {
+/*===================../document/app/controllers/navmenu===========================*/
+aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "app/Controller", "@app/views/navmenu" ], function( $, attr, locationHash, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -20100,7 +20244,7 @@ aQuery.define( "@app/controller/navmenu", [ "main/attr", "hash/locationHash", "a
 				ret = target.uiNavitem( "getOptionToRoot" ),
 				path = null;
 			if ( ret.length > 1 ) {
-				ret.push( "source", "asset" );
+				ret.push( "source", "assets" );
 
 				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 
@@ -20135,8 +20279,8 @@ aQuery.define( "@app/controller/navmenu", [ "main/attr", "hash/locationHash", "a
 
 /*=======================================================*/
 
-/*===================../document/app/view/content===========================*/
-aQuery.define( "@app/view/content", [ "base/client", "app/View", "ui/flex" ], function( $, client, SuperView ) {
+/*===================../document/app/views/content===========================*/
+aQuery.define( "@app/views/content", [ "base/client", "app/View", "ui/flex" ], function( $, client, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/content";
 	var View = SuperView.extend( {
@@ -20155,8 +20299,8 @@ aQuery.define( "@app/view/content", [ "base/client", "app/View", "ui/flex" ], fu
 
 /*=======================================================*/
 
-/*===================../document/app/controller/content===========================*/
-aQuery.define( "@app/controller/content", [ "base/client", "module/src", "app/Controller", "@app/view/content" ], function( $, client, src, SuperController, ContentView ) {
+/*===================../document/app/controllers/content===========================*/
+aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/Controller", "@app/views/content" ], function( $, client, src, SuperController, ContentView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -20186,13 +20330,13 @@ aQuery.define( "@app/controller/content", [ "base/client", "module/src", "app/Co
 
 /*=======================================================*/
 
-/*===================../document/app/controller/index===========================*/
-aQuery.define( "@app/controller/index", [
+/*===================../document/app/controllers/index===========================*/
+aQuery.define( "@app/controllers/index", [
   "hash/locationHash",
   "app/Controller",
-  "@app/view/index",
-  "@app/controller/navmenu",
-  "@app/controller/content"
+  "@app/views/index",
+  "@app/controllers/navmenu",
+  "@app/controllers/content"
   ], function( $,
 	locationHash,
 	SuperController,
@@ -20222,7 +20366,7 @@ aQuery.define( "@app/controller/index", [
 				$swapview.uiSwapview( "render", e.index, function() {
 					if ( e.index === 1 && loadAPIFlag === false ) {
 						loadAPIFlag = true;
-						self.api.loadPath( "asset/api/index.html" );
+						self.api.loadPath( "assets/api/index.html" );
 					}
 				} );
 			} );
@@ -20241,23 +20385,32 @@ aQuery.define( "@app/controller/index", [
 /*=======================================================*/
 
 /*===================../document/app/app===========================*/
-aQuery.define( "@app/app", [ "app/Application", "@app/controller/index" ], function( $, Application ) {
-  "use strict"; //启用严格模式
-  //必须依赖index controller
-  var app = Application.extend( "Application", {
-    init: function( promiseCallback ) {
-      this._super( promiseCallback );
-    },
-    launch: function( ) {
+aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controllers/index" ], function( $, Promise, event, Application ) {
+	"use strict"; //启用严格模式
+	//必须依赖index controller
+	var app = Application.extend( "Application", {
+		init: function( promiseCallback ) {
+			this._super();
+			this.promise.then( function() {
+				var promise = new Promise;
+				this.index.document.$content.once( "load", function() {
+					promise.resolve();
+					promiseCallback.resolve();
+				} );
 
-    }
-  }, {
-    global: {
+				return promise;
+			} );
+		},
+		launch: function() {
 
-    }
-  }, Application );
+		}
+	}, {
+		global: {
 
-  return app;
+		}
+	}, Application );
+
+	return app;
 } );
 
 /*=======================================================*/

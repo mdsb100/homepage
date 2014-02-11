@@ -6,15 +6,15 @@
     <meta name="author" content="Jarry">
     <meta name="keywords" content="amdquery,document">
     <title>AMDQuery Document</title>
-    <!-- annotate by build link.src: css/reset.css -->
+    <!-- annotate by build link.src: styles/reset.css -->
 
     <link href="../amdquery/ui/css/amdquery-widget.css" rel="stylesheet" type="text/css" />
-    <link href="css/document.css" rel="stylesheet" type="text/css" />
-    <script src="../amdquery/amdquery.debug.js" type="text/javascript" amdquery="define:$;loadingImage:asset/images/welcome.gif" amd="detectCR:1;" module="compatibleEvent:1;" app="src:../app/app;debug:true;development:0;viewContentID:aQueryViewContentKey;"></script>
+    <link href="styles/document.css" rel="stylesheet" type="text/css" />
+    <script src="../amdquery/amdquery.debug.js" type="text/javascript" amdquery="define:$;loadingImage:assets/images/welcome.gif" amd="detectCR:1;" module="compatibleEvent:1;" app="src:../app/app;debug:true;development:0;viewContentID:aQueryViewContentKey;"></script>
 </head>
 
 <body style="width: 100%; height: 100%;">
-    <Controller src="@app/controller/index.js" />
+    <Controller src="@app/controllers/index.js" />
     <div id='aQueryViewContentKey'>
         <div aQueryViewContentKey='index'>
             <div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:column">
@@ -30,17 +30,17 @@
                             <div id="button1" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:document;title:document;select:true"></div>
                             <div id="button2" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:api;title:api"></div>
                         </div>
-                        <controller src="@app/controller/navmenu.js" id="navmenu" />
+                        <controller src="@app/controllers/navmenu.js" id="navmenu" />
                         <div ui-flex="fillParentWidth:false;flex:1" widget="ui.flex;" style="width:200px;background-color:red">
                         </div>
                     </div>
                     <div id="contentview" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
                         <ol>
                             <li>
-                                <controller src="@app/controller/content.js" id="document" />
+                                <controller src="@app/controllers/content.js" id="document" />
                             </li>
                             <li>
-                                <controller src="@app/controller/content.js" id="api" />
+                                <controller src="@app/controllers/content.js" id="api" />
                             </li>
                         </ol>
                     </div>
