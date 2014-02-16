@@ -18001,7 +18001,8 @@ aQuery.define( "ui/swapview", [
 				type: this.getEventName( "beforeAnimation" ),
 				target: this.container[ 0 ],
 				view: this.$views[ index ],
-				index: index
+				index: index,
+				originIndex: index
 			};
 			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 
@@ -18013,6 +18014,8 @@ aQuery.define( "ui/swapview", [
 				activeView.trigger( "beforeActive", activeView[ index ], {
 					type: "beforeActive"
 				} );
+				animationEvent.type = this.getEventName( "change" );
+				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -18146,7 +18149,7 @@ aQuery.define( "ui/swapview", [
 			this.orientationLength = 0;
 			return this.create()._initHandler().enable().render( this.options.index );
 		},
-		customEventName: [ "beforeAnimation", "afterAnimation" ],
+		customEventName: [ "beforeAnimation", "afterAnimation", "change" ],
 		options: {
 			index: 0,
 			orientation: HORIZONTAL,
@@ -18749,6 +18752,9 @@ aQuery.define( "ui/scrollableview", [
 	Widget.fetchCSS( "ui/css/scrollableview" );
 	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
 
+	var V = "V",
+		H = "H";
+
 	var scrollableview = Widget.extend( "ui.scrollableview", {
 		container: null,
 		_keyList: [ "Up", "Down", "Left", "Right", "Home", "End", "PageUp", "PageDown" ],
@@ -18793,8 +18799,8 @@ aQuery.define( "ui/scrollableview", [
 				innerWidth: opt.boundary,
 				innerHeight: opt.boundary,
 				stopPropagation: false,
-				vertical: this._isAllowedDirection( "V" ),
-				horizontal: this._isAllowedDirection( "H" ),
+				vertical: this._isAllowedDirection( V ),
+				horizontal: this._isAllowedDirection( H ),
 				container: this.target,
 				overflow: true
 			} );
@@ -19028,12 +19034,22 @@ aQuery.define( "ui/scrollableview", [
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
 				var top = $toElement.getTopWithTranslate3d(),
-					left = $toElement.getLeftWithTranslate3d();
-				if ( this._isAllowedDirection( "V" ) ) {
-					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, animationCallback );
+					left = $toElement.getLeftWithTranslate3d(),
+					self = this,
+					callback = function( overflow ) {
+						animationCallback && animationCallback.apply( this, arguments );
+						var type = self.getEventName( "animateToElement" );
+						self.target.trigger( type, self.target[ 0 ], {
+							type: type,
+							toElement: typed.is$( ele ) ? ele[ 0 ] : ele,
+							overflow: overflow
+						} );
+					};
+				if ( this._isAllowedDirection( V ) ) {
+					this.animateY( Math.max( -top + this.viewportHeight > 0 ? 0 : -top, -this.scrollHeight + this.viewportHeight ), FX.normal, callback );
 				}
-				if ( this._isAllowedDirection( "H" ) ) {
-					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal, animationCallback );
+				if ( this._isAllowedDirection( H ) ) {
+					this.animateX( Math.max( -left + this.viewportHeight > 0 ? 0 : -left, -this.scrollWidth + this.viewportWidth ), FX.normal, callback );
 				}
 			}
 		},
@@ -19091,7 +19107,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -19142,11 +19158,11 @@ aQuery.define( "ui/scrollableview", [
 				originY = position.y;
 			}
 
-			if ( x !== null && this._isAllowedDirection( "H" ) ) {
+			if ( x !== null && this._isAllowedDirection( H ) ) {
 				x = this.checkXBoundary( originX + x, boundary );
 				statusX = this.checkXStatusBar( x );
 			}
-			if ( y !== null && this._isAllowedDirection( "V" ) ) {
+			if ( y !== null && this._isAllowedDirection( V ) ) {
 				y = this.checkYBoundary( originY + y, boundary );
 				statusY = this.checkYStatusBar( y );
 			}
@@ -19155,11 +19171,11 @@ aQuery.define( "ui/scrollableview", [
 		},
 		_render: function( x1, x2, y1, y2 ) {
 			var pos = {};
-			if ( x1 !== null && this._isAllowedDirection( "H" ) ) {
+			if ( x1 !== null && this._isAllowedDirection( H ) ) {
 				pos.x = parseInt( x1, 0 );
 				this.statusBarX.setPositionX( isTransform3d, parseInt( x2, 0 ) );
 			}
-			if ( y1 !== null && this._isAllowedDirection( "V" ) ) {
+			if ( y1 !== null && this._isAllowedDirection( V ) ) {
 				pos.y = parseInt( y1, 0 );
 				this.statusBarY.setPositionY( isTransform3d, parseInt( y2, 0 ) );
 			}
@@ -19167,9 +19183,9 @@ aQuery.define( "ui/scrollableview", [
 			return this;
 		},
 		renderStatusBar: function( x, y ) {
-			if ( this._isAllowedDirection( "H" ) ) this.statusBarX.setPositionX( isTransform3d, parseInt( x, 0 ) );
+			if ( this._isAllowedDirection( H ) ) this.statusBarX.setPositionX( isTransform3d, parseInt( x, 0 ) );
 
-			if ( this._isAllowedDirection( "V" ) ) this.statusBarY.setPositionY( isTransform3d, parseInt( y, 0 ) );
+			if ( this._isAllowedDirection( V ) ) this.statusBarY.setPositionY( isTransform3d, parseInt( y, 0 ) );
 
 			return this;
 		},
@@ -19340,8 +19356,8 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		showStatusBar: function() {
-			if ( this.statusBarXVisible && this._isAllowedDirection( "H" ) ) this.statusBarX.show();
-			if ( this.statusBarYVisible && this._isAllowedDirection( "V" ) ) this.statusBarY.show();
+			if ( this.statusBarXVisible && this._isAllowedDirection( H ) ) this.statusBarX.show();
+			if ( this.statusBarYVisible && this._isAllowedDirection( V ) ) this.statusBarY.show();
 			return this;
 		},
 		hideStatusBar: function() {
@@ -19419,10 +19435,10 @@ aQuery.define( "ui/scrollableview", [
 		},
 
 		toH: function( s, t, d, animationCallback ) {
-			return this._isAllowedDirection( "H" ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d, animationCallback ) : this;
+			return this._isAllowedDirection( H ) ? this.animateX( this.checkXBoundary( this.getLeft() - s ), t, d, animationCallback ) : this;
 		},
 		toV: function( s, t, d, animationCallback ) {
-			return this._isAllowedDirection( "V" ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d, animationCallback ) : this;
+			return this._isAllowedDirection( V ) ? this.animateY( this.checkYBoundary( this.getTop() - s ), t, d, animationCallback ) : this;
 		},
 		animateY: function( y1, t, animationCallback ) {
 			var opt = $.getPositionAnimationOptionProxy( isTransform3d, undefined, y1 );
@@ -19435,7 +19451,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( self.getLeft() ).toVBoundary( y1 );
 					self._triggerAnimate( "inner", self._direction, t, y1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "V" );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, V );
 				}
 			} );
 
@@ -19457,7 +19473,7 @@ aQuery.define( "ui/scrollableview", [
 				complete: function() {
 					self.toHBoundary( x1 ).toVBoundary( self.getTop() );
 					self._triggerAnimate( "inner", self._direction, t, x1 );
-					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, "H" );
+					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target, H );
 				}
 			} );
 
@@ -20257,15 +20273,17 @@ aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "u
 /*===================../document/app/controllers/navmenu===========================*/
 aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
-	var ROUTER_MARK = "_";
+	var ROUTER_MARK = "_",
+		SCROLLTO = "scrollTo",
+		SWAPINDEX = "swapIndex";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 
 			this.navitem = null;
-			this.initSwapIndex = location.getHash( "swapIndex" );
-			this.initsSrollTo = location.getHash( "scrollTo" );
+			this.initSwapIndex = location.getHash( SWAPINDEX );
+			this.initsSrollTo = location.getHash( SCROLLTO );
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
@@ -20283,10 +20301,17 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 		},
 		_modifyLocation: function( target ) {
 			var $target = $( target );
+
 			if ( $target.isWidget( "ui.navitem" ) ) {
 				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
 				location.setHash( "navmenu", path );
+				if ( this._modified ) {
+					location.removeHash( SCROLLTO );
+					location.removeHash( SWAPINDEX );
+				}
+
 			}
+			this._modified = true;
 		},
 		selectNavitem: function( navitem ) {
 			var swapIndex, scrollTo;
@@ -20320,10 +20345,10 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 
 				if ( swapIndex != null ) {
-					path += "swapIndex=" + location.getHash( "swapIndex" ) + "!";
+					path += "swapIndex=" + location.getHash( SWAPINDEX ) + "!";
 				}
 				if ( scrollTo != null ) {
-					path += "scrollTo=" + location.getHash( "scrollTo" ) + "!";
+					path += "scrollTo=" + location.getHash( SCROLLTO ) + "!";
 				}
 			}
 			return path;
@@ -20426,6 +20451,15 @@ aQuery.define( "@app/controllers/index", [
 			// this.api.loadPath( "/document/api/index.html" );
 
 			var $swapview = $( this.view.topElement ).find( "#contentview" );
+
+			$.on( "document_iframe.swapIndexChange", function( e ) {
+				location.removeHash( "scrollTo" );
+				location.setHash( "swapIndex", e.index );
+			} );
+
+			$.on( "document_iframe.scrollToChange", function( e ) {
+				location.setHash( "scrollTo", e.name );
+			} );
 
 			var loadAPIFlag = false;
 
