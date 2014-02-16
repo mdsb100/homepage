@@ -1666,7 +1666,7 @@
 		 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
 		 * @returns {ClassModule}
 		 * @example
-		 * require( [ "main/query", "hash/locationHash", "ui/swapview", "ui/scrollableview" ], function( query, locationHash ) { } );
+		 * require( [ "main/query", "module/location", "ui/swapview", "ui/scrollableview" ], function( query, location ) { } );
 		 * require( "main/query", function( query ) { } );
 		 * require( "main/query" ).first // Maybe is null;
 		 */
@@ -9512,7 +9512,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 		 * parse.QueryString("name=Jarry&age=27")
 		 * //{
 		 * //  name: "Jarry",
-     * //  name: "27"
+		 * //  name: "27"
 		 * //}
 		 * @param {String}
 		 * @param {String|Boolean} [split1="&"]
@@ -9525,15 +9525,17 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			if ( qs ) {
 				$.each( qs.split( split1 || "&" ), function( item ) {
 					item = item.split( split2 || "=" );
-					args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					if ( item[ 1 ] !== undefined ) {
+						args[ decodeURIComponent( item[ 0 ] ) ] = decodeURIComponent( item[ 1 ] );
+					}
 				} );
 			}
 			return args;
 		},
-    /**
-     * @param {String}
-     * @returns {Document}
-     */
+		/**
+		 * @param {String}
+		 * @returns {Document}
+		 */
 		XML: ( function( xml ) {
 			var parseXML;
 			if ( typeof DOMParser != "undefined" ) {
@@ -11517,24 +11519,94 @@ aQuery.define( "app/Application", [
 
 /*=======================================================*/
 
-/*===================hash/locationHash===========================*/
-aQuery.define( "hash/locationHash", [ "main/parse" ], function( $, parse ) {
+/*===================module/location===========================*/
+aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
 	this.describe( "Location to Hash" );
-  /**
-   * @pubilc
-   * @module hash/locationHash
-   * @describe window.location to hash
-   * @example
-   * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
-   * {
-   *   swapIndex: "1",
-   *   scrollTo:  "#Config"
-   * }
-   */
-	var str = window.location.hash.replace( "#", "" ),
-		hash = parse.QueryString( str, "!", "=" );
 
-	return hash;
+	var
+	SPLIT_MARK = "!",
+		EQUALS_MARK = "=",
+		_location = window.location;
+
+	function hashToString( hash, split1, split2 ) {
+		var key, value, strList = [];
+		for ( key in hash ) {
+			value = hash[ key ];
+			strList.push( key + split2 + value );
+		}
+		return strList.join( split1 );
+	}
+
+	/**
+	 * @exports module/location
+	 * @describe window.location to hash
+	 * @example
+	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
+	 * {
+	 *   swapIndex: "1",
+	 *   scrollTo:  "#Config"
+	 * }
+	 */
+	var location = {
+		/**
+     * Get value form hash.
+     * @param {String}
+		 * @returns {String}
+		 */
+		getHash: function( key ) {
+			this.toHash();
+			return this.hash[ key ];
+		},
+    /**
+     * Set value to hash by key.
+     * @param {String}
+     * @param {*}
+     * @returns {this}
+     */
+		setHash: function( key, value ) {
+			this.hash[ key ] = value + "";
+			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			return this;
+		},
+    /**
+     * Remove key from hash.
+     * @param {String}
+     * @returns {this}
+     */
+		removeHash: function( key ) {
+			if ( this.hash[ key ] !== undefined ) {
+				delete this.hash[ key ];
+				_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			}
+			return this;
+		},
+    /**
+     * Clear window.location.hash
+     * @returns {this}
+     */
+		clearHash: function() {
+			window.location.hash = "";
+			this.hash = {};
+			return this;
+		},
+    /**
+     * Parse window.location.hash to object for this.hash.
+     * @returns {this}
+     */
+		toHash: function() {
+			this.hash = parse.QueryString( _location.hash.replace( "#", "" ), SPLIT_MARK, EQUALS_MARK );
+			return this;
+		},
+    /**
+     * An object of window.location.hash.
+     * @type {Object}
+     */
+		hash: {}
+	};
+
+	location.toHash();
+
+	return location;
 } );
 
 /*=======================================================*/
@@ -20183,20 +20255,23 @@ aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "u
 /*=======================================================*/
 
 /*===================../document/app/controllers/navmenu===========================*/
-aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "app/Controller", "@app/views/navmenu" ], function( $, attr, locationHash, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
+	var ROUTER_MARK = "_";
+
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 
 			this.navitem = null;
-			this.initSwapIndex = locationHash.swapIndex;
-			this.initsSrollTo = locationHash.scrollTo;
+			this.initSwapIndex = location.getHash( "swapIndex" );
+			this.initsSrollTo = location.getHash( "scrollTo" );
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#nav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
+				controller._modifyLocation( e.navitem );
 				controller.selectNavitem( e.navitem );
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
@@ -20206,6 +20281,13 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 			} );
 
 		},
+		_modifyLocation: function( target ) {
+			var $target = $( target );
+			if ( $target.isWidget( "ui.navitem" ) ) {
+				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
+				location.setHash( "navmenu", path );
+			}
+		},
 		selectNavitem: function( navitem ) {
 			var swapIndex, scrollTo;
 			if ( this.navitem === null ) {
@@ -20213,19 +20295,19 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 				scrollTo = this.initsSrollTo;
 			} else {
 				swapIndex = attr.getAttr( navitem, "swap-index" );
-				swapIndex = attr.getAttr( navitem, "scroll-to" );
+				scrollTo = attr.getAttr( navitem, "scroll-to" );
 			}
 
 			this.navitem = navitem;
 
 			var path = this._getPath( navitem, swapIndex, scrollTo );
 
-      if ( path != null ) {
-        this.trigger( "navmenu.select", this, {
-          type: "navmenu.select",
-          path: path
-        } );
-      }
+			if ( path != null ) {
+				this.trigger( "navmenu.select", this, {
+					type: "navmenu.select",
+					path: path
+				} );
+			}
 
 		},
 		_getPath: function( navitem, swapIndex, scrollTo ) {
@@ -20238,20 +20320,16 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "hash/locationHash", "
 				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 
 				if ( swapIndex != null ) {
-					path += "swapIndex=" + locationHash.swapIndex + "!";
+					path += "swapIndex=" + location.getHash( "swapIndex" ) + "!";
 				}
 				if ( scrollTo != null ) {
-					path += "scrollTo=" + locationHash.scrollTo + "!";
+					path += "scrollTo=" + location.getHash( "scrollTo" ) + "!";
 				}
 			}
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = $( target || "#AMDQuery");
-			// if ( target ) {
-				// var navItem = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( /\W/ ) )[ 0 ];
-				// ret = navItem || ret;
-			// }
+			var ret = $( target ? this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) ) : "#guide_AMDQuery" );
 			this.$nav.uiNavmenu( "selectNavItem", ret );
 		},
 		destroy: function() {
@@ -20321,13 +20399,13 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 
 /*===================../document/app/controllers/index===========================*/
 aQuery.define( "@app/controllers/index", [
-  "hash/locationHash",
+  "module/location",
   "app/Controller",
   "@app/views/index",
   "@app/controllers/navmenu",
   "@app/controllers/content"
   ], function( $,
-	locationHash,
+	location,
 	SuperController,
 	IndexView ) {
 	"use strict"; //启用严格模式
@@ -20343,7 +20421,7 @@ aQuery.define( "@app/controllers/index", [
 				self.document.openWindow();
 			} );
 
-			this.navmenu.selectDefaultNavmenu( locationHash.navmenu );
+			this.navmenu.selectDefaultNavmenu( location.getHash( "navmenu" ) );
 
 			// this.api.loadPath( "/document/api/index.html" );
 
