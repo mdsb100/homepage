@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Module: main/object</title>
+	<title>Documentation Namespace: document</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -249,12 +249,14 @@
 					
 
 
-	<h1 class="page-title">Module: main/object</h1>
+	<h1 class="page-title">Namespace: document</h1>
 <section>
 
 <header>
     <h2>
-    main/object
+        <span class="ancestors"><a href="event.html">main/event</a>.</span>
+    
+    document
     </h2>
     
 </header>
@@ -289,7 +291,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-179">line 179</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-270">line 270</a>
     </li></ul></dd>
     
 
@@ -309,16 +311,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Requires</h3>
-
-        <ul>
-            <li><a href="typed.html">module:base/typed</a></li>
-        
-            <li><a href="array.html">module:base/array</a></li>
-        
-            <li><a href="extend.html">module:base/extend</a></li>
-        </ul>
     
 
     
@@ -333,7 +325,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="Collection"><span class="type-signature">&lt;static> </span>Collection<span class="signature">(model, prototype, statics, <span class="optional">Super</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addHandler"><span class="type-signature">&lt;static> </span>addHandler<span class="signature">(ele, type, fn)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -341,8 +333,7 @@
     
     
     <div class="description">
-        If model is a function, you should call "this.init()".
-<br /> Mixin <a href="CollectionClassPrototypeMethods.html">CollectionClassPrototypeMethods</a> into new Collection.
+        Add an event handler to element.
     </div>
     
 
@@ -364,8 +355,6 @@
 		<th>Type</th>
 
 		
-		<th>Argument</th>
-		
 
 		
 
@@ -378,124 +367,64 @@
 
         <tr>
             
-                <td class="name"><code>model</code></td>
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">String</span>
-|
-
-<span class="param-type">function</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">If model is a function, then will use model.name. Then class name is name + "Collection".</td>
+            <td class="description last"></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>prototype</code></td>
+                <td class="name"><code>fn</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Funtion</span>
 
 
             
             </td>
 
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Instance methods.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>statics</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Static methods.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>Super</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
             
 
             
@@ -532,7 +461,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-303">line 303</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-277">line 277</a>
     </li></ul></dd>
     
 
@@ -560,7 +489,7 @@
         
             
 <dt>
-    <h4 class="name" id="createPropertyGetterSetter"><span class="type-signature">&lt;static> </span>createPropertyGetterSetter<span class="signature">(obj, return)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="createEvent"><span class="type-signature">&lt;static> </span>createEvent<span class="signature">(type)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -568,7 +497,7 @@
     
     
     <div class="description">
-        Create Getter or Setter for this constructor.prototype.
+        Create an event object.
     </div>
     
 
@@ -602,13 +531,13 @@
 
         <tr>
             
-                <td class="name"><code>obj</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">String</span>
 
 
             
@@ -618,26 +547,20 @@
 
             
 
-            <td class="description last">A constructor.</td>
+            <td class="description last">The type of event</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>return</code></td>
+                <td class="name"><code></code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object.&lt;String, Object></span>
-|
-
-<span class="param-type">String</span>
-|
-
-<span class="param-type">function</span>
+<span class="param-type">Event</span>
 
 
             
@@ -647,7 +570,7 @@
 
             
 
-            <td class="description last">{obj.prototype}</td>
+            <td class="description last"></td>
         </tr>
 
 	
@@ -679,7 +602,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-537">line 537</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-334">line 334</a>
     </li></ul></dd>
     
 
@@ -702,42 +625,12 @@
     
     
     
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">function Person(){};
-// "u" means public, "a" means private.
-object.createPropertyGetterSetter(Person, {
- id: "-pu -r",
- name: "-pu -w -r",
- age: "-pa -w -r",
- Weight: "-wa -ru",
- mark: {
-   purview: "-wa -ru",
-   defaultValue: 0, // set prototype.mark = 0.
-   validate: function( mark ){ return mark >= 0 && mark <= 100; } // validate param when setting.
-   edit: function( value ){ return value + ""; } // edit value when getting.
- },
- height: function( h ){ return h >= 100 && h <= 220; } // validate param when setting.
-} );
-var person = new Person();
-person.getId();
-person.getName(); person.setName();
-person._getAge(); person._setAge();
-person._getWeight(); person.setWeight();
-person.getMark(); // "0"
-person._setMark( 110 );
-person.getMark(); // "0"
-person._setMark( 100 );
-person.getMark(); // "100"</pre>
-
-
-    
 </dd>
 
         
             
 <dt>
-    <h4 class="name" id="extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">(name, prototype, statics, <span class="optional">Super</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="dispatchEvent"><span class="type-signature">&lt;static> </span>dispatchEvent<span class="signature">(ele, event, type)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -745,313 +638,7 @@ person.getMark(); // "100"</pre>
     
     
     <div class="description">
-        Define a Class.
-<br /> Mixin <a href="ObjectClassStaticMethods.html">ObjectClassStaticMethods</a> into new Class.
-<br /> see <a href="object_.html#createPropertyGetterSetter">module:main/object.createPropertyGetterSetter</a>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-|
-
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Name or Function.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>prototype</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Instance methods.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>statics</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Static methods.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>Super</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Super Class.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-246">line 246</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">var Super = object.extend( "Super", {
-  init: function( name ){
-    console.log( "Super", name );
-    this.name = name;
-  },
-  checkName: function( name ){
-    console.log( "Super", this.name == name );
-    return this.name == name;
-  }
-}, {
-  doSomething: function( ){ };
-} );
-
-function Sub( name ){
-  this._super( name );
-  this.name = name;
-  console.log( "Sub", name );
-};
-
-Super.extend( Sub, { // extend is created by mixin
-  checkName: function( name ){
-    // The invoke is created by object.extend
-    Super.invoke( "checkName", name );
-    console.log( "Sub", this.name == name );
-    return this.name == name;
-  }
-}, {
-  doSomething: function( ){ };
-} );
-
-var super = new Super( "Lisa" );
-// Super Lisa
-var sub = new Sub( "Iris" );
-// Super Iris
-// Sub Iris
-sub.checkName( "Iris" );
-// Super true
-// Sub true
-Sub.doSomething();
-Super.doSomething();
-
-//mixin
-Sub.joinPrototype( {
-  foo: function() {}
-}, {
-  pad: function() {}
-} );
-sub.foo();sub.pad();
-
-Super.forinstance( sub ) // true
-
-Sub.createGetterSetter( {
-  name: "-pa"
-} );</pre>
-
-
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="getObjectPropertiesCount"><span class="type-signature">&lt;static> </span>getObjectPropertiesCount<span class="signature">(obj, bool)</span><span class="type-signature"> &rarr; {Number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Get the object properties count.
+        Dispatch an event.
     </div>
     
 
@@ -1085,13 +672,36 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>obj</code></td>
+                <td class="name"><code>ele</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Dispatch an event from this element.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
 
 
             
@@ -1108,13 +718,13 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>bool</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">String</span>
 
 
             
@@ -1124,7 +734,7 @@ Sub.createGetterSetter( {
 
             
 
-            <td class="description last">If true , does not count prototype.</td>
+            <td class="description last">The type of event</td>
         </tr>
 
 	
@@ -1156,7 +766,266 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-437">line 437</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-349">line 349</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getButton"><span class="type-signature">&lt;static> </span>getButton<span class="signature">(e)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get button code from mouse clicking.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code></code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-544">line 544</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getCharCode"><span class="type-signature">&lt;static> </span>getCharCode<span class="signature">(e)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get char code.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-361">line 361</a>
     </li></ul></dd>
     
 
@@ -1203,7 +1072,7 @@ Sub.createGetterSetter( {
         
             
 <dt>
-    <h4 class="name" id="inheritProtypeWithCombination"><span class="type-signature">&lt;static> </span>inheritProtypeWithCombination<span class="signature">(Sub, Super)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="getEvent"><span class="type-signature">&lt;static> </span>getEvent<span class="signature">(e)</span><span class="type-signature"> &rarr; {Event}</span></h4>
     
     
 </dt>
@@ -1211,7 +1080,7 @@ Sub.createGetterSetter( {
     
     
     <div class="description">
-        Use classic combination to inherit prototype. Contains the same memory address.
+        Get event.
     </div>
     
 
@@ -1245,36 +1114,13 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>Sub</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Sub</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>Super</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Super</span>
+<span class="param-type">Event</span>
 
 
             
@@ -1316,7 +1162,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-486">line 486</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-369">line 369</a>
     </li></ul></dd>
     
 
@@ -1348,7 +1194,7 @@ Sub.createGetterSetter( {
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
+<span class="param-type">Event</span>
 
 
 	</dd>
@@ -1363,7 +1209,7 @@ Sub.createGetterSetter( {
         
             
 <dt>
-    <h4 class="name" id="inheritProtypeWithExtend"><span class="type-signature">&lt;static> </span>inheritProtypeWithExtend<span class="signature">(Sub, Super)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="getTarget"><span class="type-signature">&lt;static> </span>getTarget<span class="signature">(e)</span><span class="type-signature"> &rarr; {Element}</span></h4>
     
     
 </dt>
@@ -1371,7 +1217,7 @@ Sub.createGetterSetter( {
     
     
     <div class="description">
-        Does not contain the same memory address, the constructor will not be called multiple times.
+        Get event target.
     </div>
     
 
@@ -1405,36 +1251,13 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>Sub</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Sub</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>Super</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Super</span>
+<span class="param-type">Event</span>
 
 
             
@@ -1476,7 +1299,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-450">line 450</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-377">line 377</a>
     </li></ul></dd>
     
 
@@ -1508,7 +1331,7 @@ Sub.createGetterSetter( {
 	</dt>
 	<dd>
 		
-<span class="param-type">this</span>
+<span class="param-type">Element</span>
 
 
 	</dd>
@@ -1523,7 +1346,7 @@ Sub.createGetterSetter( {
         
             
 <dt>
-    <h4 class="name" id="inheritProtypeWithParasitic"><span class="type-signature">&lt;static> </span>inheritProtypeWithParasitic<span class="signature">(Sub, Super, name)</span><span class="type-signature"> &rarr; {this}</span></h4>
+    <h4 class="name" id="off"><span class="type-signature">&lt;static> </span>off<span class="signature">(ele, type, fn)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1531,7 +1354,7 @@ Sub.createGetterSetter( {
     
     
     <div class="description">
-        Use parasitic to inherit prototype. Does not contain the same memory address.
+        Remove an event handler from element.
     </div>
     
 
@@ -1565,13 +1388,13 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>Sub</code></td>
+                <td class="name"><code>ele</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Sub</span>
+<span class="param-type">Element</span>
 
 
             
@@ -1588,190 +1411,7 @@ Sub.createGetterSetter( {
 
         <tr>
             
-                <td class="name"><code>Super</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Super</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">You can see the name of the parent class in the prototype chain instead "Parasitic".</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-463">line 463</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">this</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isPrototypeProperty"><span class="type-signature">&lt;static> </span>isPrototypeProperty<span class="signature">(obj, name)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Whether it is the prototype property.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
@@ -1791,6 +1431,29 @@ Sub.createGetterSetter( {
         </tr>
 
 	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Funtion</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
 	</tbody>
 </table>
 
@@ -1819,7 +1482,7 @@ Sub.createGetterSetter( {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="object.js.html">main/object.js</a>, <a href="object.js.html#sunlight-1-line-496">line 496</a>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-577">line 577</a>
     </li></ul></dd>
     
 
@@ -1840,25 +1503,734 @@ Sub.createGetterSetter( {
     
     
     
-    <h5>Returns:</h5>
     
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
+    
+</dd>
 
         
+            
+<dt>
+    <h4 class="name" id="on"><span class="type-signature">&lt;static> </span>on<span class="signature">(ele, type, fn)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Add an event handler to element.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Funtion</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-568">line 568</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="once"><span class="type-signature">&lt;static> </span>once<span class="signature">(ele, type, fn)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Add a event Handler to element and do once.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Funtion</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-298">line 298</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="preventDefault"><span class="type-signature">&lt;static> </span>preventDefault<span class="signature">(e)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Prevent default.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-527">line 527</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="removeHandler"><span class="type-signature">&lt;static> </span>removeHandler<span class="signature">(ele, type, fn)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Remove an event Handler from element.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Funtion</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-312">line 312</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="stopPropagation"><span class="type-signature">&lt;static> </span>stopPropagation<span class="signature">(e)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stop propagation.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="event.js.html">main/event.js</a>, <a href="event.js.html#sunlight-1-line-535">line 535</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
     
     
 </dd>

@@ -3137,7 +3137,7 @@ aQuery.define( "base/array", [ "base/typed", "base/extend" ], function( $, typed
 
 /*=======================================================*/
 
-/*===================lib/js/sizzle===========================*/
+/*===================lib/sizzle===========================*/
 /*!
  * Sizzle CSS Selector Engine v@VERSION
  * http://sizzlejs.com/
@@ -5109,7 +5109,12 @@ if ( !assert(function( div ) {
 
 // EXPOSE
 if ( typeof define === "function" && define.amd ) {
-	define("lib/js/sizzle",function() { return Sizzle; });
+	define("lib/sizzle",function() {
+    /**
+     * @module lib/sizzle
+     */
+    return Sizzle;
+  });
 } else {
 	window.Sizzle = Sizzle;
 }
@@ -5121,7 +5126,7 @@ if ( typeof define === "function" && define.amd ) {
 /*=======================================================*/
 
 /*===================main/query===========================*/
-﻿aQuery.define( "main/query", [ "lib/js/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
+﻿aQuery.define( "main/query", [ "lib/sizzle", "base/extend", "base/typed", "base/array" ], function( $, Sizzle, utilExtend, typed, array, undefined ) {
 	"use strict";
 	this.describe( "Depend Sizzle1.10.3" );
 	$.module[ "lib/js/sizzle" ] = "Sizzle1.10.3";
@@ -5174,12 +5179,27 @@ if ( typeof define === "function" && define.amd ) {
 			return ( array.inArray( ele, qualifier ) >= 0 ) === keep;
 		} );
 	}
-
+	/**
+	 * @exports main/query
+	 * @requires module:lib/sizzle
+	 * @requires module:base/extend
+	 * @requires module:base/typed
+	 * @requires module:base/array
+	 */
 	var query = {
 		expr: Sizzle.selectors,
 		unique: Sizzle.uniqueSort,
 		text: Sizzle.getText,
 
+		/**
+     * Element contains another.
+     * @name contains
+     * @memberOf module:main/query
+		 * @method
+     * @param a {Element}
+     * @param b {Element}
+     * @returns {Boolean}
+		 */
 		contains: Sizzle.contains,
 
 		dir: function( ele, dir, until ) {
@@ -7255,21 +7275,22 @@ if ( typeof define === "function" && define.amd ) {
 			}
 			return -1;
 		},
-
+		/**
+		 * @namespace
+		 */
 		document: {
+			/**
+			 * Add an event handler to element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			addHandler: function( ele, type, fn ) {
-				/// <summary>给DOM元素添加事件</summary>
-				/// <para>例:"mousedown mouseup"</para>
-				/// <param name="ele" type="Element">元素</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <param name="fn" type="Function">事件方法</param>
-				/// <returns type="null" />
 				var types = type.split( " " ),
 					i = types.length - 1;
 				for ( ; i >= 0; i-- ) {
 					this._addHandler( ele, types[ i ], fn );
 				}
-
 			},
 			_addHandler: function( ele, type, fn ) {
 				if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
@@ -7279,6 +7300,12 @@ if ( typeof define === "function" && define.amd ) {
 					ele = null;
 				}
 			},
+			/**
+			 * Add a event Handler to element and do once.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			once: function( ele, type, fn ) {
 				var self = this,
 					fnproxy = function() {
@@ -7287,6 +7314,12 @@ if ( typeof define === "function" && define.amd ) {
 					};
 				return this._addHandler( ele, type, fnproxy );
 			},
+			/**
+			 * Remove an event Handler from element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			removeHandler: function( ele, type, fn ) {
 				/// <summary>给DOM元素移除事件</summary>
 				/// <param name="ele" type="Element">元素</param>
@@ -7304,15 +7337,12 @@ if ( typeof define === "function" && define.amd ) {
 				else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
 				else ele[ "on" + type ] = null;
 			},
-			// , clearHandlers: function (ele) {
-			//     /// <summary>移除dom元素的所有事件</summary>
-			//     /// <param name="ele" type="Element">元素</param>
-			// }
-
+			/**
+			 * Create an event object.
+			 * @param {String} - The type of event
+			 * @param {Event}
+			 */
 			createEvent: function( type ) {
-				/// <summary>创建原生事件对象</summary>
-				/// <param name="type" type="String">事件类型</param>
-				/// <returns type="Event" />
 				var e;
 				if ( document.createEvent ) {
 					e = document.createEvent( type );
@@ -7321,34 +7351,41 @@ if ( typeof define === "function" && define.amd ) {
 				}
 				return e;
 			},
+			/**
+			 * Dispatch an event.
+			 * @param {Element} - Dispatch an event from this element.
+			 * @param {Event}
+			 * @param {String} - The type of event
+			 */
 			dispatchEvent: function( ele, event, type ) {
-				/// <summary>触发事件</summary>
-				/// <param name="ele" type="Element">元素</param>
-				/// <param name="event" type="Event">事件对象</param>
-				/// <param name="type" type="String">事件类型</param>
-				/// <returns type="null" />
 				if ( ele.dispatchEvent ) {
 					ele.dispatchEvent( event );
 				} else if ( ele.fireEvent ) {
 					ele.fireEvent( "on" + type, event, false );
 				}
 			},
+			/**
+			 * Get char code.
+			 * @param {Event}
+			 * @returns {Number}
+			 */
 			getCharCode: function( e ) {
-				/// <summary>获得兼容的charCode对象</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="Number" />
 				return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
 			},
+			/**
+			 * Get event.
+			 * @param {Event}
+			 * @returns {Event}
+			 */
 			getEvent: function( e ) {
-				/// <summary>获得兼容的事件event对象</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="event" />
 				return e || window.event;
 			},
+			/**
+			 * Get event target.
+			 * @param {Event}
+			 * @returns {Element}
+			 */
 			getTarget: function( e ) {
-				/// <summary>获得事件对象</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="Element" />
 				return e.srcElement || e.target;
 			},
 			imitation: {
@@ -7494,24 +7531,28 @@ if ( typeof define === "function" && define.amd ) {
 
 				}
 			},
+			/**
+			 * Prevent default.
+			 * @param {Event}
+			 */
 			preventDefault: function( e ) {
-				/// <summary>阻止Element对象默认行为</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="null" />
 				if ( e.preventDefault ) e.preventDefault();
 				else e.returnValue = false;
 			},
+			/**
+			 * Stop propagation.
+			 * @param {Event}
+			 */
 			stopPropagation: function( e ) {
-				/// <summary>阻止Element对象事件的冒泡</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="null" />
 				if ( e.stopPropagation ) e.stopPropagation();
 				else e.cancelBubble = true;
 			},
+			/**
+			 * Get button code from mouse clicking.
+			 * @param {Event}
+			 * @param {Number}
+			 */
 			getButton: function( e ) {
-				/// <summary>获得鼠标的正确点击类型</summary>
-				/// <param name="e" type="Event">event对象</param>
-				/// <returns type="Number" />
 				if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
 				else {
 					switch ( e.button ) {
@@ -7529,9 +7570,21 @@ if ( typeof define === "function" && define.amd ) {
 					}
 				}
 			},
+			/**
+			 * Add an event handler to element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			on: function( ele, type, fn ) {
 				return this.addHandler( ele, type, fn );
 			},
+			/**
+			 * Remove an event handler from element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			off: function( ele, type, fn ) {
 				return this.removeHandler( ele, type, fn );
 			}
@@ -8175,19 +8228,19 @@ if ( typeof define === "function" && define.amd ) {
 				fn.call( this, e, String.fromCharCode( e.charCode ) );
 			} );
 		},
-    /**
-     * Add "keyup" event handler to elements.
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add "keyup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		keyup: function( fn ) {
 			return this.addHandler( "mouseout", fn );
 		},
-    /**
-     * Add "keyup" event handler to elements.
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add "keyup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		error: function( fn ) {
 			return this.addHandler( "error", fn );
 		}

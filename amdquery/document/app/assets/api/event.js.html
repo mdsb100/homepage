@@ -33,15 +33,11 @@
 						</li>
 						
 						<li>
+							<a href="event.document.html">document</a>
+						</li>
+						
+						<li>
 							<a href="require.html">require(namespace)</a>
-						</li>
-						
-						<li>
-							<a href="testNamespace.html">testNamespace</a>
-						</li>
-						
-						<li>
-							<a href="testNamespace.my.html">my</a>
 						</li>
 						
 
@@ -139,6 +135,10 @@
 						</li>
 						
 						<li>
+							<a href="sizzle.html">lib/sizzle</a>
+						</li>
+						
+						<li>
 							<a href="attr.html">main/attr</a>
 						</li>
 						
@@ -168,6 +168,10 @@
 						
 						<li>
 							<a href="parse.html">main/parse</a>
+						</li>
+						
+						<li>
+							<a href="query.html">main/query</a>
 						</li>
 						
 						<li>
@@ -515,21 +519,22 @@
 			}
 			return -1;
 		},
-
+		/**
+		 * @namespace
+		 */
 		document: {
+			/**
+			 * Add an event handler to element.
+       * @param {Element}
+       * @param {String}
+       * @param {Funtion}
+			 */
 			addHandler: function( ele, type, fn ) {
-				/// &lt;summary>给DOM元素添加事件&lt;/summary>
-				/// &lt;para>例:"mousedown mouseup"&lt;/para>
-				/// &lt;param name="ele" type="Element">元素&lt;/param>
-				/// &lt;param name="type" type="String">事件类型&lt;/param>
-				/// &lt;param name="fn" type="Function">事件方法&lt;/param>
-				/// &lt;returns type="null" />
 				var types = type.split( " " ),
 					i = types.length - 1;
 				for ( ; i >= 0; i-- ) {
 					this._addHandler( ele, types[ i ], fn );
 				}
-
 			},
 			_addHandler: function( ele, type, fn ) {
 				if ( ele.addEventListener ) ele.addEventListener( type, fn, false ); //事件冒泡
@@ -539,6 +544,12 @@
 					ele = null;
 				}
 			},
+      /**
+       * Add a event Handler to element and do once.
+       * @param {Element}
+       * @param {String}
+       * @param {Funtion}
+       */
 			once: function( ele, type, fn ) {
 				var self = this,
 					fnproxy = function() {
@@ -547,6 +558,12 @@
 					};
 				return this._addHandler( ele, type, fnproxy );
 			},
+      /**
+       * Remove an event Handler from element.
+       * @param {Element}
+       * @param {String}
+       * @param {Funtion}
+       */
 			removeHandler: function( ele, type, fn ) {
 				/// &lt;summary>给DOM元素移除事件&lt;/summary>
 				/// &lt;param name="ele" type="Element">元素&lt;/param>
@@ -564,15 +581,12 @@
 				else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
 				else ele[ "on" + type ] = null;
 			},
-			// , clearHandlers: function (ele) {
-			//     /// &lt;summary>移除dom元素的所有事件&lt;/summary>
-			//     /// &lt;param name="ele" type="Element">元素&lt;/param>
-			// }
-
+      /**
+       * Create an event object.
+       * @param {String} - The type of event
+       * @param {Event}
+       */
 			createEvent: function( type ) {
-				/// &lt;summary>创建原生事件对象&lt;/summary>
-				/// &lt;param name="type" type="String">事件类型&lt;/param>
-				/// &lt;returns type="Event" />
 				var e;
 				if ( document.createEvent ) {
 					e = document.createEvent( type );
@@ -581,34 +595,41 @@
 				}
 				return e;
 			},
+      /**
+       * Dispatch an event.
+       * @param {Element} - Dispatch an event from this element.
+       * @param {Event}
+       * @param {String} - The type of event
+       */
 			dispatchEvent: function( ele, event, type ) {
-				/// &lt;summary>触发事件&lt;/summary>
-				/// &lt;param name="ele" type="Element">元素&lt;/param>
-				/// &lt;param name="event" type="Event">事件对象&lt;/param>
-				/// &lt;param name="type" type="String">事件类型&lt;/param>
-				/// &lt;returns type="null" />
 				if ( ele.dispatchEvent ) {
 					ele.dispatchEvent( event );
 				} else if ( ele.fireEvent ) {
 					ele.fireEvent( "on" + type, event, false );
 				}
 			},
+      /**
+       * Get char code.
+       * @param {Event}
+       * @returns {Number}
+       */
 			getCharCode: function( e ) {
-				/// &lt;summary>获得兼容的charCode对象&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="Number" />
 				return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
 			},
+      /**
+       * Get event.
+       * @param {Event}
+       * @returns {Event}
+       */
 			getEvent: function( e ) {
-				/// &lt;summary>获得兼容的事件event对象&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="event" />
 				return e || window.event;
 			},
+      /**
+       * Get event target.
+       * @param {Event}
+       * @returns {Element}
+       */
 			getTarget: function( e ) {
-				/// &lt;summary>获得事件对象&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="Element" />
 				return e.srcElement || e.target;
 			},
 			imitation: {
@@ -754,24 +775,28 @@
 
 				}
 			},
+      /**
+       * Prevent default.
+       * @param {Event}
+       */
 			preventDefault: function( e ) {
-				/// &lt;summary>阻止Element对象默认行为&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="null" />
 				if ( e.preventDefault ) e.preventDefault();
 				else e.returnValue = false;
 			},
+      /**
+       * Stop propagation.
+       * @param {Event}
+       */
 			stopPropagation: function( e ) {
-				/// &lt;summary>阻止Element对象事件的冒泡&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="null" />
 				if ( e.stopPropagation ) e.stopPropagation();
 				else e.cancelBubble = true;
 			},
+      /**
+       * Get button code from mouse clicking.
+       * @param {Event}
+       * @param {Number}
+       */
 			getButton: function( e ) {
-				/// &lt;summary>获得鼠标的正确点击类型&lt;/summary>
-				/// &lt;param name="e" type="Event">event对象&lt;/param>
-				/// &lt;returns type="Number" />
 				if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
 				else {
 					switch ( e.button ) {
@@ -789,9 +814,21 @@
 					}
 				}
 			},
+      /**
+       * Add an event handler to element.
+       * @param {Element}
+       * @param {String}
+       * @param {Funtion}
+       */
 			on: function( ele, type, fn ) {
 				return this.addHandler( ele, type, fn );
 			},
+      /**
+       * Remove an event handler from element.
+       * @param {Element}
+       * @param {String}
+       * @param {Funtion}
+       */
 			off: function( ele, type, fn ) {
 				return this.removeHandler( ele, type, fn );
 			}
@@ -1435,19 +1472,19 @@
 				fn.call( this, e, String.fromCharCode( e.charCode ) );
 			} );
 		},
-    /**
-     * Add "keyup" event handler to elements.
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add "keyup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		keyup: function( fn ) {
 			return this.addHandler( "mouseout", fn );
 		},
-    /**
-     * Add "keyup" event handler to elements.
-     * @param {Function}
-     * @returns {this}
-     */
+		/**
+		 * Add "keyup" event handler to elements.
+		 * @param {Function}
+		 * @returns {this}
+		 */
 		error: function( fn ) {
 			return this.addHandler( "error", fn );
 		}
@@ -1492,7 +1529,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Mon Feb 17 2014 00:09:46 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Wed Feb 19 2014 22:41:24 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
