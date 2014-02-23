@@ -5593,7 +5593,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
@@ -5634,7 +5634,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
@@ -5643,7 +5643,7 @@ if ( typeof define === "function" && define.amd ) {
 		},
 		/**
 		 * Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.
-		 * @param [selector] {String|Element}
+		 * @param selector {String|Element}
 		 * @param [filter] {String}
 		 * @returns {aQuery}
 		 */
@@ -14144,24 +14144,25 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 
 /*=======================================================*/
 
-/*===================util/function.extend===========================*/
-aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExtend ) {
-	"use strict";
-	this.describe( "consult underscore" );
-	utilExtend.easyExtend( $.util, {
-		compose: function() {
-			var funcs = arguments;
-			return function() {
-				var args = arguments;
-				for ( var i = funcs.length - 1; i >= 0; i-- ) {
-					args = [ funcs[ i ].apply( this, args ) ];
-				}
-				return args[ 0 ];
-			};
-		},
+/*===================ui/flex===========================*/
+aQuery.define( "ui/flex", [
+    "base/client",
+    "base/typed",
+    "base/support",
+    "module/Widget",
+    "main/query",
+    "main/class",
+    "main/event",
+    "main/css",
+    "main/position",
+    "main/dom",
+    "main/attr",
+    "html5/css3"
+  ],
+	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3 ) {
+		"use strict";
 
-
-		debounce: function( fun, wait, immediate ) {
+		function debounce( fun, wait, immediate ) {
 			//undefinded does not work well when titanium
 			var timeout = null,
 				result = null;
@@ -14178,76 +14179,7 @@ aQuery.define( "util/function.extend", [ "base/extend" ], function( $, utilExten
 				if ( callNow ) result = fun.apply( context, args );
 				return result;
 			};
-		},
-
-		defer: function( fun, context ) {
-			var args = $.util.argToArray( arguments, 1 );
-			return setTimeout( function() {
-				fun.apply( context, args );
-			}, 1 );
-		},
-
-		once: function( fun ) {
-			var ran = false,
-				memo;
-			return function() {
-				if ( ran ) return memo;
-				ran = true;
-				memo = fun.apply( this, arguments );
-				fun = null;
-				return memo;
-			};
-		},
-
-		throttle: function( fun, wait ) {
-			var context, args, timeout, result;
-			var previous = 0;
-			var later = function() {
-				previous = new Date();
-				timeout = null;
-				result = fun.apply( context, args );
-			};
-
-			return function() {
-				var now = new Date();
-				var remaining = wait - ( now - previous );
-				context = this;
-				args = arguments;
-				if ( remaining <= 0 ) {
-					clearTimeout( timeout );
-					timeout = null;
-					previous = now;
-					result = fun.apply( context, args );
-				} else if ( !timeout ) {
-					timeout = setTimeout( later, remaining );
-				}
-				return result;
-			};
-		}
-	} );
-	return $.util;
-} );
-
-/*=======================================================*/
-
-/*===================ui/flex===========================*/
-aQuery.define( "ui/flex", [
-    "base/client",
-    "base/typed",
-    "base/support",
-    "module/Widget",
-    "main/query",
-    "main/class",
-    "main/event",
-    "main/css",
-    "main/position",
-    "main/dom",
-    "main/attr",
-    "html5/css3",
-    "util/function.extend"
-  ],
-	function( $, client, typed, support, Widget, query, cls, event, css, position, dom, attr, css3, functionExtend ) {
-		"use strict";
+		};
 
 		Widget.fetchCSS( "ui/css/flex" );
 
@@ -14277,7 +14209,7 @@ aQuery.define( "ui/flex", [
 					// var self = this;
 					var self = this;
 
-					this.flexEvent = functionExtend.debounce( function() {
+					this.flexEvent = debounce( function() {
 						self.resize();
 					}, 50 );
 
@@ -14405,7 +14337,7 @@ aQuery.define( "ui/flex", [
 						}
 					};
 
-					this.resizeEvent = functionExtend.debounce( function() {
+					this.resizeEvent = debounce( function() {
 						self.fillParent();
 						self.render();
 					}, 50 );
