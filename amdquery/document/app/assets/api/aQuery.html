@@ -229,35 +229,15 @@
 						</li>
 						
 						<li>
-							<a href="global.html#eq">eq</a>
+							<a href="global.html#define">define(1)</a>
 						</li>
 						
 						<li>
-							<a href="global.html#filter">filter</a>
+							<a href="global.html#define">define(2)</a>
 						</li>
 						
 						<li>
-							<a href="global.html#find">find</a>
-						</li>
-						
-						<li>
-							<a href="global.html#index">index</a>
-						</li>
-						
-						<li>
-							<a href="global.html#is">is</a>
-						</li>
-						
-						<li>
-							<a href="global.html#map">map</a>
-						</li>
-						
-						<li>
-							<a href="global.html#not">not</a>
-						</li>
-						
-						<li>
-							<a href="global.html#posterity">posterity</a>
+							<a href="global.html#define">define(3)</a>
 						</li>
 						
 						<li>
@@ -1106,73 +1086,6 @@ aQuery(null,"div", document.body);</pre>
         
             
 <dt>
-    <h4 class="name" id="eles"><span class="type-signature"></span>eles<span class="type-signature"> :Array</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        Element container.
-    </div>
-    
-    
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">Array</span>
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy"><li>null</li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-632">line 632</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        
-            
-<dt>
     <h4 class="name" id="length"><span class="type-signature"></span>length<span class="type-signature"> :Number</span></h4>
     
     
@@ -1222,7 +1135,7 @@ aQuery(null,"div", document.body);</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-703">line 703</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-701">line 701</a>
     </li></ul></dd>
     
 
@@ -1999,7 +1912,7 @@ aQuery(null,"div", document.body);</pre>
         
     <pre class="sunlight-highlight-javascript">aQuery.among( 1, 10, 5 ); // return 5
 aQuery.among( 10, 1, 7 ); // return 7
-aQuery.among( 10, 1, 123 ); // return 123
+aQuery.among( 10, 1, 123 ); // return 10
 aQuery.among( 10, 10, 15 ); // return 10</pre>
 
 
@@ -2644,7 +2557,8 @@ aQuery.between( 1, 10, 123 ); // return 10</pre>
     <div class="description">
         aQuery define.<br/>
 If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
-<a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+see <a href="global.html#define">define</a><br/>
+<a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
     </div>
     
 
@@ -2803,7 +2717,7 @@ If the last parameter is a function, then first argument of the function is aQue
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1792">line 1792</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1836">line 1836</a>
     </li></ul></dd>
     
 
@@ -4848,7 +4762,7 @@ aQuery.myFun();</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1822">line 1822</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-1866">line 1866</a>
     </li></ul></dd>
     
 
@@ -7387,7 +7301,7 @@ $("#div1, #div2").attr("title"); // return "Hello"</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-605">line 605</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-610">line 610</a>
     </li></ul></dd>
     
 
@@ -7420,6 +7334,143 @@ $("#div1, #div2").attr("title"); // return "Hello"</pre>
 	<dd>
 		
 <span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="eq"><span class="type-signature"></span>eq<span class="signature">(i)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get a new aQuery object by index.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>i</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-315">line 315</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
 
 
 	</dd>
@@ -7615,7 +7666,7 @@ $("#div1, #div2").attr("title"); // return "Hello"</pre>
 
         <tr>
             
-                <td class="name"><code>Object...</code></td>
+                <td class="name"><code>...Object</code></td>
             
 
             <td class="type">
@@ -7668,7 +7719,7 @@ $("#div1, #div2").attr("title"); // return "Hello"</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-619">line 619</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-624">line 624</a>
     </li></ul></dd>
     
 
@@ -7724,6 +7775,280 @@ new aQuery().myFun();</pre>
         
             
 <dt>
+    <h4 class="name" id="filter"><span class="type-signature"></span>filter<span class="signature">(selector)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Filter elements by selector.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-325">line 325</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="find"><span class="type-signature"></span>find<span class="signature">(selector)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Find elements by selector.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-333">line 333</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="first"><span class="type-signature"></span>first<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
     
     
@@ -7765,7 +8090,7 @@ new aQuery().myFun();</pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-637">line 637</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-635">line 635</a>
     </li></ul></dd>
     
 
@@ -8710,6 +9035,8 @@ Get the whole matched element set as a clean array.
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
 		
 
@@ -8729,14 +9056,21 @@ Get the whole matched element set as a clean array.
             
                 
 <span class="param-type">Number</span>
-|
-
-<span class="param-type">null</span>
 
 
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
             
 
             
@@ -8773,7 +9107,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-740">line 740</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-738">line 738</a>
     </li></ul></dd>
     
 
@@ -9062,7 +9396,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-644">line 644</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-642">line 642</a>
     </li></ul></dd>
     
 
@@ -9193,6 +9527,167 @@ Get the whole matched element set as a clean array.
         
             
 <dt>
+    <h4 class="name" id="index"><span class="type-signature"></span>index<span class="signature">(<span class="optional">ele</span>)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Search for a given element from among the matched elements.
+<br/> If no argument is passed to the .index() method, the return value is an integer indicating the position of the first element within the jQuery object relative to its sibling elements.
+<br/> If .index() is called on a collection of elements and a DOM element or aQuery object is passed in, .index() returns an integer indicating the position of the passed element relative to the original collection.
+<br/> If a selector string is passed as an argument, .index() returns an integer indicating the position of the first element within the jQuery object relative to the elements matched by the selector. If the element is not found, .index() will return -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>ele</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+|
+
+<span class="param-type">DOMElement</span>
+|
+
+<span class="param-type">Array.&lt;DOMElement></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-366">line 366</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="indexOf"><span class="type-signature"></span>indexOf<span class="signature">(ele)</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
     
@@ -9279,7 +9774,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-686">line 686</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-684">line 684</a>
     </li></ul></dd>
     
 
@@ -9459,7 +9954,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-660">line 660</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-658">line 658</a>
     </li></ul></dd>
     
 
@@ -9492,6 +9987,156 @@ Get the whole matched element set as a clean array.
 	<dd>
 		
 <span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="is"><span class="type-signature"></span>is<span class="signature">(selector)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.
+<br /> A string containing a selector expression to match elements against.
+<br /> A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the aQuery collection.Within the function, this refers to the current DOM element.
+<br /> An existing aQuery object to match the current set of elements against.
+<br /> One or more elements to match the current set of elements against.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+|
+
+<span class="param-type">function</span>
+|
+
+<span class="param-type">DOMElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-390">line 390</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
 
 
 	</dd>
@@ -9958,7 +10603,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-652">line 652</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-650">line 650</a>
     </li></ul></dd>
     
 
@@ -10128,6 +10773,143 @@ Get the whole matched element set as a clean array.
 	<dd>
 		
 <span class="param-type">this</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="map"><span class="type-signature"></span>map<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Iteration elements by function.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#queryMapCallback">queryMapCallback</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-403">line 403</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
 
 
 	</dd>
@@ -11719,6 +12501,143 @@ Get the whole matched element set as a clean array.
         
             
 <dt>
+    <h4 class="name" id="not"><span class="type-signature"></span>not<span class="signature">(selector)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Reject the result to an aQuery object.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-413">line 413</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="once"><span class="type-signature"></span>once<span class="signature">(type, fn)</span><span class="type-signature"> &rarr; {this}</span></h4>
     
     
@@ -12582,6 +13501,143 @@ Get the whole matched element set as a clean array.
     return new aQuery(popElement)
 </div>
 
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="aQuery.html">aQuery</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="posterity"><span class="type-signature"></span>posterity<span class="signature">(selector)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get a new aQuery object by all posterity elements which was found by selector.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>selector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="query.js.html">main/query.js</a>, <a href="query.js.html#sunlight-1-line-305">line 305</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
 
 
 <dl>
@@ -14120,7 +15176,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-587">line 587</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-592">line 592</a>
     </li></ul></dd>
     
 
@@ -14527,7 +15583,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-709">line 709</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-707">line 707</a>
     </li></ul></dd>
     
 
@@ -14815,7 +15871,7 @@ Get the whole matched element set as a clean array.
         
             
 <dt>
-    <h4 class="name" id="slice"><span class="type-signature"></span>slice<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    <h4 class="name" id="slice"><span class="type-signature"></span>slice<span class="signature">(start, <span class="optional">end</span>)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
     
     
 </dt>
@@ -14831,6 +15887,98 @@ Get the whole matched element set as a clean array.
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>start</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>end</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
     
     
     
@@ -14856,7 +16004,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-572">line 572</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-574">line 574</a>
     </li></ul></dd>
     
 
@@ -15001,7 +16149,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-595">line 595</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-600">line 600</a>
     </li></ul></dd>
     
 
@@ -15048,7 +16196,7 @@ Get the whole matched element set as a clean array.
         
             
 <dt>
-    <h4 class="name" id="splice"><span class="type-signature"></span>splice<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
+    <h4 class="name" id="splice"><span class="type-signature"></span>splice<span class="signature">(index, howmany, <span class="optional">items</span>)</span><span class="type-signature"> &rarr; {<a href="aQuery.html">aQuery</a>}</span></h4>
     
     
 </dt>
@@ -15064,6 +16212,131 @@ Get the whole matched element set as a clean array.
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>howmany</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
     
     
     
@@ -15089,7 +16362,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-579">line 579</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-584">line 584</a>
     </li></ul></dd>
     
 
@@ -15318,7 +16591,7 @@ Get the whole matched element set as a clean array.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-731">line 731</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-729">line 729</a>
     </li></ul></dd>
     
 
@@ -15730,7 +17003,7 @@ test1.toggle(function() {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-717">line 717</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-715">line 715</a>
     </li></ul></dd>
     
 
@@ -17210,7 +18483,7 @@ test1.toggle(function() {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-724">line 724</a>
+        <a href="amdquery.js.html">amdquery.js</a>, <a href="amdquery.js.html#sunlight-1-line-722">line 722</a>
     </li></ul></dd>
     
 

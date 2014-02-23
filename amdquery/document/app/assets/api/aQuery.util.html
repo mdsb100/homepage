@@ -229,35 +229,15 @@
 						</li>
 						
 						<li>
-							<a href="global.html#eq">eq</a>
+							<a href="global.html#define">define(1)</a>
 						</li>
 						
 						<li>
-							<a href="global.html#filter">filter</a>
+							<a href="global.html#define">define(2)</a>
 						</li>
 						
 						<li>
-							<a href="global.html#find">find</a>
-						</li>
-						
-						<li>
-							<a href="global.html#index">index</a>
-						</li>
-						
-						<li>
-							<a href="global.html#is">is</a>
-						</li>
-						
-						<li>
-							<a href="global.html#map">map</a>
-						</li>
-						
-						<li>
-							<a href="global.html#not">not</a>
-						</li>
-						
-						<li>
-							<a href="global.html#posterity">posterity</a>
+							<a href="global.html#define">define(3)</a>
 						</li>
 						
 						<li>
@@ -357,7 +337,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="argToArray"><span class="type-signature">&lt;static> </span>argToArray<span class="signature">(arg, start, end)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="argToArray"><span class="type-signature">&lt;static> </span>argToArray<span class="signature">(arg, <span class="optional">start</span>, <span class="optional">end</span>)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -387,7 +367,11 @@
 		<th>Type</th>
 
 		
+		<th>Argument</th>
+		
 
+		
+		<th>Default</th>
 		
 
 		<th class="last">Description</th>
@@ -412,7 +396,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last"></td>
@@ -435,7 +431,23 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
             
 
             <td class="description last"></td>
@@ -458,7 +470,23 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    arguments.length
+                
+                </td>
             
 
             <td class="description last"></td>
@@ -540,7 +568,7 @@
         
             
 <dt>
-    <h4 class="name" id="camelCase"><span class="type-signature">&lt;static> </span>camelCase<span class="signature">(name, head)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="camelCase"><span class="type-signature">&lt;static> </span>camelCase<span class="signature">(name, <span class="optional">head</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -565,6 +593,8 @@
 
 		<th>Type</th>
 
+		
+		<th>Argument</th>
 		
 
 		
@@ -591,6 +621,14 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -613,6 +651,16 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -670,6 +718,25 @@
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
         <h5>Example</h5>
@@ -821,7 +888,7 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
         
             
 <dt>
-    <h4 class="name" id="trim"><span class="type-signature">&lt;static> </span>trim<span class="signature">(str)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="trim"><span class="type-signature">&lt;static> </span>trim<span class="signature">(str)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -928,6 +995,25 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
 </dd>
@@ -935,7 +1021,7 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
         
             
 <dt>
-    <h4 class="name" id="unCamelCase"><span class="type-signature">&lt;static> </span>unCamelCase<span class="signature">(name, head)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="unCamelCase"><span class="type-signature">&lt;static> </span>unCamelCase<span class="signature">(name, <span class="optional">head</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -960,6 +1046,8 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
 
 		<th>Type</th>
 
+		
+		<th>Argument</th>
 		
 
 		
@@ -986,6 +1074,14 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1008,6 +1104,16 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
             
             </td>
 
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1065,6 +1171,25 @@ aQuery.util.camelCase("border-redius", "webkit") // return "webkitBorderRedius"<
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
         <h5>Example</h5>
