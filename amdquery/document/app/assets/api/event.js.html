@@ -229,6 +229,38 @@
 						</li>
 						
 						<li>
+							<a href="global.html#eq">eq</a>
+						</li>
+						
+						<li>
+							<a href="global.html#filter">filter</a>
+						</li>
+						
+						<li>
+							<a href="global.html#find">find</a>
+						</li>
+						
+						<li>
+							<a href="global.html#index">index</a>
+						</li>
+						
+						<li>
+							<a href="global.html#is">is</a>
+						</li>
+						
+						<li>
+							<a href="global.html#map">map</a>
+						</li>
+						
+						<li>
+							<a href="global.html#not">not</a>
+						</li>
+						
+						<li>
+							<a href="global.html#posterity">posterity</a>
+						</li>
+						
+						<li>
 							<a href="global.html#require">require</a>
 						</li>
 						
@@ -525,9 +557,9 @@
 		document: {
 			/**
 			 * Add an event handler to element.
-       * @param {Element}
-       * @param {String}
-       * @param {Funtion}
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
 			 */
 			addHandler: function( ele, type, fn ) {
 				var types = type.split( " " ),
@@ -544,12 +576,12 @@
 					ele = null;
 				}
 			},
-      /**
-       * Add a event Handler to element and do once.
-       * @param {Element}
-       * @param {String}
-       * @param {Funtion}
-       */
+			/**
+			 * Add a event Handler to element and do once.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			once: function( ele, type, fn ) {
 				var self = this,
 					fnproxy = function() {
@@ -558,12 +590,12 @@
 					};
 				return this._addHandler( ele, type, fnproxy );
 			},
-      /**
-       * Remove an event Handler from element.
-       * @param {Element}
-       * @param {String}
-       * @param {Funtion}
-       */
+			/**
+			 * Remove an event Handler from element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			removeHandler: function( ele, type, fn ) {
 				/// &lt;summary>给DOM元素移除事件&lt;/summary>
 				/// &lt;param name="ele" type="Element">元素&lt;/param>
@@ -581,11 +613,11 @@
 				else if ( ele.detachEvent ) ele.detachEvent( "on" + type, fn );
 				else ele[ "on" + type ] = null;
 			},
-      /**
-       * Create an event object.
-       * @param {String} - The type of event
-       * @param {Event}
-       */
+			/**
+			 * Create an event object.
+			 * @param {String} - The type of event
+			 * @param {Event}
+			 */
 			createEvent: function( type ) {
 				var e;
 				if ( document.createEvent ) {
@@ -595,12 +627,12 @@
 				}
 				return e;
 			},
-      /**
-       * Dispatch an event.
-       * @param {Element} - Dispatch an event from this element.
-       * @param {Event}
-       * @param {String} - The type of event
-       */
+			/**
+			 * Dispatch an event.
+			 * @param {Element} - Dispatch an event from this element.
+			 * @param {Event}
+			 * @param {String} - The type of event
+			 */
 			dispatchEvent: function( ele, event, type ) {
 				if ( ele.dispatchEvent ) {
 					ele.dispatchEvent( event );
@@ -608,27 +640,27 @@
 					ele.fireEvent( "on" + type, event, false );
 				}
 			},
-      /**
-       * Get char code.
-       * @param {Event}
-       * @returns {Number}
-       */
+			/**
+			 * Get char code.
+			 * @param {Event}
+			 * @returns {Number}
+			 */
 			getCharCode: function( e ) {
 				return ( e.keyCode ? e.keyCode : ( e.which || e.charCode ) ) || 0;
 			},
-      /**
-       * Get event.
-       * @param {Event}
-       * @returns {Event}
-       */
+			/**
+			 * Get event.
+			 * @param {Event}
+			 * @returns {Event}
+			 */
 			getEvent: function( e ) {
 				return e || window.event;
 			},
-      /**
-       * Get event target.
-       * @param {Event}
-       * @returns {Element}
-       */
+			/**
+			 * Get event target.
+			 * @param {Event}
+			 * @returns {Element}
+			 */
 			getTarget: function( e ) {
 				return e.srcElement || e.target;
 			},
@@ -775,27 +807,27 @@
 
 				}
 			},
-      /**
-       * Prevent default.
-       * @param {Event}
-       */
+			/**
+			 * Prevent default.
+			 * @param {Event}
+			 */
 			preventDefault: function( e ) {
 				if ( e.preventDefault ) e.preventDefault();
 				else e.returnValue = false;
 			},
-      /**
-       * Stop propagation.
-       * @param {Event}
-       */
+			/**
+			 * Stop propagation.
+			 * @param {Event}
+			 */
 			stopPropagation: function( e ) {
 				if ( e.stopPropagation ) e.stopPropagation();
 				else e.cancelBubble = true;
 			},
-      /**
-       * Get button code from mouse clicking.
-       * @param {Event}
-       * @param {Number}
-       */
+			/**
+			 * Get button code from mouse clicking.
+			 * @param {Event}
+			 * @param {Number}
+			 */
 			getButton: function( e ) {
 				if ( document.implementation.hasFeature( "MouseEvents", "2.0" ) ) return e.button;
 				else {
@@ -814,21 +846,21 @@
 					}
 				}
 			},
-      /**
-       * Add an event handler to element.
-       * @param {Element}
-       * @param {String}
-       * @param {Funtion}
-       */
+			/**
+			 * Add an event handler to element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			on: function( ele, type, fn ) {
 				return this.addHandler( ele, type, fn );
 			},
-      /**
-       * Remove an event handler from element.
-       * @param {Element}
-       * @param {String}
-       * @param {Funtion}
-       */
+			/**
+			 * Remove an event handler from element.
+			 * @param {Element}
+			 * @param {String}
+			 * @param {Funtion}
+			 */
 			off: function( ele, type, fn ) {
 				return this.removeHandler( ele, type, fn );
 			}
@@ -1529,7 +1561,6 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on Wed Feb 19 2014 22:41:24 GMT+0800 (CST) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
