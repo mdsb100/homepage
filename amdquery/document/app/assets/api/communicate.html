@@ -182,6 +182,10 @@
 							<a href="location.html">module/location</a>
 						</li>
 						
+						<li>
+							<a href="Test.html">module/Test</a>
+						</li>
+						
 
 					</ul>
 				</li>
@@ -219,10 +223,56 @@
 				</li>
 				
 				<li class="dropdown">
+					<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"test.report"">"test.report"</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
 					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#AjaxOptions">AjaxOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
 						
 						<li>
 							<a href="global.html#define">define</a>
@@ -238,6 +288,22 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#JSONPOptions">JSONPOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -304,7 +370,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-12">line 12</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-85">line 85</a>
     </li></ul></dd>
     
 
@@ -827,7 +893,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-140">line 140</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-200">line 200</a>
     </li></ul></dd>
     
 
@@ -1162,7 +1228,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-267">line 267</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-327">line 327</a>
     </li></ul></dd>
     
 
@@ -1230,7 +1296,7 @@
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><a href="global.html#AjaxOptions">AjaxOptions</a></span>
 
 
             
@@ -1238,540 +1304,9 @@
 
             
 
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-		<th>Default</th>
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "GET"
-                
-                </td>
-            
-
-            <td class="description last">"GET" or "POST"</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>url</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-|
-
-<span class="param-type">Object.&lt;String, String></span>
-|
-
-<span class="param-type">Array.&lt;Object.&lt;String, String>></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    ""
-                
-                </td>
-            
-
-            <td class="description last">See <a href="communicate.html#getURLParam">module:main/communicate.getURLParam</a></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>async</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>complete</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>header</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object.&lt;String, String></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>isRandom</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>timeout</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    10000
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>routing</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    ""
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>timeoutFun</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Timeout handler.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>dataType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "text"
-                
-                </td>
-            
-
-            <td class="description last">"json"|"xml"|"text"|"html"</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>contentType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "application/x-www-form-urlencoded"
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>context</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    null
-                
-                </td>
-            
-
-            <td class="description last">Complete context.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-            </td>
         </tr>
 
 	
@@ -1803,7 +1338,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-30">line 30</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-90">line 90</a>
     </li></ul></dd>
     
 
@@ -1889,7 +1424,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-121">line 121</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-181">line 181</a>
     </li></ul></dd>
     
 
@@ -2009,7 +1544,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-345">line 345</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-405">line 405</a>
     </li></ul></dd>
     
 
@@ -2117,7 +1652,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-367">line 367</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-427">line 427</a>
     </li></ul></dd>
     
 
@@ -2739,7 +2274,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-198">line 198</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-258">line 258</a>
     </li></ul></dd>
     
 
@@ -2825,7 +2360,7 @@ communicate.getURLParam( [
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-301">line 301</a>
+        <a href="communicate.js.html">main/communicate.js</a>, <a href="communicate.js.html#sunlight-1-line-361">line 361</a>
     </li></ul></dd>
     
 

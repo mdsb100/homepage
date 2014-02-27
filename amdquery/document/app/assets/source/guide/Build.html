@@ -4,13 +4,14 @@
 <head>
   <title>AMDQuery</title>
   <meta charset="utf-8" />
-  <link href="../css/reset.css" rel="stylesheet" type="text/css" />
-  <link href="../css/document.css" rel="stylesheet" type="text/css" />
-  <link href="../css/prettify/prettify-tomorrow.css" rel="stylesheet" type="text/css" />
-  <link href="../css/combination.css" rel="stylesheet" type="text/css" />
+  <link type="text/css" rel="stylesheet" href="/styles/reset.css" />
+  <link type="text/css" rel="stylesheet" href="/styles/prettify-tomorrow.css" />
+  <link href="/styles/prettify-tomorrow.css" rel="stylesheet" type="text/css" />
+  <link href="/amdquery/ui/css/widget-ui.css" rel="stylesheet" type="text/css" />
+  <link href="../document.css" rel="stylesheet" type="text/css" />
   <script src="../js/prettify.js" type="text/javascript"></script>
   <script src="../js/lang-css.js"></script>
-  <script src="../js/amdquery.js" type="text/javascript" amdquery="debug:false;autoFetchCss:0" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"></script>
+  <script src="../js/amdquery.js" type="text/javascript" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"></script>
   <script type="text/javascript" src="../js/main.js"></script>
   <script type="text/javascript">
     $.require(["main/query", "main/event", "ui/swapview"], function(query, event) {
@@ -266,7 +267,7 @@ root
               </li>
               <li>
                 <h4>detectUIWidgetCSS {Boolean}</h4>
-                <p>If that is true, then build would detect ui-widget css from "appCombinationXMLPath".</p>
+                <p>If that is true, then build would detect widget-ui css from "appCombinationXMLPath".</p>
                 <p>If that is false, then build would include all of "ui/css/*.css".</p>
               </li>
               <li>
@@ -333,7 +334,7 @@ var aQueryConfig = {
               </li>
               <li>
                 <h4>UIWidgetCSS</h4>
-                <p>It is a array of "ui/css/some.css", for example: ["tabbar.css", "navmenu.css"]. The array will concat into build-list when building ui-widget css.</p>
+                <p>It is a array of "ui/css/some.css", for example: ["tabbar.css", "navmenu.css"]. The array will concat into build-list when building widget-ui css.</p>
                 <p>Do not worry about duplicate css, build would filter same.</p>
               </li>
               <li>
@@ -345,7 +346,7 @@ var aQueryConfig = {
 {
   appConfig: { debug: '1', src: '../document/app/app' },
   cssPath: [ 'styles/reset.css' ], // The css be defined in app.html head.
-  UICssPath: [], // The css be defined in app.html head about ui-widget.
+  UICssPath: [], // The css be defined in app.html head about widget-ui.
   htmlPath: '/Users/apple/project/my/amdquery/document/app/app.html',
   appProjectPath: '/Users/apple/project/my/amdquery/document/app/',
   appName: 'document',
@@ -596,7 +597,7 @@ var aQueryConfig = {
               In terminal, cd build directory, "npm install" or "sudo npm install". Jake is automatically installed for global.
               <br />Input "jake", you will see building options.
               <br />"jake build[build_config.js]"   build application and javascript
-              <br />"jake ui_css"                   build css of UI-widget
+              <br />"jake ui_css"                   build css of widget-ui
               <br />"jake jsdoc"                    build javascript api document
             </p>
             <h3 name="Contributor">As a Contributor</h3>

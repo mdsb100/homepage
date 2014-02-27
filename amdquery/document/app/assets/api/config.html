@@ -182,6 +182,10 @@
 							<a href="location.html">module/location</a>
 						</li>
 						
+						<li>
+							<a href="Test.html">module/Test</a>
+						</li>
+						
 
 					</ul>
 				</li>
@@ -219,10 +223,56 @@
 				</li>
 				
 				<li class="dropdown">
+					<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"test.report"">"test.report"</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
 					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#AjaxOptions">AjaxOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
 						
 						<li>
 							<a href="global.html#define">define</a>
@@ -238,6 +288,22 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#JSONPOptions">JSONPOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -626,7 +692,7 @@ Config of amdquery. <br />
 
             
 
-            <td class="description last">The UI-Widget Configuration.
+            <td class="description last">The widget-ui Configuration.
                 <h6>Properties</h6>
 
 <table class="props table table-striped">
@@ -743,7 +809,78 @@ Config of amdquery. <br />
 
             
 
-            <td class="description last">The module Configuration.</td>
+            <td class="description last">The module Configuration.
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>testLogByHTML</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether log by HTML when do test.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>compatibleEvent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether compatible event, for example: e.srcElement || e.target.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
         </tr>
 
 	

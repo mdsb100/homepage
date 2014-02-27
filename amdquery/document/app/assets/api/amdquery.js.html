@@ -182,6 +182,10 @@
 							<a href="location.html">module/location</a>
 						</li>
 						
+						<li>
+							<a href="Test.html">module/Test</a>
+						</li>
+						
 
 					</ul>
 				</li>
@@ -219,10 +223,56 @@
 				</li>
 				
 				<li class="dropdown">
+					<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStart"">"ajaxStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxStop"">"ajaxStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"ajaxTimeout"">"ajaxTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStart"">"jsonpStart"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpStop"">"jsonpStop"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"jsonpTimeout"">"jsonpTimeout"</a>
+						</li>
+						
+						<li>
+							<a href="aQuery.html#event:"test.report"">"test.report"</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
 					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="global.html#AjaxOptions">AjaxOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#debug">debug</a>
+						</li>
 						
 						<li>
 							<a href="global.html#define">define</a>
@@ -238,6 +288,22 @@
 						
 						<li>
 							<a href="global.html#define">define(3)</a>
+						</li>
+						
+						<li>
+							<a href="global.html#error">error</a>
+						</li>
+						
+						<li>
+							<a href="global.html#info">info</a>
+						</li>
+						
+						<li>
+							<a href="global.html#JSONPOptions">JSONPOptions</a>
+						</li>
+						
+						<li>
+							<a href="global.html#logger">logger</a>
 						</li>
 						
 						<li>
@@ -441,12 +507,14 @@
 	 * @property {number}  config.amd.timeout                  - Timeout of the loading module.
 	 * @property {boolean} config.amd.console                  - It will be output log "module [id] ready" if true.
 	 *
-	 * @property {object}  config.ui                           - The UI-Widget Configuration.
+	 * @property {object}  config.ui                           - The widget-ui Configuration.
 	 * @property {boolean} config.ui.initWidget                - Automatic initialization UI.
 	 * @property {boolean} config.ui.autoFetchCss              - Automatic fetching CSS.
 	 * @property {boolean} config.ui.isTransform3d             - Whether to use transform3d.
 	 *
 	 * @property {object}  config.module                       - The module Configuration.
+	 * @property {object}  config.module.testLogByHTML         - Whether log by HTML when do test.
+	 * @property {object}  config.module.compatibleEvent       - Whether compatible event, for example: e.srcElement || e.target.
 	 *
 	 * @property {object}  config.app                          - The application Configuration.
 	 * @property {string}  config.app.src                      - A js file src, main of application.
@@ -478,7 +546,8 @@
 			isTransform3d: true
 		},
 		module: {
-
+			testLogByHTML: false,
+			compatibleEvent: false
 		},
 		app: {
 			src: "",
@@ -554,6 +623,19 @@
 		} else return new $( elem, tagName, parent );
 	},
 		$ = aQuery;
+
+	var emptyFn = function() {}, error, logger, info, debug;
+	if ( window.console && console.log.bind ) {
+		logger = console.log.bind( console );
+		error = console.error.bind( console );
+		info = console.info.bind( console );
+		debug = console.debug.bind( console );
+	} else {
+		logger = emptyFn;
+		error = emptyFn;
+		info = emptyFn;
+		debug = emptyFn;
+	}
 
 	/**
 	 * @callback EachCallback
@@ -675,8 +757,26 @@
 				return fun.apply( context || window, arguments );
 			};
 		},
-		/** wrap console.log. */
-		logger: ( window.console ? ( console.log.bind ? console.log.bind( console ) : console.log ) : function() {} ),
+		/** wrap console.log if exists.
+		 * @method logger
+		 * @param {...String}
+		 */
+		logger: logger,
+		/** wrap console.debug if exists.
+		 * @method debug
+		 * @param {...String}
+		 */
+		debug: debug,
+		/** wrap console.info if exists.
+		 * @method info
+		 * @param {...String}
+		 */
+		info: info,
+		/** wrap console.error if exists.
+		 * @method error
+		 * @param {...String}
+		 */
+		error: error,
 		/** Create a elemnt by tag name.
 		 * @param {String}
 		 * @returns {Element}
@@ -790,6 +890,68 @@
 				name = name.replace( /([A-Z]|^ms)/g, "-$1" ).toLowerCase();
 				head && ( name = head + "-" + name );
 				return name;
+			},
+			/**
+			 * Object.is is a proposed addition to the ECMA-262 standard
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * Object.is("foo", "foo");     // true
+			 * Object.is(window, window);   // true
+			 *
+			 * Object.is("foo", "bar");     // false
+			 * Object.is([], []);           // false
+			 *
+			 * var test = {a: 1};
+			 * Object.is(test, test);       // true
+			 *
+			 * Object.is(null, null);       // true
+			 *
+			 * // Special Cases
+			 * Object.is(0, -0);            // false
+			 * Object.is(-0, -0);           // true
+			 * Object.is(NaN, 0/0);         // true
+			 */
+			is: function( v1, v2 ) {
+				if ( Object.is ) {
+					return Object.is( v1, v2 );
+				}
+				if ( v1 === 0 && v2 === 0 ) {
+					return 1 / v1 === 1 / v2;
+				}
+				if ( v1 !== v1 ) {
+					return v2 !== v2;
+				}
+				return v1 === v2;
+			},
+			/**
+			 * Object A is equal to Object B.
+			 * @param {Object}
+			 * @param {Object}
+			 * @returns {Boolean}
+			 * @example
+			 * var a = { foo : { fu : "bar" } };
+			 * var b = { foo : { fu : "bar" } };
+			 * aQuery.util.isEqual(a, b) //return true
+			 */
+			isEqual: function( objA, objB ) {
+				if ( this.is( objA, objB ) )
+					return true;
+				if ( objA.constructor !== objB.constructor )
+					return false;
+				var aMemberCount = 0;
+				for ( var a in objA ) {
+					if ( !objA.hasOwnProperty( a ) )
+						continue;
+					if ( typeof objA[ a ] === 'object' && typeof objB[ a ] === 'object' ? !$.util.isEqual( objA[ a ], objB[ a ] ) : objA[ a ] !== objB[ a ] )
+						return false;
+					++aMemberCount;
+				}
+				for ( var a in objB )
+					if ( objB.hasOwnProperty( a ) )
+					--aMemberCount;
+				return aMemberCount ? false : true;
 			},
 			removeSuffix: util.removeSuffix,
 			version: version
