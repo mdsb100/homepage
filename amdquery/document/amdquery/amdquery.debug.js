@@ -18571,7 +18571,7 @@ aQuery.define( "ui/swapview", [
 
 /*=======================================================*/
 
-/*===================../document/app/views/index===========================*/
+/*===================../document/views/index===========================*/
 aQuery.define( "@app/views/index", [ "app/View", "ui/flex", "ui/tabview", "ui/swapview" ], function( $, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/index";
@@ -20632,7 +20632,7 @@ aQuery.define( "ui/navmenu", [
 
 /*=======================================================*/
 
-/*===================../document/app/views/navmenu===========================*/
+/*===================../document/views/navmenu===========================*/
 aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/navmenu";
@@ -20657,7 +20657,7 @@ aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "u
 
 /*=======================================================*/
 
-/*===================../document/app/controllers/navmenu===========================*/
+/*===================../document/controllers/navmenu===========================*/
 aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var ROUTER_MARK = "_",
@@ -20758,7 +20758,7 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 
 /*=======================================================*/
 
-/*===================../document/app/views/content===========================*/
+/*===================../document/views/content===========================*/
 aQuery.define( "@app/views/content", [ "base/client", "app/View", "ui/flex" ], function( $, client, SuperView ) {
 	"use strict"; //启用严格模式
 	var xmlpath = "@app/xml/content";
@@ -20778,7 +20778,7 @@ aQuery.define( "@app/views/content", [ "base/client", "app/View", "ui/flex" ], f
 
 /*=======================================================*/
 
-/*===================../document/app/controllers/content===========================*/
+/*===================../document/controllers/content===========================*/
 aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/Controller", "@app/views/content" ], function( $, client, src, SuperController, ContentView ) {
 	"use strict"; //启用严格模式
 	var Controller = SuperController.extend( {
@@ -20809,7 +20809,7 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 
 /*=======================================================*/
 
-/*===================../document/app/controllers/index===========================*/
+/*===================../document/controllers/index===========================*/
 aQuery.define( "@app/controllers/index", [
   "module/location",
   "app/Controller",
@@ -20877,7 +20877,7 @@ aQuery.define( "@app/controllers/index", [
 
 /*=======================================================*/
 
-/*===================../document/app/app===========================*/
+/*===================../document/app===========================*/
 aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@app/controllers/index" ], function( $, Promise, event, Application ) {
 	"use strict"; //启用严格模式
 	//必须依赖index controller
