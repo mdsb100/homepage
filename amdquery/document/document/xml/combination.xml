@@ -1,5 +1,5 @@
-<div id='aQueryViewContentKey' >
-<div aQueryViewContentKey='index' ><div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:column">
+<div id="aQueryViewContentKey" >
+<div aQueryViewContentKey="index" ><div style="" amdquery-widget="ui.flex" ui-flex="flexDirection:column">
   <div id="header_wrap">
     <center id="title">
       <h1>Documentation</h1>
@@ -12,17 +12,17 @@
         <div id="button1" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:document;title:document;select:true"></div>
         <div id="button2" style="width:100px;height:30px;border:0;" amdquery-widget="ui.tabbutton" ui-tabbutton="text:api;title:api"></div>
       </div>
-      <controller src="@app/controllers/navmenu.js" id="navmenu" />
+      <controller src="@app/controllers/navmenu.js" id="navmenu" ></controller>
       <div ui-flex="fillParentWidth:false;flex:1" widget="ui.flex;" style="width:200px;background-color:red">
       </div>
     </div>
     <div id="contentview" amdquery-widget="ui.swapview;ui.flex" ui-flex="flex:1" ui-swapview="orientation:H">
       <ol>
         <li>
-          <controller src="@app/controllers/content.js" id="document" />
+          <controller src="@app/controllers/content.js" id="document" ></controller>
         </li>
         <li>
-          <controller src="@app/controllers/content.js" id="api" />
+          <controller src="@app/controllers/content.js" id="api" ></controller>
         </li>
       </ol>
     </div>
@@ -36,7 +36,7 @@
   </div>
 </div>
 </div>
-<div aQueryViewContentKey='navmenu' ><div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
+<div aQueryViewContentKey="navmenu" ><div amdquery-widget="ui.flex;ui.scrollableview" ui-flex="fillParentWidth:false;flex:1" ui-scrollableview="overflow:V" style="width:200px;border-right:1px solid black;">
   <div id="nav" amdquery-widget="ui.navmenu">
     <ul>
       <li amdquery-widget="ui.navitem" ui-navitem="html:guide;img:file">
@@ -50,7 +50,7 @@
   </div>
 </div>
 </div>
-<div aQueryViewContentKey='content' ><div amdquery-widget="ui.flex" ui-flex="flex:1">
+<div aQueryViewContentKey="content" ><div amdquery-widget="ui.flex" ui-flex="flex:1">
   <iframe amdquery-widget="ui.flex" ui-flex="flex:1"></iframe>
 </div>
 </div>

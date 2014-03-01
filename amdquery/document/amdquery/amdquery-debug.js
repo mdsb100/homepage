@@ -60,6 +60,19 @@
 				return a;
 			},
 			/**
+			 * ... c extend b, b extend a. Return object "a".
+			 * @param {...Object}
+			 * @returns {Object} - return first object.
+			 */
+			multiExtend: function() {
+				for ( var arg = arguments, i = arg.length - 1; i >= 0; i-- ) {
+					if ( arg[ i - 1 ] ) {
+						this.extend( arg[ i - 1 ], arg[ i ] );
+					}
+				}
+				return arg[ 0 ];
+			},
+			/**
 			 * Get config from current javascript tag
 			 * @param {String[]} - List of attribute name
 			 * @param {Boolean} - If true then asc
@@ -225,19 +238,26 @@
 			viewContentID: ""
 		}
 	};
-	var defineConfig = {};
+	var defineConfig = {
+		amdquery: {},
+		amd: {},
+		amdVariables: {},
+		ui: {},
+		module: {},
+		app: {}
+	};
 	if ( typeof aQueryConfig != "undefined" && typeof aQueryConfig === "object" ) {
 		defineConfig = aQueryConfig;
-	} else {
-		defineConfig = util.getJScriptConfig( [ "amdquery", "amd", "amdVariables", "ui", "module", "app" ] );
 	}
 
-	util.extend( _config.amdquery, defineConfig.amdquery );
-	util.extend( _config.amd, defineConfig.amd );
-	util.extend( _config.amdVariables, defineConfig.amdVariables );
-	util.extend( _config.ui, defineConfig.ui );
-	util.extend( _config.module, defineConfig.module );
-	util.extend( _config.app, defineConfig.app );
+	var attributeConfigs = util.getJScriptConfig( [ "amdquery", "amd", "amdVariables", "ui", "module", "app" ] );
+
+	util.multiExtend( _config.amdquery, defineConfig.amdquery, attributeConfigs.amdquery );
+	util.multiExtend( _config.amd, defineConfig.amd, attributeConfigs.amd );
+	util.multiExtend( _config.amdVariables, defineConfig.amdVariables, attributeConfigs.amdVariables );
+	util.multiExtend( _config.ui, defineConfig.ui, attributeConfigs.ui );
+	util.multiExtend( _config.module, defineConfig.module, attributeConfigs.module );
+	util.multiExtend( _config.app, defineConfig.app, attributeConfigs.app );
 
 	/**
 	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
@@ -11434,7 +11454,7 @@ aQuery.define( "app/View", [
 
 		},
 		initTopElement: function( src ) {
-			src = src || ( getHtmlSrc( this.constructor._AMD.id ) + ".xml" );
+			src = src || ( getHtmlSrc( this.constructor._AMD.id ) );
 			return View.getXML( src );
 		},
 		destroy: function() {
@@ -11520,7 +11540,7 @@ aQuery.define( "app/View", [
 
 	if ( !config.app.development ) {
 		var $combinationXML = null;
-
+		// must excute after body ready
 		View.getXML = function( htmlSrc ) {
 			var key = "",
 				xml,
@@ -11594,7 +11614,7 @@ aQuery.define( "app/Controller", [
 	View,
 	Model, undefined ) {
 	"use strict";
-  this.describe( "Super Controller Class" );
+	this.describe( "Super Controller Class" );
 	var Controller = CustomEvent.extend( "Controller", {
 		init: function( view, models ) {
 			this._super();
@@ -11642,8 +11662,9 @@ aQuery.define( "app/Controller", [
 		getView: function() {
 
 		},
+		// controller must be <controller></conroller>
 		loadController: function( node ) {
-			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : query.find( "controller", node ),
+			var contollersElement = typed.isNode( node, "controller" ) ? $( node ) : ( node === document.body ? query.find( ">controller", node ) : query.find( "controller", node ) ),
 				controller = [],
 				ret = [];
 
@@ -12001,7 +12022,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	 * @exports module/location
 	 * @describe window.location to hash
 	 * @example
-	 * // http://localhost:8080/document/app/asset/source/guide/AMDQuery.html#swapIndex=1!scrollTo=#Config
+	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
 	 * {
 	 *   swapIndex: "1",
 	 *   scrollTo:  "#Config"
