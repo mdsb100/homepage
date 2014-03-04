@@ -260,7 +260,7 @@
 	util.multiExtend( _config.app, defineConfig.app, attributeConfigs.app );
 
 	/**
-	 * You can config global name. See <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
+	 * You can config global name. See <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=Reference_AMDQuery">AMDQuery.html</a> <br/>
 	 * <strong>aQuery("div")</strong> equivalent to <strong>new aQuery("div")</strong>.
 	 * @global
 	 * @class
@@ -394,7 +394,7 @@
 			return "AMDQuery";
 		},
 		/**
-		 * Return module infomation. see <a target="_top" href="/document/app/asset/source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
+		 * Return module infomation. see <a target="_parent" href="../source/guide/AMDQuery.html#scrollTo=AMD">AMDQuery.html</a>
 		 * @returns {String}
 		 */
 		valueOf: function() {
@@ -1944,7 +1944,7 @@
 			 * aQuery define.<br/>
 			 * If the last parameter is a function, then first argument of the function is aQuery(namespace).<br/>
 			 * see {@link define}<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module name
 			 * @param {String[]|*} - If arguments[2] is a factory, it can be any object.
 			 * @param {*} [factory] - Usually, it is function(){} or {}.
@@ -1974,7 +1974,7 @@
 			},
 			/**
 			 * aQuery require.<br/>
-			 * <a href="/document/app/app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_top">See also.</a>
+			 * <a href="app.html#navmenu=#AMDQuery!scrollTo=Require_Define" target="_parent">See also.</a>
 			 * @param {String} - Module.
 			 * @param {ClassModuleCallback} - The callback Be call when aQuery ready.
 			 * @param {Function} [fail] - An function to the fail callback if loading moudle timeout or error.
@@ -10861,6 +10861,12 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				attr = attr.split( /;|,/ );
 				for ( i = 0, len = attr.length; i < len; i++ ) {
 					item = attr[ i ].split( ":" );
+					if ( item.length > 2 ) {
+						var tempItem = item;
+						item = [];
+						item[ 0 ] = tempItem.shift();
+						item[ 1 ] = tempItem.join( ":" );
+					}
 					if ( item.length == 2 ) {
 						key = item[ 0 ];
 						if ( /^#((?:[\w\u00c0-\uFFFF-]|\\.)+)/.test( item[ 1 ] ) ) {
@@ -11657,6 +11663,20 @@ aQuery.define( "app/Controller", [
 			Controller.collection.removeController( this );
 
 			this.view.destroy();
+		},
+		activate: function() {
+			var event = {
+				type: "activated"
+			}
+			this.trigger( event.type, this, event );
+			return this
+		},
+		deactivate: function() {
+			var event = {
+				type: "deactivate"
+			}
+			this.trigger( event.type, this, event );
+			return this;
 		}
 	}, {
 		getView: function() {
@@ -11896,6 +11916,111 @@ aQuery.define( "app/Controller", [
 
 /*=======================================================*/
 
+/*===================module/location===========================*/
+aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
+	this.describe( "Location to Hash" );
+
+	var
+	SPLIT_MARK = "!",
+		EQUALS_MARK = "=",
+		SHARP = "#",
+		_location = window.location;
+
+	function hashToString( hash, split1, split2 ) {
+		var key, value, strList = [];
+		for ( key in hash ) {
+			if ( key === SHARP ) {
+				continue;
+			}
+			value = hash[ key ];
+			strList.push( key + split2 + value );
+		}
+		return strList.join( split1 );
+	}
+
+	/**
+	 * @exports module/location
+	 * @describe window.location to hash
+	 * @example
+	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
+	 * {
+	 *   "#": navmenu=guide_Build!swapIndex=1 // The "#" alway equals whole hash string.
+	 *   "swapIndex": "1",
+	 *   "scrollTo":  "#Config"
+	 * }
+	 */
+	var location = {
+		/**
+		 * Get value form hash.
+		 * @param {String}
+		 * @returns {String}
+		 */
+		getHash: function( key ) {
+			this.toHash();
+			return this.hash[ key ];
+		},
+		/**
+		 * Set value to hash by key.
+		 * @param {String}
+		 * @param {*}
+		 * @returns {this}
+		 */
+		setHash: function( key, value ) {
+			this.hash[ key ] = value + "";
+			var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			_location.hash = str;
+			this.hash[ SHARP ] = str;
+			return this;
+		},
+		/**
+		 * Remove key from hash.
+		 * @param {String}
+		 * @returns {this}
+		 */
+		removeHash: function( key ) {
+			if ( this.hash[ key ] !== undefined ) {
+				delete this.hash[ key ];
+				var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+				_location.hash = str;
+				this.hash[ SHARP ] = str;
+			}
+			return this;
+		},
+		/**
+		 * Clear window.location.hash
+		 * @returns {this}
+		 */
+		clearHash: function() {
+			window.location.hash = "";
+			this.hash = {
+				"#": ""
+			};
+			return this;
+		},
+		/**
+		 * Parse window.location.hash to object for this.hash.
+		 * @returns {this}
+		 */
+		toHash: function() {
+			var hash = _location.hash.replace( SHARP, "" );
+			this.hash = parse.QueryString( hash, SPLIT_MARK, EQUALS_MARK );
+			this.hash[ SHARP ] = hash;
+			return this;
+		},
+		/**
+		 * An object of window.location.hash.
+		 * @type {Object}
+		 */
+		hash: {}
+	};
+
+	location.toHash();
+
+	return location;
+} );
+
+/*=======================================================*/
+
 /*===================app/Application===========================*/
 aQuery.define( "app/Application", [
   "base/config",
@@ -11910,9 +12035,10 @@ aQuery.define( "app/Application", [
   "app/Model",
   "app/View",
   "app/Controller",
-  "ecma5/array" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, utilArray, undefined ) {
+  "ecma5/array",
+  "module/location" ], function( $, config, ClassModule, Promise, typed, utilExtend, CustomEvent, object, query, attr, BaseModel, BaseView, BaseController, utilArray, location, undefined ) {
 	"use strict";
-  this.describe( "Super Application Class" );
+	this.describe( "Super Application Class" );
 	var Application = CustomEvent.extend( "Application", {
 		init: function( promiseCallback ) {
 			this._super();
@@ -11971,10 +12097,10 @@ aQuery.define( "app/Application", [
 			return this;
 		},
 		parseRouter: function() {
-			var hash = window.location.hash,
-				ret = hash.match( /\$(.*)\$/ );
-			if ( ret && ret.length > 1 ) {
-				var controllerSrc = this._routerMap[ ret[ 1 ] ];
+			var appRouter = location.getHash( "appRouter" );
+
+			if ( appRouter ) {
+				var controllerSrc = this._routerMap[ appRouter ];
 				if ( controllerSrc ) {
 					var $body = $( document.body );
 					$body.children( "controller" ).remove();
@@ -11996,98 +12122,6 @@ aQuery.define( "app/Application", [
 	} );
 
 	return Application;
-} );
-
-/*=======================================================*/
-
-/*===================module/location===========================*/
-aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, utilExtend, parse ) {
-	this.describe( "Location to Hash" );
-
-	var
-	SPLIT_MARK = "!",
-		EQUALS_MARK = "=",
-		_location = window.location;
-
-	function hashToString( hash, split1, split2 ) {
-		var key, value, strList = [];
-		for ( key in hash ) {
-			value = hash[ key ];
-			strList.push( key + split2 + value );
-		}
-		return strList.join( split1 );
-	}
-
-	/**
-	 * @exports module/location
-	 * @describe window.location to hash
-	 * @example
-	 * // http://mdsb100.github.io/homepage/amdquery/document/document/app.html#navmenu=guide_Build!swapIndex=1
-	 * {
-	 *   swapIndex: "1",
-	 *   scrollTo:  "#Config"
-	 * }
-	 */
-	var location = {
-		/**
-     * Get value form hash.
-     * @param {String}
-		 * @returns {String}
-		 */
-		getHash: function( key ) {
-			this.toHash();
-			return this.hash[ key ];
-		},
-    /**
-     * Set value to hash by key.
-     * @param {String}
-     * @param {*}
-     * @returns {this}
-     */
-		setHash: function( key, value ) {
-			this.hash[ key ] = value + "";
-			_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-			return this;
-		},
-    /**
-     * Remove key from hash.
-     * @param {String}
-     * @returns {this}
-     */
-		removeHash: function( key ) {
-			if ( this.hash[ key ] !== undefined ) {
-				delete this.hash[ key ];
-				_location.hash = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
-			}
-			return this;
-		},
-    /**
-     * Clear window.location.hash
-     * @returns {this}
-     */
-		clearHash: function() {
-			window.location.hash = "";
-			this.hash = {};
-			return this;
-		},
-    /**
-     * Parse window.location.hash to object for this.hash.
-     * @returns {this}
-     */
-		toHash: function() {
-			this.hash = parse.QueryString( _location.hash.replace( "#", "" ), SPLIT_MARK, EQUALS_MARK );
-			return this;
-		},
-    /**
-     * An object of window.location.hash.
-     * @type {Object}
-     */
-		hash: {}
-	};
-
-	location.toHash();
-
-	return location;
 } );
 
 /*=======================================================*/
@@ -15379,15 +15413,15 @@ aQuery.define( "ui/tabview", [
 				if ( index !== originIndex ) {
 					this.selectTabbutton( index );
 
-					var activeView = this.$view.eq( index ),
-						deactiveView = this.$view.eq( originIndex );
+					var activateView = this.$view.eq( index ),
+						deactivateView = this.$view.eq( originIndex );
 
-					deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-						type: "deactive"
+					deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+						type: "deactivated"
 					} );
 
-					activeView.trigger( "active", activeView[ 0 ], {
-						type: "active"
+					activateView.trigger( "activated", activateView[ 0 ], {
+						type: "activated"
 					} );
 
 					var eventName = this.getEventName( "select" );
@@ -18397,8 +18431,8 @@ aQuery.define( "ui/swapview", [
 
 			opt.index = index;
 
-			var activeView = $( this.$views[ index ] ),
-				deactiveView = $( this.$views[ originIndex ] );
+			var activateView = $( this.$views[ index ] ),
+				deactivateView = $( this.$views[ originIndex ] );
 			var animationOpt;
 
 			if ( opt.orientation === HORIZONTAL ) {
@@ -18414,18 +18448,16 @@ aQuery.define( "ui/swapview", [
 				index: index,
 				originIndex: index
 			};
-			this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
+			this.target.trigger( animationEvent.type, this.target[ 0 ], animationEvent );
 
 
 			if ( originIndex !== index ) {
-				deactiveView.trigger( "beforeDeactive", deactiveView[ index ], {
-					type: "beforeDeactive"
+				deactivateView.trigger( "beforeDeactivate", deactivateView[ index ], {
+					type: "beforeDeactivate"
 				} );
-				activeView.trigger( "beforeActive", activeView[ index ], {
-					type: "beforeActive"
+				activateView.trigger( "beforeActivate", activateView[ index ], {
+					type: "beforeActivate"
 				} );
-				animationEvent.type = this.getEventName( "change" );
-				this.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 			}
 
 			this.container.stopAnimation().animate( animationOpt, {
@@ -18437,12 +18469,16 @@ aQuery.define( "ui/swapview", [
 					animationEvent.type = "afterAnimation";
 					self.target.trigger( animationEvent.type, animationEvent.target, animationEvent );
 					if ( originIndex !== index ) {
-						deactiveView.trigger( "deactive", deactiveView[ 0 ], {
-							type: "deactive"
+						deactivateView.trigger( "deactivated", deactivateView[ 0 ], {
+							type: "deactivated"
 						} );
-						activeView.trigger( "active", activeView[ 0 ], {
-							type: "active"
+						activateView.trigger( "activated", activateView[ 0 ], {
+							type: "activated"
 						} );
+						if ( originIndex !== index ) {
+							animationEvent.type = self.getEventName( "change" );
+							self.target.trigger( animationEvent.type, self.target[ 0 ], animationEvent );
+						}
 					}
 					if ( typed.isFun( animationCallback ) ) animationCallback.call( self.target );
 				}
@@ -19442,8 +19478,8 @@ aQuery.define( "ui/scrollableview", [
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
 			if ( $toElement.length === 1 && query.contains( this.target[ 0 ], $toElement[ 0 ] ) ) {
-				var top = $toElement.getTopWithTranslate3d(),
-					left = $toElement.getLeftWithTranslate3d(),
+				var top = $toElement.getTopWithTranslate3d() - this.target.getTopWithTranslate3d(),
+					left = $toElement.getLeftWithTranslate3d() - this.target.getLeftWithTranslate3d(),
 					self = this,
 					callback = function( overflow ) {
 						animationCallback && animationCallback.apply( this, arguments );
@@ -20179,6 +20215,18 @@ aQuery.define( "ui/navitem", [
 					this.$arrow.removeClass( "arrowRight" ).removeClass( "arrowBottom" );
 				}
 
+				if ( opt.href ) {
+					this.$title.attr( "href", opt.href );
+				} else {
+					this.$title.removeAttr( "href" );
+				}
+
+				if ( opt.target ) {
+					this.$title.attr( "target", opt.target );
+				} else {
+					this.$title.removeAttr( "target" );
+				}
+
 				return this;
 			},
 			toggle: function() {
@@ -20385,7 +20433,9 @@ aQuery.define( "ui/navitem", [
 				img: "",
 				selected: false,
 				isOpen: false,
-				parent: null
+				parent: null,
+				href: "",
+				target: "_blank"
 			},
 			publics: {
 				render: Widget.AllowPublic,
@@ -20403,14 +20453,18 @@ aQuery.define( "ui/navitem", [
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 1
+				parent: 1,
+				href: 1,
+				target: 1
 			},
 			setter: {
 				html: 1,
 				img: 1,
 				selected: 1,
 				isOpen: 1,
-				parent: 0
+				parent: 0,
+				href: 1,
+				target: 1
 			},
 			target: null,
 			toString: function() {
@@ -20653,11 +20707,10 @@ aQuery.define( "ui/navmenu", [
 
 /*=======================================================*/
 
-/*===================../document/views/navmenu===========================*/
-aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
+/*===================../document/views/docnav===========================*/
+aQuery.define( "@app/views/docnav", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
 	"use strict"; //启用严格模式
-	var xmlpath = "@app/xml/navmenu";
-	SuperView.getStyle( "@app/styles/navmenu" );
+	var xmlpath = "@app/xml/docnav";
 
 	var View = SuperView.extend( {
 		init: function( contollerElement ) {
@@ -20678,23 +20731,24 @@ aQuery.define( "@app/views/navmenu", [ "base/client", "main/css", "app/View", "u
 
 /*=======================================================*/
 
-/*===================../document/controllers/navmenu===========================*/
-aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "app/Controller", "@app/views/navmenu" ], function( $, attr, location, SuperController, NavmenuView ) {
+/*===================../document/controllers/docnav===========================*/
+aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app/Controller", "@app/views/docnav" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var ROUTER_MARK = "_",
 		SCROLLTO = "scrollTo",
-		SWAPINDEX = "swapIndex";
+		SWAPINDEX = "swapIndex",
+		NAVMENUKEY = "navmenuKey";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
-
+			this.hash = {};
 			this.navitem = null;
 			this.initSwapIndex = location.getHash( SWAPINDEX );
 			this.initsSrollTo = location.getHash( SCROLLTO );
 
 			var controller = this;
-			this.$nav = $( this.view.topElement ).find( "#nav" );
+			this.$nav = $( this.view.topElement ).find( "#docnav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
 				controller._modifyLocation( e.navitem );
@@ -20706,13 +20760,28 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 				} );
 			} );
 
+			$.on( "document_iframe.swapIndexChange", function( e ) {
+				location.removeHash( SCROLLTO );
+				location.setHash( SWAPINDEX, e.index );
+			} );
+
+			$.on( "document_iframe.scrollToChange", function( e ) {
+				location.setHash( SCROLLTO, e.name );
+			} );
+
+		},
+		activate: function() {
+			SuperController.invoke( "activate", this );
+		},
+		deactivate: function() {
+			SuperController.invoke( "deactivate", this );
 		},
 		_modifyLocation: function( target ) {
 			var $target = $( target );
 
 			if ( $target.isWidget( "ui.navitem" ) ) {
 				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-				location.setHash( "navmenu", path );
+				location.setHash( NAVMENUKEY, path );
 				if ( this._modified ) {
 					location.removeHash( SCROLLTO );
 					location.removeHash( SWAPINDEX );
@@ -20762,8 +20831,113 @@ aQuery.define( "@app/controllers/navmenu", [ "main/attr", "module/location", "ap
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var ret = $( target ? this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) ) : "#guide_AMDQuery" );
-			this.$nav.uiNavmenu( "selectNavItem", ret );
+			target = target || location.getHash( NAVMENUKEY ) || "guide_AMDQuery";
+			var ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) );
+			if ( ret.length ) {
+				this.$nav.uiNavmenu( "selectNavItem", ret[ 0 ] );
+			}
+
+		},
+		destroy: function() {
+			this.$nav.clearHandlers();
+			this.$nav = null;
+			SuperController.invoke( "destroy" );
+		}
+	}, {
+
+	} );
+
+	return Controller;
+} );
+
+/*=======================================================*/
+
+/*===================../document/views/apinav===========================*/
+aQuery.define( "@app/views/apinav", [ "base/client", "main/css", "app/View", "ui/flex", "ui/scrollableview", "ui/navmenu", "ui/navitem" ], function( $, client, css, SuperView ) {
+	"use strict"; //启用严格模式
+	var xmlpath = "@app/xml/apinav";
+
+	var View = SuperView.extend( {
+		init: function( contollerElement ) {
+			this._super( contollerElement, xmlpath );
+			// if ( client.browser.ie ) {
+			//   $( this.topElement ).css( "height", "100%" );
+			// }
+		},
+		onDomReady: function() {
+
+		}
+	}, {
+
+	} );
+
+	return View;
+} );
+
+/*=======================================================*/
+
+/*===================../document/controllers/apinav===========================*/
+aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app/Controller", "@app/views/apinav" ], function( $, attr, location, SuperController, NavmenuView ) {
+	"use strict"; //启用严格模式
+	var ROUTER_MARK = "_",
+		SCROLLTO = "scrollTo",
+		SWAPINDEX = "swapIndex";
+
+	var Controller = SuperController.extend( {
+		init: function( contollerElement, models ) {
+			this._super( new NavmenuView( contollerElement ), models );
+			this.hash = {};
+			var controller = this;
+			this.$nav = $( this.view.topElement ).find( "#apinav" );
+
+			this.$nav.on( "navmenu.select", function( e ) {
+				controller.selectNavitem( e.navitem );
+			} ).on( "dblclick", function( e ) {
+				controller.trigger( "navmenu.dblclick", controller, {
+					type: "navmenu.dblclick",
+					event: e
+				} );
+			} );
+
+		},
+		activate: function() {
+
+		},
+		deactivate: function() {
+
+		},
+		_modifyLocation: function( target ) {
+			// var $target = $( target );
+
+			// if ( $target.isWidget( "ui.navitem" ) ) {
+			// 	var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
+			// 	location.setHash( "navmenu", path );
+			// 	if ( this._modified ) {
+			// 		location.removeHash( SCROLLTO );
+			// 		location.removeHash( SWAPINDEX );
+			// 	}
+
+			// }
+			// this._modified = true;
+		},
+		selectNavitem: function( navitem ) {
+			var link = attr.getAttr( navitem, "link" );
+			if ( link ) {
+				this.trigger( "navmenu.select", this, {
+					type: "navmenu.select",
+					path: "assets/api/" + link
+				} )
+			}
+		},
+		_getPath: function( navitem, swapIndex, scrollTo ) {
+
+			return path;
+		},
+		selectDefaultNavmenu: function( target ) {
+			var navitem = this.$nav.find( "li[link='" + ( target || "index.html" ) + "']" );
+			if ( navitem.length ) {
+				this.$nav.uiNavmenu( "selectNavItem", navitem[ 0 ] );
+			}
 		},
 		destroy: function() {
 			this.$nav.clearHandlers();
@@ -20835,7 +21009,8 @@ aQuery.define( "@app/controllers/index", [
   "module/location",
   "app/Controller",
   "@app/views/index",
-  "@app/controllers/navmenu",
+  "@app/controllers/docnav",
+  "@app/controllers/apinav",
   "@app/controllers/content"
   ], function( $,
 	location,
@@ -20847,38 +21022,40 @@ aQuery.define( "@app/controllers/index", [
 			this._super( new IndexView( contollerElement ), models );
 			var self = this;
 
-			this.navmenu.on( "navmenu.select", function( e ) {
+			this.docnav.on( "navmenu.select", function( e ) {
 				self.document.loadPath( e.path );
 			} );
-			this.navmenu.on( "navmenu.dblclick", function( e ) {
+			this.docnav.on( "navmenu.dblclick", function( e ) {
 				self.document.openWindow();
 			} );
 
-			this.navmenu.selectDefaultNavmenu( location.getHash( "navmenu" ) );
+			this.docnav.selectDefaultNavmenu();
 
-			// this.api.loadPath( "/document/api/index.html" );
-
-			var $swapview = $( this.view.topElement ).find( "#contentview" );
-
-			$.on( "document_iframe.swapIndexChange", function( e ) {
-				location.removeHash( "scrollTo" );
-				location.setHash( "swapIndex", e.index );
+			this.apinav.on( "navmenu.select", function( e ) {
+				self.api.loadPath( e.path );
 			} );
 
-			$.on( "document_iframe.scrollToChange", function( e ) {
-				location.setHash( "scrollTo", e.name );
+			this.apinav.on( "navmenu.dblclick", function() {
+				self.api.openWindow();
 			} );
 
-			var loadAPIFlag = false;
+			var loadAPIFlag = false,
+				navMap = [ this.docnav, this.apinav ];
+			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "swapview.change", function( e ) {
+				location.setHash( "tab", e.index );
+				if ( e.index === 1 && loadAPIFlag === false ) {
+					loadAPIFlag = true;
+					self.apinav.selectDefaultNavmenu();
+				}
+
+				navMap[ e.index ].activate();
+				navMap[ e.originIndex ].deactivate();
+
+			} );
+
 			var $tabview = $( "#tabview" );
 			$tabview.on( "tabview.select", function( e ) {
-				$swapview.uiSwapview( "render", e.index, function() {
-					location.setHash( "tab", e.index );
-					if ( e.index === 1 && loadAPIFlag === false ) {
-						loadAPIFlag = true;
-						self.api.loadPath( "assets/api/index.html" );
-					}
-				} );
+				$swapview.uiSwapview( "render", e.index );
 			} );
 
 			if ( location.getHash( "tab" ) != null ) {
@@ -20886,7 +21063,9 @@ aQuery.define( "@app/controllers/index", [
 			}
 		},
 		destroy: function() {
-			this.navmenu.clearHandlers();
+			$( this.view.topElement ).find( "#contentview" ).clearHandlers();
+			this.docnav.clearHandlers();
+			this.apinav.clearHandlers();
 			SuperController.invoke( "destroy" );
 		}
 	}, {
