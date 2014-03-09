@@ -11967,7 +11967,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 */
 		setHash: function( key, value ) {
 			this.hash[ key ] = value + "";
-			var str = hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
+			var str = key === SHARP ? value : hashToString( this.hash, SPLIT_MARK, EQUALS_MARK );
 			_location.hash = str;
 			this.hash[ SHARP ] = str;
 			return this;
@@ -12338,7 +12338,6 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		};
 
 	if ( window.getComputedStyle ) {
-		//quote from jquery1.9.0
 		getStyles = function( elem ) {
 			return window.getComputedStyle( elem, null );
 		};
@@ -12352,8 +12351,8 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 			if ( computed ) {
 
-				if ( ret === "" && !$.contains( ele.ownerDocument.documentElement, ele ) ) {
-					ret = $.style( ele, name );
+				if ( ret === "" && !query.contains( ele.ownerDocument.documentElement, ele ) ) {
+					ret = css.style( ele, name );
 				}
 
 				// A tribute to the "awesome hack by Dean Edwards"
@@ -12428,16 +12427,26 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			return ret === "" ? "auto" : ret;
 		};
 	}
-
+	/**
+	 * @exports main/css
+	 * @requires module:base/typed
+	 * @requires module:base/extend
+	 * @requires module:base/array
+	 * @requires module:base/support
+	 * @requires module:base/client
+	 * @requires module:main/data
+	 * @requires module:main/query
+	 * @borrows module:main/query.contains as contains
+	 */
 	var css = {
+		/**
+		 * Get or set style from Element.
+		 * @param {Element}
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String|Number}
+		 * @returns {this}
+		 */
 		css: function( ele, name, value, style, extra ) {
-			/// <summary>为元素添加样式</summary>
-			/// <param name="ele" type="Element">元素</param>
-			/// <param name="name" type="String">样式名</param>
-			/// <param name="value" type="str/num">值</param>
-			/// <param name="style" type="Object">样式表</param>
-			/// <param name="extra" type="Boolean">是否返回num</param>
-			/// <returns type="self" />
 			if ( !ele || ele.nodeType === 3 || ele.nodeType === 8 || !ele.style ) {
 				return;
 			}
@@ -12446,7 +12455,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			var originName = $.util.camelCase( name );
 
 			var hooks = cssHooks[ name ] || {};
-			name = $.cssProps[ originName ] || ( $.cssProps[ originName ] = css.vendorPropName( style, originName ) );
+			name = css.cssProps[ originName ] || ( css.cssProps[ originName ] = css.vendorPropName( style, originName ) );
 
 			if ( value == undefined ) {
 				var val = hooks.get ? hooks.get( ele, name ) : curCSS( ele, name, style );
@@ -12462,7 +12471,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 
 				// convert relative number strings (+= or -=) to relative numbers. #7345
 				if ( type === "string" && ( ret = rrelNum.exec( value ) ) ) {
-					value = ( ret[ 1 ] + 1 ) * ret[ 2 ] + parseFloat( $.css( ele, name ) );
+					value = ( ret[ 1 ] + 1 ) * ret[ 2 ] + parseFloat( css.css( ele, name ) );
 					type = "number";
 				}
 
@@ -12491,39 +12500,45 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				return this;
 			}
 		},
+		/**
+		 * Get current style from Element.
+		 * @method curCss
+		 * @memberOf module:main/css
+		 * @param ele {Element}
+		 * @param name {String} - style name: "margin-left" or "marginLeft"
+		 * @returns {String}
+		 */
 		curCss: curCSS,
 		cssProps: cssProps,
+		/**
+		 * Get style from Element by type.
+		 * @param {Element}
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String} - Head likes "webkit"
+		 * @returns {String}
+		 */
 		style: function( ele, type, head ) {
-			/// <summary>返回元素样式表中的某个样式</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="type" type="String">样式名 缺省返回""</param>
-			/// <param name="head" type="String">样式名的头 缺省则无</param>
-			/// <returns type="String" />
-			return css.styleTable( ele )[ $.util.camelCase( type, head ) ];
+			return css.getStyles( ele )[ $.util.camelCase( type, head ) ];
 		},
-		styleTable: function( ele ) {
-			/// <summary>返回元素样式表</summary>
-			/// <param name="ele" type="Element">dom元素</param>
-			/// <returns type="Object" />
-			var style;
-			if ( document.defaultView && document.defaultView.getComputedStyle ) style = document.defaultView.getComputedStyle( ele, null );
-			else {
-				style = ele.currentStyle;
-
-			}
-			return style;
-		},
+		/**
+		 * Get style table from Element.
+		 * @method getStyles
+		 * @memberOf module:main/css
+		 * @param {Element}
+		 * @returns {Object<String,String>}
+		 */
+		getStyles: getStyles,
 
 		contains: query.contains,
-
+		/**
+		 * Get opacity from Element.
+		 * @param {Element}
+		 * @returns {Number} - from 0 to 1
+		 */
 		getOpacity: function( ele ) {
-			/// <summary>获得ele的透明度</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <returns type="Number" />
-
 			var o;
 			if ( support.opacity ) {
-				o = $.styleTable( ele ).opacity;
+				o = css.getStyles( ele ).opacity;
 				if ( o == "" || o == undefined ) {
 					o = 1;
 				} else {
@@ -12531,7 +12546,7 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				}
 			} else {
 				//return ele.style.filter ? (ele.style.filter.match(/\d+/)[0] / 100) : 1;
-				var f = $.styleTable( ele ).filter;
+				var f = css.getStyles( ele ).filter;
 				o = 1;
 				if ( f ) {
 					o = f.match( /\d+/ )[ 0 ] / 100;
@@ -12540,14 +12555,13 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			}
 			return o;
 		},
-		getStyles: getStyles,
-
-
+		/**
+		 * Hide Element.
+		 * @param {Element}
+		 * @param {Boolean=} - If true then Element is still block
+		 * @returns {this}
+		 */
 		hide: function( ele, visible ) {
-			/// <summary>隐藏元素</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="visible" type="Boolean">true:隐藏后任然占据文档流中</param>
-			/// <returns type="self" />
 			if ( visible ) {
 				ele.style.visibility = "hidden";
 			} else {
@@ -12555,15 +12569,15 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 				ele.style.display = "none";
 			}
 
-			//a ? this.css({ vi: "hidden" }) : this.css({ d: "none" })
 			return this;
 		},
-
+		/**
+		 * Is Elment visible.
+		 * @param {Element}
+		 * @returns {Boolean}
+		 */
 		isVisible: function( ele ) {
-			/// <summary>返回元素是否可见</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <returns type="Boolean" />
-			var t = $.styleTable( ele );
+			var t = css.getStyles( ele );
 			if ( t.display == "none" ) {
 				return false;
 			}
@@ -12572,46 +12586,58 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 			}
 			return true;
 		},
-
+		/**
+		 * Set opacity to Element.
+		 * @param {Number} - from 0 to 1
+		 * @returns {this}
+		 */
 		setOpacity: function( ele, alpha ) {
-			/// <summary>改变ele的透明度
-			/// </summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <param name="alpha" type="Number">0-1</param>
-			/// <returns type="self" />
 			alpha = $.between( 0, 1, alpha );
 			if ( support.opacity ) ele.style.opacity = alpha;
 			else ele.style.filter = "Alpha(opacity=" + ( alpha * 100 ) + ")"; //progid:DXImageTransform.Microsoft.
 			return this;
 		},
+		/**
+		 * Show Element.
+		 * @param {Element}
+		 * @returns {this}
+		 */
 		show: function( ele ) {
-			/// <summary>显示元素</summary>
-			/// <param name="ele" type="Element">element元素</param>
-			/// <returns type="self" />
 			var s = ele.style,
 				n = "none",
 				h = "hidden",
 				nEle, v;
-			if ( $.curCss( ele, "display" ) == n ) {
+			if ( css.curCss( ele, "display" ) == n ) {
 				v = utilData.get( ele, "_visible_display" );
 				if ( !v ) {
 					nEle = $.createEle( ele.tagName );
 					if ( ele.parentNode ) {
 						document.body.appendChild( nEle );
 					}
-					v = $.curCss( nEle, "display" ) || "";
+					v = css.curCss( nEle, "display" ) || "";
 					document.body.removeChild( nEle );
 					nEle = null;
 				}
 
 				s.display = v;
 			}
-			if ( $.curCss( ele, "visibility" ) == h ) {
+			if ( css.curCss( ele, "visibility" ) == h ) {
 				s.visibility = "visible";
 			}
 
 			return this;
 		},
+		/**
+		 * Swap Element style.
+		 * <br />Set options`s style to element.
+		 * <br />do callback.
+		 * <br />Swap origin style to element.
+		 * @param {Element}
+		 * @param {Object<String, String|Number>}
+		 * @param {Function}
+		 * @param {Array=} - Callback arguments
+		 * @returns {*} - return callback result;
+		 */
 		swap: function( ele, options, callback, args ) {
 			var ret, name,
 				old = {},
@@ -12633,118 +12659,133 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 		}
 	};
 
-	$.fn.extend( {
+	$.fn.extend( /** @lends aQuery.prototype */ {
+		/**
+		 * Set style.
+		 * @variation 1
+		 * @method css
+		 * @memberOf aQuery.prototype
+		 * @param styles {Object<String,String|Number>}
+		 * @returns {this}
+		 */
+
+		/**
+		 * Set style.
+		 * @variation 2
+		 * @method css
+		 * @memberOf aQuery.prototype
+		 * @param style {String} - style name: "margin-left" or "marginLeft"
+		 * @param value {String|Number}
+		 * @returns {this}
+		 */
+
+    /**
+     * Get style by type.
+     * @variation 3
+     * @method css
+     * @memberOf aQuery.prototype
+     * @param type {String}
+     * @returns {String}
+     */
 		css: function( style, value ) {
-			/// <summary>添加或获得样式
-			/// <para>如果要获得样式 返回为String</para>
-			/// <para>fireFox10有个问题，请不要写成带-的形式</para>
-			/// </summary>
-			/// <param name="style" type="Object/String">obj为赋样式 str为获得一个样式</param>
-			/// <param name="value" type="String/Number/undefined">当style是字符串，并且value存在</param>
-			/// <returns type="self" />
-			// var result, tmp;
 			if ( typed.isObj( style ) ) {
 				for ( var key in style ) {
 					this.each( function( ele ) {
-						$.css( ele, key, style[ key ] );
+						css.css( ele, key, style[ key ] );
 					} );
 				}
 			} else if ( typed.isStr( style ) ) {
 				if ( value === undefined ) {
-					return $.css( this[ 0 ], style );
+					return css.css( this[ 0 ], style );
 				} else {
 					this.each( function( ele ) {
-						$.css( ele, style, value );
+						css.css( ele, style, value );
 					} );
 				}
 			}
 			return this;
 		},
+		/**
+		 * Get current style from first Element.
+		 * @param name {String} - style name: "margin-left" or "marginLeft"
+		 * @returns {String}
+		 */
 		curCss: function( name ) {
-			/// <summary>返回样式原始值 可能有bug</summary>
-			/// <param name="name" type="String">样式名</param>
-			/// <returns type="any" />
-			return $.curCss( this[ 0 ], name );
+			return css.curCss( this[ 0 ], name );
 		},
+		/**
+		 * Get style from first Element by type.
+		 * @param {String} - style name: "margin-left" or "marginLeft"
+		 * @param {String} - Head likes "webkit"
+		 * @returns {String}
+		 */
 		style: function( type, head ) {
-			/// <summary>返回第一个元素样式表中的某个样式</summary>
-			/// <param name="type" type="String">样式名 缺省返回""</param>
-			/// <param name="head" type="String">样式名的头 缺省则无</param>
-			/// <returns type="String" />
-
-			return $.style( this[ 0 ], type, head );
+			return css.style( this[ 0 ], type, head );
 		},
-		styleTable: function() {
-			/// <summary>返回第一个元素样式表</summary>
-			/// <returns type="Object" />
-			return $.styleTable( this[ 0 ] );
+		/**
+		 * Get style table from first Element.
+		 * @returns {Object<String,String>}
+		 */
+		getStyles: function() {
+			return css.getStyles( this[ 0 ] );
 		},
-
-		antonymVisible: function( a ) {
-			/// <summary>添加兼容滚轮事件</summary>
-			/// <param name="a" type="Boolean">如果隐藏，隐藏的种类，true表示任然占据文档流</param>
-			/// <returns type="self" />
+		/**
+		 * Toggle visible
+		 * @param {Boolean=} - {@link module:main/css.hide}
+		 * @returns {this}
+		 */
+		toggleVisible: function( a ) {
 			if ( this.isVisible() ) this.hide( a );
 			else this.show();
 			return this;
 		},
-
+		/**
+		 * Hide Elements.
+		 * @param {Boolean=} - {@link module:main/css.hide}
+		 * @returns {this}
+		 */
 		hide: function( visible ) {
-			/// <summary>设置所有元素隐藏</summary>
-			/// <param name="visible" type="Boolean">true:隐藏后任然占据文档流中</param>
-			/// <returns type="self" />
-			//            a ? this.css({ vi: "hidden" }) : this.css({ d: "none" })
-			//            return this;
 			return this.each( function( ele ) {
-				$.hide( ele, visible );
+				css.hide( ele, visible );
 			} );
 		},
-
-		insertText: function( str ) {
-			/// <summary>给当前对象的所有ele插入TextNode</summary>
-			/// <param name="str" type="String">字符串</param>
-			/// <returns type="self" />
-			if ( typed.isStr( str ) && str.length > 0 ) {
-				var nodeText;
-				this.each( function( ele ) {
-					nodeText = document.createTextNode( str );
-					ele.appendChild( nodeText );
-				} );
-			}
-			return this;
-		},
+		/**
+		 * Is first elemnt visible.
+		 * @returns {Boolean}
+		 */
 		isVisible: function() {
-			/// <summary>返回元素是否可见</summary>
-			/// <returns type="Boolean" />
-			//            if (this.css("visibility") == "hidden")
-			//                return false;
-			//            if (this.css("d") == "none")
-			//                return false;
-			// return true;
-			return $.isVisible( this[ 0 ] );
+			return css.isVisible( this[ 0 ] );
 		},
+		/**
+     * Set opacity to every Element.
+     * @variation 1
+     * @method opacity
+     * @memberOf aQuery.prototype
+     * @param alpha {Number} - from 0 to 1
+     * @returns {this}
+     */
 
+     /**
+     * Get opacity from first Element.
+     * @variation 2
+     * @method opacity
+     * @memberOf aQuery.prototype
+     * @returns {Number}
+     */
 		opacity: function( alpha ) {
-			/// <summary>设置当前对象所有元素的透明度或获取当前对象第一个元素的透明度
-			/// <para>获得时返回Number</para>
-			/// </summary>
-			/// <param name="alpha" type="Number/null">透明度（0~1）可选，为空为获取透明度</param>
-			/// <returns type="self" />
 			return typed.isNum( alpha ) ? this.each( function( ele ) {
-				$.setOpacity( ele, alpha );
-			} ) : $.getOpacity( this[ 0 ] );
+				css.setOpacity( ele, alpha );
+			} ) : css.getOpacity( this[ 0 ] );
 		},
-
+		/**
+		 * Show Elements.
+		 * @returns {this}
+		 */
 		show: function() {
 			/// <summary>显示所有元素</summary>
 			/// <returns type="self" />
-			//            if (this.css("visibility") == "hidden")
-			//                this.css({ vi: "visible" });
-			//            else if (this.css("d") == "none")
-			//                this.css({ d: "" });
-			//            return this;
 			return this.each( function( ele ) {
-				$.show( ele );
+				css.show( ele );
 			} );
 		}
 
@@ -12773,8 +12814,6 @@ aQuery.define( "main/css", [ "base/typed", "base/extend", "base/array", "base/su
 	}
 
 	css.cssHooks = cssHooks;
-
-	$.extend( css );
 
 	// do not extend $
 	css.vendorPropName = function( style, name ) {
@@ -12892,7 +12931,7 @@ aQuery.define( "main/position", [ "base/typed", "base/extend", "base/support", "
 	function getSize( ele, name, extra ) {
 		extra = extra || "content";
 		return ele.offsetWidth === 0 && rdisplayswap.test( css.css( ele, "display" ) ) ?
-			$.swap( ele, cssShow, function() {
+			css.swap( ele, cssShow, function() {
 				return getWidthOrHeight( ele, name, extra );
 			} ) : getWidthOrHeight( ele, name, extra );
 	}
@@ -16326,11 +16365,11 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 				}
 
 				if ( ( p === "height" || p === "width" ) && ele.style ) {
-					opt.display = ele.style.display; //$.css(ele, "display");
+					opt.display = ele.style.display;
 
 					opt.overflow = ele.style.overflow;
 
-					ele.style.display = "block"; //是否对呢？
+					ele.style.display = "block"; //？
 				}
 
 				count++;
@@ -16872,7 +16911,7 @@ define( "hash/cubicBezier.tween", function() {
 					}
 
 					if ( ( p === "height" || p === "width" ) && ele.style ) {
-						opt.display = ele.style.display; //$.css(ele, "display");
+						opt.display = ele.style.display;
 						opt.overflow = ele.style.overflow;
 
 						ele.style.display = "block"; //是否对呢？
@@ -17744,7 +17783,7 @@ define( "hash/cubicBezier.tween", function() {
 		initPositionParent = function() {
 			var result;
 			this.target.parents().each( function( ele ) {
-				switch ( $.style( ele, "position" ) ) {
+				switch ( css.style( ele, "position" ) ) {
 					case "absolute":
 					case "relative":
 						result = ele;
@@ -17753,7 +17792,7 @@ define( "hash/cubicBezier.tween", function() {
 			} );
 			if ( !result ) {
 				result = document.body;
-				$.css( result, "position", "relative" );
+				css.css( result, "position", "relative" );
 			}
 
 			this.positionParent = $( result );
@@ -19428,8 +19467,10 @@ aQuery.define( "ui/scrollableview", [
 						self.layout();
 
 						var $a = $( this ),
-							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" );
-						self.animateToElement( self.getAnimationToElementByName( href ) );
+							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
+							elementId = self.getAnimationToElementById( href );
+
+						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
 						break;
 
 					case keyType.CombinationLeft:
@@ -19474,6 +19515,9 @@ aQuery.define( "ui/scrollableview", [
 		},
 		getAnimationToElementByName: function( name ) {
 			return this.target.find( "[name=" + ( name || "__undefined" ) + "]" );
+		},
+		getAnimationToElementById: function( name ) {
+			return this.target.find( "#" + name );
 		},
 		animateToElement: function( ele, animationCallback ) {
 			var $toElement = $( ele );
@@ -19577,6 +19621,7 @@ aQuery.define( "ui/scrollableview", [
 			"hideStatusBar": Widget.AllowPublic,
 			"render": Widget.AllowPublic,
 			"getAnimationToElementByName": Widget.AllowReturn,
+			"getAnimationToElementById": Widget.AllowReturn,
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
@@ -19935,52 +19980,54 @@ aQuery.define( "ui/scrollableview", [
 /*=======================================================*/
 
 /*===================animation/effect===========================*/
-﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "animation/animate" ], function( $, typed, utilData, animate, undefined ) {
+﻿aQuery.define( "animation/effect", [ "base/typed", "main/data", "main/css", "animation/animate" ], function( $, typed, utilData, css, animate, undefined ) {
 	"use strict";
 	var slideDownComplete = function() {
 		utilData.set( this, "slideOriginHeight", null );
 	},
 		slideUpComplete = function( opt ) {
-			$._hide( this, opt.visible ).css( this, "height", utilData.get( this, "slideOriginHeight" ) );
+			css.hide( this, opt.visible );
+			css.css( this, "height", utilData.get( this, "slideOriginHeight" ) );
 			utilData.set( this, "slideOriginHeight", null );
 		},
 		fadeInComplete = function() {
 			utilData.set( this, "slideOriginOpacity", null );
 		},
 		fadeOutComplete = function( opt ) {
-			$._hide( this, opt.visible ).setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
+			css.hide( this, opt.visible );
+			css.setOpacity( this, utilData.get( this, "slideOriginOpacity" ) );
 			utilData.set( this, "slideOriginOpacity", null );
 		};
 
 	var effect = {
-		_show: $.show,
-		_hide: $.hide,
-
 		fadeIn: function( ele, option ) {
 			/// <summary>淡入</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( $.isVisible( ele ) ) {
+			if ( css.isVisible( ele ) ) {
 				return this;
 			}
 
 			var o, opt = $._getAnimateOpt( option );
 			o = utilData.get( ele, "slideOriginOpacity" );
-			o = o != null ? o : ( $.css( ele, "opacity" ) || 1 );
+			o = o != null ? o : ( css.css( ele, "opacity" ) || 1 );
 
 			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeInComplete;
-			return $.setOpacity( ele, 0 )._show( ele ).animate( ele, {
+			css.setOpacity( ele, 0 );
+			css.show( ele );
+			$.animate( ele, {
 				opacity: o
 			}, opt );
+			return this;
 		},
 		fadeOut: function( ele, option ) {
 			/// <summary>淡出</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) ) {
+			if ( !css.isVisible( ele ) ) {
 				return this;
 			}
 			option = option || {
@@ -19989,13 +20036,15 @@ aQuery.define( "ui/scrollableview", [
 
 			var o, opt = $._getAnimateOpt( option );
 			o = utilData.get( ele, "slideOriginOpacity" );
-			o = o != null ? o : $.css( ele, "opacity" );
+			o = o != null ? o : css.css( ele, "opacity" );
 
 			utilData.set( ele, "slideOriginOpacity", o );
 			opt.complete = fadeOutComplete;
-			return $._show( ele ).animate( ele, {
+			css.show( ele )
+			$.animate( ele, {
 				opacity: 0
 			}, opt );
+			return this;
 		},
 
 		hide: function( ele, type, option ) {
@@ -20007,10 +20056,10 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			///  name="visible" type="Boolean/undefined">true:隐藏后任然占据文档流中
-			if ( typed.isStr( type ) && $[ type ] ) {
-				$[ type ]( ele, option );
+			if ( typed.isStr( type ) && effect[ type ] ) {
+				effect[ type ]( ele, option );
 			} else {
-				$._hide( ele );
+				css.hide( ele );
 			}
 			return this;
 		},
@@ -20023,10 +20072,10 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="type" type="String/undefined">动画类型</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( typed.isStr( type ) && $[ type ] ) {
-				$[ type ]( ele, option );
+			if ( typed.isStr( type ) && effect[ type ] ) {
+				effect[ type ]( ele, option );
 			} else {
-				$._show( ele );
+				css.show( ele );
 			}
 			return this;
 		},
@@ -20035,40 +20084,43 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( $.isVisible( ele ) ) {
+			if ( css.isVisible( ele ) ) {
 				return this;
 			}
 
-			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
 			utilData.set( ele, "slideOriginHeight", h );
-			$.css( ele, "height", 0 );
+			css.css( ele, "height", 0 );
 			opt.complete.push( slideDownComplete );
-			return $.css( ele, "height", 0 )._show( ele ).animate( ele, {
+			css.css( ele, "height", 0 );
+			css.show( ele )
+			$.animate( ele, {
 				height: h
 			}, opt );
+			return this;
 		},
 		slideUp: function( ele, option ) {
 			/// <summary>滑动淡出</summary>
 			/// <param name="ele" type="Element">dom元素</param>
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
-			if ( !$.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
+			if ( !css.isVisible( ele ) || utilData.get( ele, "_sliedeDown" ) ) {
 				return this;
 			}
 
-			var h = utilData.get( ele, "slideOriginHeight" ) || $.css( ele, "height" ),
+			var h = utilData.get( ele, "slideOriginHeight" ) || css.css( ele, "height" ),
 				opt = $._getAnimateOpt( option );
-			$.css( ele, "height", h );
+			css.css( ele, "height", h );
 			utilData.set( ele, "slideOriginHeight", h );
 			opt.complete.push( slideUpComplete );
-			return $._show( ele ).animate( ele, {
+			css.show( ele );
+			$.animate( ele, {
 				height: "0px"
 			}, opt );
+			return this;
 		}
 	};
-
-	$.extend( effect );
 
 	$.fn.extend( {
 		fadeIn: function( option ) {
@@ -20076,7 +20128,7 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.fadeIn( ele, option );
+				effect.fadeIn( ele, option );
 			} );
 		},
 		fadeOut: function( option ) {
@@ -20084,7 +20136,7 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.fadeOut( ele, option );
+				effect.fadeOut( ele, option );
 			} );
 		},
 
@@ -20096,7 +20148,7 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.hide( ele, type, option );
+				effect.hide( ele, type, option );
 			} );
 		},
 
@@ -20108,7 +20160,7 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.show( ele, type, option );
+				effect.show( ele, type, option );
 			} );
 		},
 		slideDown: function( option ) {
@@ -20116,7 +20168,7 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.slideDown( ele, option );
+				effect.slideDown( ele, option );
 			} );
 		},
 		slideUp: function( option ) {
@@ -20124,10 +20176,12 @@ aQuery.define( "ui/scrollableview", [
 			/// <param name="option" type="Object">动画选项</param>
 			/// <returns type="self" />
 			return this.each( function( ele ) {
-				$.slideUp( ele, option );
+				effect.slideUp( ele, option );
 			} );
 		}
 	} );
+
+
 	return effect;
 } );
 
@@ -20521,7 +20575,7 @@ aQuery.define( "ui/navmenu", [
 							self.target.trigger( type, target[ 0 ], para );
 							break;
 						case "navitem.select":
-							self.changeSelectedNavItem( e.target );
+							self.selectNavItem( e.target );
 							break;
 					}
 				};
@@ -20610,32 +20664,30 @@ aQuery.define( "ui/navmenu", [
 			getNavItemList: function() {
 				return this.target.find( "li[ui-navitem]" ).reverse().eles;
 			},
-			selectNavItem: function( target ) {
+			selectNavItem: function( target, isTrigger ) {
 				var $target = $( this.getNavItem( target ) || [] ),
 					opt = this.options;
 				if ( $target.isWidget( "ui.navitem" ) ) {
 					if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
 						$( opt.selectedNavItem ).uiNavitem( "cancel" );
 					}
-					$target.uiNavitem( "select" );
-					opt.selectedNavItem = $target;
-				}
-			},
-			changeSelectedNavItem: function( target ) {
-				var $target = $( this.getNavItem( target ) || [] ),
-					opt = this.options;
-				if ( $target.isWidget( "ui.navitem" ) ) {
-					if ( opt.selectedNavItem && opt.selectedNavItem !== target ) {
-						$( opt.selectedNavItem ).uiNavitem( "cancel" );
+
+					if ( !opt.selectedNavItem || opt.selectedNavItem !== target ) {
+						opt.selectedNavItem = target;
+						$target.uiNavitem( "select" );
+
+						if ( isTrigger === undefined ) {
+							isTrigger = true;
+						}
+						if ( isTrigger ) {
+							var para = {
+								navitem: target
+							}, type;
+
+							type = para.type = this.getEventName( "select" );
+							this.target.trigger( type, this.target[ 0 ], para );
+						}
 					}
-					opt.selectedNavItem = $target;
-
-					var para = {
-						navitem: target
-					}, type;
-
-					type = para.type = this.getEventName( "select" );
-					this.target.trigger( type, this.target[ 0 ], para );
 				}
 			},
 			init: function( opt, target ) {
@@ -20687,8 +20739,7 @@ aQuery.define( "ui/navmenu", [
 				selectNavItem: Widget.AllowPublic,
 				refreshNavItem: Widget.AllowPublic,
 				addNavItem: Widget.AllowPublic,
-				removeNavItem: Widget.AllowPublic,
-				changeSelectedNavItem: Widget.AllowPublic
+				removeNavItem: Widget.AllowPublic
 			},
 			customEventName: [ "open", "close" ],
 			target: null,
@@ -20737,7 +20788,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 	var ROUTER_MARK = "_",
 		SCROLLTO = "scrollTo",
 		SWAPINDEX = "swapIndex",
-		NAVMENUKEY = "navmenuKey";
+		DOCNAVMENUKEY = "docNavmenuKey";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -20781,7 +20832,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 
 			if ( $target.isWidget( "ui.navitem" ) ) {
 				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-				location.setHash( NAVMENUKEY, path );
+				location.setHash( DOCNAVMENUKEY, path );
 				if ( this._modified ) {
 					location.removeHash( SCROLLTO );
 					location.removeHash( SWAPINDEX );
@@ -20831,7 +20882,7 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			target = target || location.getHash( NAVMENUKEY ) || "guide_AMDQuery";
+			target = target || location.getHash( DOCNAVMENUKEY ) || "guide_AMDQuery";
 			var ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) );
 			if ( ret.length ) {
 				this.$nav.uiNavmenu( "selectNavItem", ret[ 0 ] );
@@ -20879,9 +20930,7 @@ aQuery.define( "@app/views/apinav", [ "base/client", "main/css", "app/View", "ui
 /*===================../document/controllers/apinav===========================*/
 aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app/Controller", "@app/views/apinav" ], function( $, attr, location, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
-	var ROUTER_MARK = "_",
-		SCROLLTO = "scrollTo",
-		SWAPINDEX = "swapIndex";
+	var APINAVMENUKEY = "apiNavmenuKey";
 
 	var Controller = SuperController.extend( {
 		init: function( contollerElement, models ) {
@@ -20891,13 +20940,23 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 			this.$nav = $( this.view.topElement ).find( "#apinav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
-				controller.selectNavitem( e.navitem );
+				var link = attr.getAttr( e.navitem, "link" );
+				if ( link ) {
+					controller.linkTo( link );
+					controller._modifyLocation( link );
+				}
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
 					type: "navmenu.dblclick",
 					event: e
 				} );
 			} );
+
+			this.handleIframeChange = function( e ) {
+				controller.selectDefaultNavmenu( e.href );
+			};
+
+			$.on( "api_iframe.hrefChange", this.handleIframeChange );
 
 		},
 		activate: function() {
@@ -20906,42 +20965,38 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 		deactivate: function() {
 
 		},
-		_modifyLocation: function( target ) {
-			// var $target = $( target );
+		_modifyLocation: function( link ) {
+			location.setHash( APINAVMENUKEY, link );
 
-			// if ( $target.isWidget( "ui.navitem" ) ) {
-			// 	var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-			// 	location.setHash( "navmenu", path );
-			// 	if ( this._modified ) {
-			// 		location.removeHash( SCROLLTO );
-			// 		location.removeHash( SWAPINDEX );
-			// 	}
-
-			// }
-			// this._modified = true;
 		},
-		selectNavitem: function( navitem ) {
-			var link = attr.getAttr( navitem, "link" );
-			if ( link ) {
-				this.trigger( "navmenu.select", this, {
-					type: "navmenu.select",
-					path: "assets/api/" + link
-				} )
-			}
+		linkTo: function( link ) {
+			this.trigger( "navmenu.select", this, {
+				type: "navmenu.select",
+				path: "assets/api/" + link
+			} );
 		},
 		_getPath: function( navitem, swapIndex, scrollTo ) {
 
 			return path;
 		},
+		findLink: function( target ) {
+			target = target.split( "#" );
+			var navitem = this.$nav.find( "li[link='" + target[ 0 ] + "']" );
+			return navitem.length ? navitem[ 0 ] : null;
+		},
 		selectDefaultNavmenu: function( target ) {
-			var navitem = this.$nav.find( "li[link='" + ( target || "index.html" ) + "']" );
-			if ( navitem.length ) {
-				this.$nav.uiNavmenu( "selectNavItem", navitem[ 0 ] );
+			var src = location.getHash( APINAVMENUKEY ) || target || "index.html";
+			var navitem = this.findLink( src );
+			if ( navitem ) {
+				this.linkTo( src );
+				this.$nav.uiNavmenu( "selectNavItem", navitem, false );
+				this._modifyLocation( src );
 			}
 		},
 		destroy: function() {
 			this.$nav.clearHandlers();
 			this.$nav = null;
+			$.off( "api_iframe.hrefChange", this.handleIframeChange );
 			SuperController.invoke( "destroy" );
 		}
 	}, {
@@ -20984,9 +21039,11 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 			this.$content = $content;
 		},
 		loadPath: function( path ) {
-			this.$content.src( {
-				src: path
-			} )
+			if ( this.getSrc() !== path ) {
+				this.$content.src( {
+					src: path
+				} );
+			}
 		},
 		getSrc: function() {
 			return this.$content.attr( "src" );
