@@ -10513,17 +10513,20 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				ele.onload = function() {
 					clearTimeout( timeId );
 					o.complete && o.complete.call( o.context || this, this );
+					ele.onload = ele.onerror = null;
 					ele = timeId = o = null;
 				};
 				ele.onerror = function( e ) {
 					clearTimeout( timeId );
 					o.error && o.timeoutFun.call( ele, e );
+					ele.onload = ele.onerror = null;
 					ele = o = timeId = null;
 				};
 
 				if ( o.timeout ) {
 					timeId = setTimeout( function() {
 						o.timeoutFun && o.timeoutFun.call( ele, o );
+						ele.onload = ele.onerror = null;
 						ele = o = timeId = null;
 					}, o.timeout );
 				}
@@ -11921,7 +11924,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	this.describe( "Location to Hash" );
 
 	var
-	SPLIT_MARK = "!",
+	SPLIT_MARK = "&",
 		EQUALS_MARK = "=",
 		SHARP = "#",
 		_location = window.location;
