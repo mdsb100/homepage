@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/typed",
+      "main/query",
+      "main/event",
+      "main/data",
+      "module/Test"
+    ], function(typed, query, event, data, Test) {
+      var testEvent = new Test("event");
+      var diva = query.getEleById("a");
+      var divb = query.getEleById("b");
+      var testContext = null;
+      var testResult = null;
+      var fn = function(ret){
+        testContext = this;
+        testResult = ret;
+      }
+      var fn1 = function(){};
+
+      var fn2 = function(){
+        var a = 1;
+      };
+
+      testEvent.describe("Test Event function", function(preResult, test, logger){
+        test(function(){
+          event.on(diva, "foo bar back click", fn);
+        }).should.not.Throw();
+
+        test(event.hasHandler(diva, "foo", fn), "diva has handler 'foo'").should.be.greater.than(-1);
+        test(event.hasHandler(diva, "bar", fn), "diva has handler 'bar'").should.be.greater.than(-1);
+        test(event.hasHandler(diva, "back", fn), "diva has handler 'back'").should.be.greater.than(-1);
+        test(event.hasHandler(diva, "click", fn), "diva has handler 'click'").should.be.greater.than(-1);
+
+        test(function(){
+          event.cloneHandlers(divb, diva);
+        }).should.not.Throw();
+
+        test(event.getHandlers(diva), "diva handlers").should.equal(event.getHandlers(divb));
+
+        test(function(){
+          event.trigger(diva, "foo", diva, "result");
+        }).should.not.Throw();
+
+        test(testResult).should.equal("result");
+        test(testContext).should.equal(diva);
+
+        test(function(){
+          event.trigger(diva, "click", diva, {screenX:5});
+        }).should.not.Throw();
+
+        test(testResult).should.exists();
+        test(testResult).should.have.property("type").with.should.equal("click");
+        test(testResult).should.have.property("screenX").with.should.equal(5);
+
+        test(function(){
+          event.trigger(divb, "bar", divb, "result");
+        }).should.not.Throw();
+
+        test(testResult).should.equal("result");
+        test(testContext).should.equal(divb);
+
+        test(function(){
+          event.trigger(divb, "click", divb, {screenX:10});
+        }).should.not.Throw();
+
+        test(testResult).should.exists();
+        test(testResult).should.have.property("type").with.should.equal("click");
+        test(testResult).should.have.property("screenX").with.should.equal(10);
+
+        test(function(){
+          event.clearHandlers(divb);
+        }).should.not.Throw();
+
+        test(function(){
+          event.off(diva, "bar click", fn);
+        }).should.not.Throw();
+
+        test(event.hasHandler(diva, "bar", fn)).should.equal(-1);
+
+        test(event.hasHandler(diva, "click", fn)).should.equal(-1);
+
+        test(fn.__proxy).should.not.exists();
+
+        test(function(){
+          testResult = null;
+          event.trigger(diva, "click", diva, {screenX:10});
+        }).should.not.Throw();
+
+        test(testResult).should.equal(null);
+
+        test(function(){
+          event.on(diva, "back", fn1);
+        }).should.not.Throw();
+
+        test(event.getHandlers(diva, "back")).should.have.length(2);
+
+        test(function(){
+          event.clear(diva, "back");
+        }).should.not.Throw();
+
+        test(event.getHandlers(diva, "back")).should.not.exists();
+
+        test(function(){
+          event.clear(diva);
+        }).should.not.Throw();
+
+        test(typed.isEmptyObject(event.getHandlers(diva))).should.equal(true);
+
+        test(function(){
+          event.once(diva, "click once", fn2);
+        }).should.not.Throw();
+
+        test(event.hasHandler(diva, "click", fn2)).should.be.greater.than(-1);
+        test(event.hasHandler(diva, "once", fn2)).should.be.greater.than(-1);
+
+        test(function(){
+          event.trigger(diva, "once", diva);
+        }).should.not.Throw();
+
+        test(function(){
+          event.trigger(diva, "click", diva, {screenX:10});
+        }).should.not.Throw();
+
+        test(event.hasHandler(diva, "once", fn2)).should.equal(-1);
+        test(event.hasHandler(diva, "click", fn2)).should.equal(-1);
+
+        test(data.hasData(diva)).should.equal(false);
+
+        test(function(){
+          event.toggle(diva, function(){
+            diva.style.backgroundColor = "yellow"
+          }, function(){
+            diva.style.backgroundColor = "red"
+          });
+        }).should.not.Throw();
+
+        event.trigger(diva, "click");
+        test(diva.style.backgroundColor).should.equal("yellow");
+
+        event.trigger(diva, "click");
+        test(diva.style.backgroundColor).should.equal("red");
+
+        event.trigger(diva, "click");
+        test(diva.style.backgroundColor).should.equal("yellow");
+
+        test(function(){
+          event.toggle(diva);
+        }).should.not.Throw();
+
+        test(data.hasData(diva)).should.equal(false);
+      })
+      .start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+  <div id="a" style="width: 100px; height: 100px; background-color: red;">
+  </div>
+  <div id="b" style="width: 100px; height: 100px; background-color: green;">
+  </div>
+</body>
+
+</html>

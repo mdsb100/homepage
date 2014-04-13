@@ -1,0 +1,50 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require( [ "module/location", "module/Test" ], function( location, Test ) {
+      var testLocation = new Test( "location", function() {
+
+      } ).describe( "Test location function", function( preResult, test, logger ) {
+        test( function() {
+          location.clearHash();
+        } ).should.not.Throw();
+
+        test( function() {
+          location.setHash( "name", "Jarry" );
+        } ).should.not.Throw();
+
+        test( function() {
+          location.setHash( "age", "18" );
+        } ).should.not.Throw();
+
+        test( location.getHash( "age" ), "age" ).should.equal( "18" );
+
+        test( location.getHash( "name" ), "name" ).should.equal( "Jarry" );
+
+        test( function() {
+          location.removeHash( "name" );
+        } ).should.not.Throw();
+
+        test( location.getHash( "name" ), "name" ).should.not.exists();
+
+        test( function() {
+          location.clearHash();
+        } ).should.not.Throw();
+
+        test( location.getHash( "age" ), "age" ).should.not.exists();
+      } ).start();
+
+    } );
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

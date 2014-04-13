@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/typed",
+      "main/CustomEvent",
+      "module/Test"
+    ], function(typed, CustomEvent, Test) {
+
+      var testCustomEvent = new Test("CustomeEvent", function(preResult){
+        // complete
+      }).describe("Test customEvent", function(preResult, test, logger){
+        var customEvent = new CustomEvent();
+        var testTriggerResult = "";
+        var testTriggerContext = null;
+        var fn = function( ret ){
+          testTriggerResult = ret;
+          testTriggerContext = this;
+        };
+        var fn1 = function(){};
+
+        test(customEvent.isEmpty(), "customEvent is empty").should.equal(true);
+
+        test(function(){
+          customEvent.on("a.b a.c a b", fn);
+        }, "customEvent on").should.not.Throw();
+
+        test(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").should.be.greater.than(-1);
+
+        test(customEvent.hasHandler("a.c", fn), "customEvent hasHandler 'a.c',").should.be.greater.than(-1);
+
+        test(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").should.be.greater.than(-1);
+
+        test(customEvent.hasHandler("b", fn), "customEvent hasHandler 'b',").should.be.greater.than(-1);
+
+        test(function(){
+          customEvent.on("b", fn1);
+        }, "customEvent on").should.not.Throw();
+
+        test(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").should.be.instance.of(Array);
+
+        test(customEvent.getHandlers(), "customEvent getHandlers 'b',").should.equal(customEvent.clone().getHandlers());
+
+        test(customEvent.getHandlers("b"), "customEvent getHandlers 'b',").should.have.index(1).with.should.equal(fn1);
+
+        test(customEvent.isEmpty(), "customEvent is empty").should.equal(false);
+
+        test(function(){
+          customEvent.off("a.b a", fn);
+        }, "customEvent off 'a.b a'").should.not.Throw();
+
+        test(customEvent.hasHandler("a.b", fn), "customEvent hasHandler 'a.b',").should.equal(-1);
+
+        test(customEvent.hasHandler("a", fn), "customEvent hasHandler 'a',").should.equal(-1);
+
+        test(function(){
+          customEvent.trigger("a.c", customEvent, "myresult");
+        }, "customEvent trigger 'a.c' by parameter 'myresult'.").should.not.Throw();
+
+        test(testTriggerResult, "testTriggerResult").should.equal("myresult");
+
+        test(function(){
+          customEvent.trigger("b", customEvent, "abc");
+        }, "customEvent trigger 'b' by parameter 'abc'.").should.not.Throw();
+
+        test(testTriggerContext, "testTriggerContext").should.equal(customEvent);
+
+        test(function(){
+          customEvent.clearHandlers();
+        }, "customEvent clearHandlers ").should.not.Throw();
+
+        test(customEvent.isEmpty(), "customEvent is empty").should.equal(true);
+
+        test(function(){
+          customEvent.once("once", fn)
+        }, "customEvent once").should.not.Throw();
+
+        test(customEvent.hasHandler("once", fn), "customEvent hasHandler 'once',").should.be.greater.than(-1);
+
+        test(function(){
+          customEvent.trigger("once", customEvent, "onceResult");
+        }, "customEvent once").should.not.Throw();
+
+        test(testTriggerResult, "testTriggerResult").should.equal("onceResult");
+
+        test(customEvent.isEmpty(), "customEvent is empty").should.equal(true);
+
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;package:main;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require([
+      "base/Promise",
+      "module/Test"
+    ], function(Promise, Test) {
+
+      var testTest = new Test("Test", function(preResult){
+        // complete
+      }).describe("Test Test function", function(preResult, test, logger){
+        var testTarget = {
+
+        };
+        test(testTarget, "testTarget").should.be.an("object");
+
+        var myName = "Jarray";
+        test(myName, "My name").should.be.a("string");
+
+        var notThrowFunction = function(){
+          var age = 28;
+        };
+        test(notThrowFunction, "'notThrowFunction'").should.not.Throw(notThrowFunction);
+
+        var throwFunction = function(){
+          age();
+        };
+        test(throwFunction, "'throwFunction'").should.Throw(notThrowFunction);
+
+        var object = {
+          name: "Jarry",
+          age: 28
+        };
+        test(object, "object").should.equal({
+          name: "Jarry",
+          age: 28
+        });
+        test(object, "object").should.not.equal({
+          name: "Jarry",
+          age: 28,
+          face: {
+            eye: 2
+          }
+        });
+
+        test(object.age, "object age").should.be.greater.than(27);
+
+        test(object.age, "object age").should.be.less.than(29);
+
+        test(object.age, "object age").should.be.greater.than.or.equal(28);
+
+        test(object.age, "object age").should.be.less.than.or.equal(28);
+
+        test(object, "object age").should.be.instance.of(Object);
+
+        test(object, "object").should.exists();
+        var global;
+        test(global, "Value global").should.not.exists();
+
+        var anArray = [1,2,3,4,5];
+        test(anArray, "An array").should.have.length(5);
+
+        test(anArray, "An array").should.have.index(4).with.should.equal(5);
+
+        var anObject = {
+          name: "Jarry",
+          anArray: anArray
+        };
+        test(anObject, "An anObject").should.have.property("anArray").with.should.have.length(5);
+
+        test(anObject, "An anObject").should.not.have.property("any");
+
+        return "Jarry";
+
+      }).describe("Test should be", function(preResult, test, logger){
+        var elementCollection = document.getElementsByTagName("body");
+
+        test(elementCollection).should.be.elementCollection();
+
+        test(arguments).should.be.arguments(arguments);
+
+        test(NaN).should.be.NaN();
+
+        test(elementCollection[0]).should.be.node("body");
+
+        test(1 / 0).should.not.be.finite();
+
+        return preResult;
+      }).describe("Test previous result", function(preResult, test, logger){
+        test(preResult, "Previous result").should.equal("Jarry");
+
+        logger("Set timeout 1 seconds to call next describe");
+
+        var promise1 = new Promise;
+
+        setTimeout( function() {
+          promise1.resolve(1000);
+        }, 1000 );
+
+
+        return promise1;
+      }).describe("Test promise", function(preResult, test, logger){
+        test(preResult, "Previous result").should.equal(1000);
+      }).start();
+
+    });
+  </script>
+</head>
+
+<body style="overflow: auto">
+</body>
+
+</html>

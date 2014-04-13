@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title></title>
+  <link href="../../../global/styles/reset.css" rel="stylesheet" type="text/css" />
+  <script src="../../../amdquery/amdquery.js" type="text/javascript" amdquery="define:$;" amd="detectCR:1;" module="compatibleEvent:1;testLogByHTML:1"></script>
+  <script type="text/javascript">
+    $.require(["main/query", "main/class", "module/Test"], function(query, cls, Test) {
+      var testTest = new Test("class", function(preResult){
+
+      }).describe("Test class function", function(preResult, test, logger){
+        var divTest = $("#test");
+
+        test(divTest.classLength(), "Div test`s class length").should.equal(0);
+
+        test(function(){
+          divTest.addClass("a");
+        }).should.not.Throw();
+
+        test(divTest.classLength(), "Div test`s class length").should.equal(1);
+
+        test(divTest.containsClass("a"), "Div test contains class 'a'").should.equal(true);
+
+        test(function(){
+          divTest.addClass("b");
+        }).should.not.Throw();
+
+        test(divTest.getClassByIndex(0), "Div test get class by index.").should.equal("a");
+
+        test(divTest.getClassByIndex(1), "Div test get class by index.").should.equal("b");
+
+        test(function(){
+          divTest.toggleClass("c");
+        }).should.not.Throw();
+
+        test(divTest.containsClass("c"), "Div test contains class 'c'").should.equal(true);
+
+        test(function(){
+          divTest.toggleClass("c");
+        }).should.not.Throw();
+
+        test(divTest.containsClass("c"), "Div test contains class 'c'").should.equal(false);
+
+        test(function(){
+          divTest.removeClass("a");
+          divTest.removeClass("b");
+        }).should.not.Throw();
+
+        test(divTest.containsClass("a"), "Div test contains class 'a'").should.equal(false);
+        test(divTest.containsClass("b"), "Div test contains class 'b'").should.equal(false);
+
+        test(divTest.classLength(), "Div test`s class length").should.equal(0);
+
+      }).start();
+
+    })
+  </script>
+</head>
+
+<body style="overflow: auto">
+  <div id="test"></div>
+</body>
+
+</html>

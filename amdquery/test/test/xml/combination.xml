@@ -1,0 +1,88 @@
+<div id="aQueryViewContentKey">
+    <div aQueryViewContentKey="index">
+        <div id="index" style="width: 100%; height: 100%;position:relative;" amdquery-widget="ui.flex" ui-flex="flexDirection:row">
+            <controller src="@app/controllers/navmenu.js" id="navmenu"></controller>
+            <controller src="@app/controllers/content.js" id="content"></controller>
+        </div>
+    </div>
+    <div aQueryViewContentKey="navmenu">
+        <div id="navmenu" amdquery-widget="ui.scrollableview" ui-scrollableview="overflow:V" style="width:200px;height:100%;border-right:1px solid black;">
+            <div id="nav" amdquery-widget="ui.navmenu">
+                <ul>
+                    <li id="index-navitem" amdquery-widget="ui.navitem" ui-navitem="html:index;img:class"></li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:app;img:class"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:base;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class" sort="0" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:html5;img:class"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:main;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:position;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:communicate;img:class" sort="100" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:parse;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:class;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:dom;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:event;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:object;img:class" sort="1" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:data;img:class" sort="1" test="true"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:animation;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Animate;img:class"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class" sort="2" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:class" sort="2" test="true"></li>
+                        </ul>
+                    </li>
+                    <li amdquery-widget="ui.navitem" ui-navitem="html:ui;img:module">
+                        <ul>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Book;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:TabBar;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Button;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Drag;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Keyboard;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:swapview;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:ScrollableView;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Widget;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:flex;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:TabView;img:class"></li>
+                            <!-- <li amdquery-widget="ui.navitem" ui-navitem="html:destroyWidget;img:class"></li> -->
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div aQueryViewContentKey="content">
+        <div amdquery-widget="ui.flex" ui-flex="flex:1">
+            <iframe id="content" style="" amdquery-widget="ui.flex" ui-flex="flex:1"></iframe>
+        </div>
+    </div>
+    <div aQueryViewContentKey="router">
+        <div id="index" style="width: 100%; height: 100%;" amdquery-widget="ui.flex" ui-flex="flexDirection:row">
+            <controller src="@app/controllers/content.js" id="content"></controller>
+            <controller src="@app/controllers/navmenu.js" id="navmenu"></controller>
+        </div>
+    </div>
+</div>
