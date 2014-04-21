@@ -9498,7 +9498,6 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 			o.url = o.url.replace( /\?$/, "" );
 
 			o.url += data == "" ? data : "?" + data;
-			console.log( o.url );
 
 			function clear() {
 				clearTimeout( timeId );
@@ -9509,6 +9508,7 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				e.type = "jsonpStop";
 				$.trigger( e.type, scripts, e );
 				typed.isNode( scripts.nodeName, "script" ) && o.isDelete == true && head.removeChild( this );
+				scripts.removeAttribute( "src" );
 				head = scripts = scripts.onload = scripts.onreadystatechange = scripts.onerror = null;
 			}
 
@@ -9521,15 +9521,19 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				clear();
 				return Promise().reject( o );
 			}, function() {
-				if ( !this.readyState || this.readyState == "loaded" || this.readyState == "complete" ) {
-					return Promise().resolve( o.json );
+				if ( !scripts.readyState || scripts.readyState == "loaded" || scripts.readyState == "complete" ) {
+					if ( o.json ) {
+						return Promise().resolve( o.json );
+					} else {
+						setTimeout( function() {
+							promise.resolve( o.json );
+						}, 0 );
+					}
 				}
 			} );
 
 			scripts.onload = scripts.onreadystatechange = function() {
-				setTimeout( function() {
-					promise.reprocess( o.json );
-				}, 0 );
+				promise.reprocess( o.json );
 			};
 
 			scripts.onerror = function() {
