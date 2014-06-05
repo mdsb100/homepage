@@ -6653,7 +6653,7 @@ if ( typeof define === "function" && define.amd ) {
 	this.describe( "A custom event" );
 	/**
 	 * Be defined by object.extend.
-   * Each function can not repeat to add into CustomEvent.
+	 * Each function can not repeat to add into CustomEvent.
 	 * @constructor
 	 * @exports main/CustomEvent
 	 * @requires module:main/object
@@ -6874,6 +6874,20 @@ if ( typeof define === "function" && define.amd ) {
 			return this;
 		},
 	} );
+
+	/**
+	 * Mix prototype to target.
+	 * @param {Object}
+	 */
+	CustomEvent.mixin = function( target ) {
+		var proto = {
+			__handlers: {}
+		};
+		utilExtend.extend( proto, CustomEvent.prototype );
+		delete proto.constructor;
+		delete proto.init;
+		utilExtend.extend( target, proto );
+	}
 
 	return CustomEvent;
 } );
@@ -9173,6 +9187,29 @@ aQuery.define( "app/Model", [ "main/attr", "main/object", "main/CustomEvent" ], 
 				} );
 			}
 			return args;
+		},
+		/**
+		 * @example
+		 * parse.ObjetToString({
+		 *   name: "Jarry",
+		 *   name: "27"
+		 * }, '&', '='
+		 * )
+		 * // "name=Jarry&age=27"
+		 * @param {Object}
+		 * @param {String} [split1="&"]
+		 * @param {String} [split2="="]
+		 * @returns {Object}
+		 */
+		ObjetToString: function( object, split1, split2 ) {
+      split1 = split1 || "&";
+      split2 = split2 || "=";
+			var key, value, strList = [];
+			for ( key in object ) {
+				value = object[ key ];
+				strList.push( key + split2 + value );
+			}
+			return strList.join( split1 );
 		},
 		/**
 		 * @param {String}
@@ -12263,7 +12300,7 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 	this.describe( "Location to Hash" );
 
 	var
-	SPLIT_MARK = "&",
+		SPLIT_MARK = "&",
 		EQUALS_MARK = "=",
 		SHARP = "#",
 		_location = window.location;
@@ -12353,7 +12390,14 @@ aQuery.define( "module/location", [ "base/extend", "main/parse" ], function( $, 
 		 * An object of window.location.hash.
 		 * @type {Object}
 		 */
-		hash: {}
+		hash: {},
+		/**
+		 * Change location if you want to use window.top
+		 * @param {Location}
+		 */
+		changeLocation: function( location ) {
+			_location = location;
+		}
 	};
 
 	location.toHash();
@@ -12464,6 +12508,675 @@ aQuery.define( "app/Application", [
 	} );
 
 	return Application;
+} );
+
+/*=======================================================*/
+
+/*===================base/constant===========================*/
+aQuery.define( "base/constant", function( $ ) {
+	"use strict";
+	/**
+	 * @pubilc
+	 * @description
+	 * Some constants
+	 * @exports base/constant
+	 */
+	var constant = {
+		/**
+		 * SSL secure url
+     @ constant
+		 * @type {String}
+		 */
+		SSL_SECURE_URL: "about:blank",
+		/**
+		 * Blan iamge url
+     @ constant
+		 * @type {String}
+		 */
+		BLANK_IMAGE_URL: "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+	};
+
+	return constant;
+} );
+
+/*=======================================================*/
+
+/*===================module/Thread===========================*/
+﻿aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
+	"use strict";
+	/// <summary>创造一个新进程
+	/// <para>num obj.delay:延迟多少毫秒</para>
+	/// <para>num obj.duration:持续多少毫米</para>
+	/// <para>num obj.sleep:睡眠多少豪秒</para>
+	/// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
+	/// <para>num obj.fps:每秒多少帧</para>
+	/// <para>fun obj.run:要执行的方法</para>
+	/// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
+	/// <para>bol obj.context:作用域</para>
+	/// <para>可以调用addHandler方法添加事件</para>
+	/// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
+	/// </summary>
+	/// <param name="obj" type="Object">属性</param>
+	/// <param name="paras" type="paras[]">作用域所用参数</param>
+	/// <returns type="Thread" />
+
+	var requestAnimFrame = window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function( complete ) {
+			return setTimeout( complete, 13 ); //其实是1000/60
+		},
+		cancelRequestAnimFrame = window.cancelAnimationFrame ||
+		window.webkitCancelRequestAnimationFrame ||
+		window.mozCancelRequestAnimationFrame ||
+		window.oCancelRequestAnimationFrame ||
+		window.msCancelRequestAnimationFrame ||
+		clearTimeout;
+
+	var Thread = CustomEvent.extend( "Thread", {
+		init: function( obj, paras ) {
+			/// <summary>初始化参数 初始化参数会停止进程</summary>
+			/// <param name="obj" type="Object">进程参数</param>
+			/// <param name="paras" type="paras:[any]">计算参数</param>
+			/// <returns type="self" />
+			//this.stop();
+			this._super();
+			utilExtend.extend( this, Thread._defaultSetting, obj );
+			this.context = obj.context || this;
+			this.id = this.id || $.now();
+			this.args = $.util.argToArray( arguments, 1 );
+
+			return this.setFps()
+				.setDuration( this.duration );
+		},
+		create: function() {
+			return this;
+		},
+		render: function() {
+			return this;
+		},
+
+		start: function() {
+			/// <summary>启动</summary>
+			/// <returns type="self" />
+			if ( this.runFlag == false ) {
+				Thread.count += 1;
+				this.runFlag = true;
+				var self = this;
+				if ( this.delay > 0 ) {
+					self.status = "delay";
+					self.trigger( "delay", self, {
+						type: "delay"
+					} );
+				}
+				setTimeout( function() {
+					self.status = "start";
+					self.trigger( "start", self, {
+						type: "start"
+					} );
+					//self.pauseTime += self.delay;
+
+					self.begin = $.now();
+					self._interval.call( self );
+				}, this.delay );
+			}
+			return this;
+		},
+
+		_interval: function() {
+			/// <summary>私有</summary>
+			var self = this,
+				every = function() {
+					if ( self.runFlag === false || ( self.tick >= self.duration && !self.forever ) ) {
+						every = null;
+						return self.stop();
+					}
+					if ( self.sleepFlag ) {
+						self.sleep();
+						return;
+					}
+					self.status = "run";
+
+					self.tick = $.now() - self.begin - self.pauseTime;
+
+					self.forever ? self._run.call( self, self.tick, self.fps ) : self._run.call( self, self.tick, self.duration );
+					var power = self.power;
+					self.timerId = power( every, self.fps );
+				};
+
+			every();
+		},
+
+		_run: function( step, duration ) {
+			/// <summary>私有</summary>
+			//if (this.sleepTime > 0) return;
+			//this.status = "run";
+			this._executor( step, duration );
+		},
+
+		resume: function() {
+			/// <summary>唤醒进程</summary>
+			/// <param name="time" type="Number">毫秒</param>
+			/// <returns type="Thread" />
+			if ( this.isSleep() ) {
+				var n = $.now();
+				this.pauseTime += n - ( this.sleepBeginTime || 0 );
+				this.sleepStopTime = n;
+				this.status = "run";
+				this.sleepFlag = false;
+				this.trigger( "sleepStop", this, {
+					type: "sleepStop"
+				} );
+				this._interval();
+			}
+			return this;
+		},
+
+		stop: function() {
+			/// <summary>停止进程</summary>
+			/// <returns type="self" />
+			if ( this.runFlag == true ) {
+				this.tick = this.sleepTime = this.pauseTime = 0;
+				this.sleepBeginTime = null;
+				this.sleepId = null;
+				this.begin = null;
+				this.status = "stop";
+				Thread.count -= 1;
+				this.runFlag = false;
+				var clear = this.clear;
+				clear( this.timerId );
+				this.trigger( "stop", this, {
+					type: "stop"
+				} );
+			}
+			return this;
+		},
+
+		_executor: function( a, b ) {
+			/// <summary>内部</summary>
+			this.run.apply( this.context, [ a, b ].concat( this.args ) ) === false && this.stop();
+		},
+
+		isRun: function() {
+			/// <summary>是否在运行</summary>
+			/// <returns type="Boolean" />
+			return this.runFlag;
+		},
+		isSleep: function() {
+			/// <summary>是否在睡眠</summary>
+			/// <returns type="Boolean" />
+			return this.status == "sleep"; //(this.sleepFlag && this.sleepTime > 0);
+		},
+
+		getDely: function() {
+			/// <summary>获得延迟启动时间</summary>
+			/// <returns type="Number" />
+			return this.dely;
+		},
+		setDely: function( delay ) {
+			/// <summary>设置延迟启动时间</summary>
+			/// <param name="time" type="Number">毫秒</param>
+			/// <returns type="self" />
+			this.delay = delay || this.delay || 0;
+			return this;
+		},
+
+		setDuration: function( duration ) {
+			/// <summary>设置持续时间</summary>
+			/// <param name="time" type="Number">毫秒</param>
+			/// <returns type="self" />
+			var status = this.getStatus();
+			this.stop();
+			if ( duration == undefined || duration == NaN || ( typeof duration == "number" && duration > 0 ) ) {
+				//this.duration = o.duration;
+				this.forever = false;
+			} else {
+				this.duration = NaN;
+				this.forever = true;
+			}
+			status == "run" && this.start();
+			return this;
+		},
+		getDuration: function() {
+			/// <summary>获得持续时间</summary>
+			/// <para>NaN表示无限</para>
+			/// <returns type="Number" />
+			return this.duration;
+		},
+		setFps: function() {
+			/// <summary>设置帧值</summary>
+			/// <returns type="Number" />
+			var status = this.getStatus();
+			this.stop();
+
+			if ( this.interval == null && this.isAnimFrame == true ) {
+				this.power = requestAnimFrame;
+				this.clear = cancelRequestAnimFrame;
+				this.fps = Thread.fps;
+			} else {
+				this.power = setTimeout;
+				this.clear = clearTimeout;
+				this.fps = this.interval || ( 1000 / this.fps ) || Thread.fps;
+			}
+
+			this.fps = Math.round( this.fps );
+
+			status == "run" && this.start();
+			return this;
+		},
+		getFps: function() {
+			/// <summary>获得帧值</summary>
+			/// <returns type="Number" />
+			return this.fps;
+		},
+		getPercent: function() {
+			/// <summary>获得百分比进度</summary>
+			/// <para>返回值是NaN时说明duration是0并且是永远运行的</para>
+			/// <returns type="Number" />
+			var percent = parseInt( this.tick / this.duration * 100 ) / 100;
+			return percent != NaN ? Math.min( 1, percent ) : percent;
+		},
+
+		getStatus: function() {
+			/// <summary>获得运行状态</summary>
+			/// <para>"delay"</para>
+			/// <para>"start"</para>
+			/// <para>"sleep"</para>
+			/// <para>"stop"</para>
+			/// <para>"run"</para>
+			/// <returns type="String" />
+			return this.status;
+		},
+		getTick: function() {
+			/// <summary>获得时值</summary>
+			/// <returns type="Number" />
+			return this.tick;
+		},
+
+		getPauseTime: function() {
+			/// <summary>获得暂停的时间值</summary>
+			/// <returns type="Number" />
+			return this.pauseTime;
+		},
+		setSleepTime: function( sleepTime ) {
+			/// <summary>设置睡眠时间</summary>
+			/// <param name="sleepTime" type="Number">毫秒</param>
+			/// <returns type="self" />
+			if ( sleepTime ) {
+				this.sleepTime = sleepTime;
+				this.sleepFlag = true;
+			}
+			return this;
+		},
+		getSleepTime: function( isCount ) {
+			/// <summary>获得当前睡眠时间值</summary>
+			/// <returns type="Number" />
+			return this.sleepTime;
+		},
+		sleep: function( sleeTime ) {
+			/// <summary>设置睡眠时间 只有在非睡眠时间有用</summary>
+			/// <param name="sleepTime" type="Number">毫秒</param>
+			/// <param name="time" type="Number">毫秒</param>
+			/// <returns type="self" />
+			var status = this.getStatus();
+			if ( sleeTime ) {
+				return this.setSleepTime( sleeTime );
+			}
+			if ( this.sleepTime == 0 ) {
+				return this;
+			}
+			this.status = "sleep";
+			this.trigger( "sleepBegin", self, {
+				type: "sleepBegin"
+			} );
+			var self = this;
+			clearTimeout( this.sleepId );
+			this.sleepBeginTime = $.now();
+			self.sleepId = setTimeout( function() {
+				self.sleepId && self.resume();
+			}, self.sleepTime );
+
+			return this;
+		}
+	}, {
+		cancelRequestAnimFrame: cancelRequestAnimFrame,
+		count: 0,
+
+		fps: 13,
+
+		requestAnimFrame: requestAnimFrame,
+
+		_defaultSetting: {
+			runFlag: false,
+			forever: false,
+			sleepFlag: false,
+			power: setTimeout,
+			clear: clearTimeout,
+			status: "stop",
+			args: [],
+			tick: 0,
+			sleepTime: 0,
+			pauseTime: 0,
+			sleepId: null,
+			begin: null,
+			timerId: null,
+			run: function() {},
+			interval: null,
+			isAnimFrame: true,
+			duration: NaN,
+			id: ""
+		}
+	} );
+
+	object.createPropertyGetterSetter( Thread, {
+		args: "-pu -r -w",
+		timeId: "-pa -r",
+		sleepId: "-pa -r",
+		interval: "-pu -r",
+		isAnimFrame: "-pu -r",
+		id: "-pu -r"
+	} );
+
+	return Thread;
+} );
+
+/*=======================================================*/
+
+/*===================module/history===========================*/
+define( "module/history", [ "base/constant", "base/client", "base/support", "base/typed", "base/extend", "main/query", "main/dom", "main/CustomEvent", "main/parse", "module/Thread" ], function( constant, client, support, typed, utilExtend, query, dom, CustomEvent, parse, Thread ) {
+	"use strict";
+	var
+		ie = client.browser.ie,
+		oldIEMode = ie === 7 || !support.boxModel && ie === 8;
+
+	/**
+	 * @exports module/history
+	 * @requires module:main/constant
+	 * @requires module:base/client
+	 * @requires module:base/support
+	 * @requires module:base/typed
+	 * @requires module:main/query
+	 * @requires module:main/dom
+	 * @requires module:main/parse
+	 * @requires module:main/CustomEvent
+	 * @requires module:module/Thread
+	 * @mixes module:main/CustomEvent.prototype
+	 */
+	var history = {
+		init: function() {
+			this.ready = false;
+			this.currentToken = null;
+			this.useTopWindow = true;
+			this.hiddenField = dom.parseHTML(
+				'<form id="history-form" style="display:none!important;" >' +
+				'<input type="hidden" id="x-history-field" />' +
+				'<iframe id="x-history-frame"></iframe>' +
+				'</form>'
+			)[ 0 ];
+
+			document.body.appendChild( this.hiddenField );
+
+			if ( oldIEMode ) {
+				this.iframe = dom.parseHTML(
+					'<iframe role="presentation" src="' + constant.SSL_SECURE_URL + '"  >' + '</iframe>'
+				)[ 0 ];
+				document.body.appendChild( this.iframe );
+			}
+			this.startUp();
+		},
+		/**
+		 * @private
+		 */
+		startUp: function() {
+			var hash;
+
+			this.currentToken = this.hiddenField.value || this.getHash();
+
+			if ( oldIEMode ) {
+				this.checkIFrame();
+			} else {
+				hash = this.getHash();
+				new Thread( {
+					interval: 50,
+					run: function() {
+						var newHash = this.getHash();
+						if ( newHash !== hash ) {
+							var oldHash = hash;
+							hash = newHash;
+							this.handleStateChange( newHash, oldHash );
+							this.doSave();
+						}
+					},
+					context: this
+				} ).start();
+				this.handleReady( this.getHash() );
+			}
+			return this;
+		},
+		/**
+		 * @private
+		 */
+		checkIFrame: function() {
+			var
+				contentWindow = this.iframe.contentWindow,
+				doc, elem, oldToken, oldHash;
+
+			if ( !contentWindow || !contentWindow.document ) {
+				var self = this;
+				setTimeout( function() {
+					self.checkIFrame();
+				}, 10 );
+				return;
+			}
+
+			doc = contentWindow.document;
+			elem = doc.getElementById( "state" );
+			oldToken = elem ? elem.token : null;
+			oldHash = this.getHash();
+
+			new Thread( {
+				run: function() {
+					var doc = contentWindow.document,
+						elem = doc.getElementById( "state" ),
+						newToken = elem ? elem.token : null,
+						newHash = this.getHash();
+
+					if ( newToken !== oldToken ) {
+						var token = oldToken;
+						oldToken = newToken;
+						this.handleStateChange( newToken, token );
+						this.setHash( newToken );
+						oldHash = newToken;
+						this.doSave();
+					} else if ( newHash !== oldHash ) {
+						oldHash = newHash;
+						this.updateIFrame( newHash );
+					}
+				},
+				interval: 50,
+				context: this
+			} ).start();
+
+			this.handleReady( this.getHash() );
+		},
+		/**
+		 * @private
+		 */
+		updateIFrame: function( token ) {
+			var html = '<html><body><div id="state" role="presentation">' +
+				token + '</div></body></html>',
+				doc;
+
+			try {
+				doc = this.iframe.contentWindow.document;
+				doc.open();
+				doc.write( html );
+				var elem = doc.getElementById( "state" );
+				elem.token = token;
+				doc.close();
+				return true;
+			} catch ( e ) {
+				return false;
+			}
+		},
+		/**
+		 * @private
+		 */
+		doSave: function() {
+			this.hiddenField.value = this.currentToken;
+		},
+		/**
+		 * @private
+		 */
+		handleStateChange: function( newToken, oldToken ) {
+			this.currentToken = newToken;
+
+			var newObject = parse.QueryString( newToken ),
+				oldObject = parse.QueryString( oldToken );
+
+			this.doTrigger( 'change', newToken, oldToken );
+		},
+		/**
+		 * @private
+		 */
+		handleReady: function( token ) {
+			this.ready = true;
+			this.trigger( 'ready', this, {
+				type: 'ready',
+				token: token
+			} );
+		},
+		/**
+		 * @private
+		 */
+		doTrigger: function( type, newToken, oldToken ) {
+			var newObject = parse.QueryString( newToken ),
+				oldObject = parse.QueryString( oldToken ),
+				key, evenName;
+
+			for ( key in newObject ) {
+				if ( oldObject[ key ] === undefined || oldObject[ key ] !== newObject[ key ] ) {
+					evenName = key + '.' + type;
+					this.trigger( evenName, this, {
+						type: evenName,
+						token: newObject[ key ]
+					} );
+				}
+			}
+			for ( key in oldObject ) {
+				if ( newObject[ key ] === undefined ) {
+					evenName = key + '.' + type;
+					this.trigger( evenName, this, {
+						type: evenName,
+						token: ''
+					} );
+				}
+			}
+
+			this.trigger( type, this, {
+				type: type,
+				token: newToken
+			} );
+		},
+		/**
+		 * @private
+		 */
+		getHash: function() {
+			var win = this.useTopWindow ? window.top : window,
+				href = win.location.href,
+				i = href.indexOf( "#" );
+
+			return i >= 0 ? href.substr( i + 1 ) : null;
+		},
+		/**
+		 * @private
+		 */
+		setHash: function( hash ) {
+			var win = this.useTopWindow ? window.top : window;
+			try {
+				win.location.hash = hash;
+			} catch ( e ) {
+				// IE can give Access Denied (esp. in popup windows)
+			}
+		},
+		/**
+		 * Add a new token to the history stack. This can be any arbitrary value, although it would
+		 * commonly be the concatenation of a component id and another id marking the specific history
+		 * @param {String} token The value that defines a particular application-specific history state
+		 * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current token
+		 * it will not save a new history step. Set to false if the same state can be saved more than once
+		 * at the same history stack location.
+		 */
+		add: function( token, preventDup ) {
+			if ( preventDup !== false ) {
+				if ( this.getToken() === token ) {
+					return true;
+				}
+			}
+
+			if ( oldIEMode ) {
+				return this.updateIFrame( token );
+			} else {
+				this.setHash( token );
+				return true;
+			}
+		},
+		/**
+		 * Add key-value to the history stack. This can be any arbitrary value, although it would
+		 * commonly be the concatenation of a component id and another id marking the specific history
+		 * @param {String} token The value that defines a key
+		 * @param {String} token The value that defines a value
+		 * @param {Boolean} [preventDuplicates=true] When true, if the passed token matches the current token
+		 * it will not save a new history step. Set to false if the same state can be saved more than once
+		 * at the same history stack location.
+		 */
+		addByKeyValue: function( key, value, preventDup ) {
+			var object = parse.QueryString( this.getToken() );
+			if ( typed.isObject( key ) ) {
+				utilExtend.easyExtend( object, key );
+			} else {
+				object[ key ] = value;
+			}
+
+			return this.add( parse.ObjetToString( object ), preventDup );
+		},
+
+		/**
+		 * Programmatically steps back one step in browser history (equivalent to the user pressing the Back button).
+		 */
+		back: function() {
+			window.history.go( -1 );
+		},
+
+		/**
+		 * Programmatically steps forward one step in browser history (equivalent to the user pressing the Forward button).
+		 */
+		forward: function() {
+			window.history.go( 1 );
+		},
+
+		/**
+		 * Retrieves the currently-active history token.
+		 * @return {String} The token
+		 */
+		getToken: function() {
+			return this.ready ? this.currentToken : this.getHash();
+		},
+		/**
+		 * Retrieves the currently-active history by key.
+		 * @return {String} The value
+		 */
+		getTokenByKey: function( key ) {
+			return parse.QueryString( this.ready ? this.currentToken : this.getHash() )[ key ] || "";
+		}
+	};
+
+	CustomEvent.mixin( history );
+
+	return history;
+
 } );
 
 /*=======================================================*/
@@ -15641,6 +16354,7 @@ aQuery.define( "ui/tabbar", [
 
 /*===================ui/tabview===========================*/
 aQuery.define( "ui/tabview", [
+    "base/typed",
     "main/query",
     "main/class",
     "main/event",
@@ -15652,7 +16366,7 @@ aQuery.define( "ui/tabview", [
     "ui/tabbar",
     "ui/tabbutton"
   ],
-	function( $, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
+	function( $, typed, query, cls, event, css, position, dom, attr, Widget, tabbar, tabbutton ) {
 		"use strict";
 
 		// Widget.fetchCSS( "ui/css/tabview" );
@@ -15693,7 +16407,7 @@ aQuery.define( "ui/tabview", [
 			render: function( index ) {
 				var opt = this.options;
 
-				this.selectView( index || opt.index );
+				this.selectView( typed.isNumber( index ) ? index : opt.index );
 
 			},
 			selectTabbutton: function( index ) {
@@ -16087,347 +16801,6 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 /*=======================================================*/
 
-/*===================module/Thread===========================*/
-﻿aQuery.define( "module/Thread", [ "main/CustomEvent", "base/extend", "main/object" ], function( $, CustomEvent, utilExtend, object ) {
-	"use strict";
-	/// <summary>创造一个新进程
-	/// <para>num obj.delay:延迟多少毫秒</para>
-	/// <para>num obj.duration:持续多少毫米</para>
-	/// <para>num obj.sleep:睡眠多少豪秒</para>
-	/// <para>num obj.interval 如果interval存在 则fps无效 isAnimFram也无效
-	/// <para>num obj.fps:每秒多少帧</para>
-	/// <para>fun obj.fun:要执行的方法</para>
-	/// <para>bol obj.isAnimFram:是否使用新动画函数，使用后将无法初始化fps</para>
-	/// <para>可以调用addHandler方法添加事件</para>
-	/// <para>事件类型:start、stop、delay、sleepStar,sleepStop</para>
-	/// </summary>
-	/// <param name="obj" type="Object">属性</param>
-	/// <param name="paras" type="paras[]">作用域所用参数</param>
-	/// <returns type="Thread" />
-
-	var requestAnimFrame = window.requestAnimationFrame ||
-		window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame ||
-		window.msRequestAnimationFrame ||
-		function( complete ) {
-			return setTimeout( complete, 13 ); //其实是1000/60
-	},
-		cancelRequestAnimFrame = window.cancelAnimationFrame ||
-			window.webkitCancelRequestAnimationFrame ||
-			window.mozCancelRequestAnimationFrame ||
-			window.oCancelRequestAnimationFrame ||
-			window.msCancelRequestAnimationFrame ||
-			clearTimeout;
-
-	var Thread = CustomEvent.extend( "Thread", {
-		init: function( obj, paras ) {
-			/// <summary>初始化参数 初始化参数会停止进程</summary>
-			/// <param name="obj" type="Object">进程参数</param>
-			/// <param name="paras" type="paras:[any]">计算参数</param>
-			/// <returns type="self" />
-			//this.stop();
-			this._super();
-			utilExtend.extend( this, Thread._defaultSetting, obj );
-			this.id = this.id || $.now();
-			this.args = $.util.argToArray( arguments, 1 );
-
-			return this.setFps()
-				.setDuration( this.duration );
-		},
-		create: function() {
-			return this;
-		},
-		render: function() {
-			return this;
-		},
-
-		start: function() {
-			/// <summary>启动</summary>
-			/// <returns type="self" />
-			if ( this.runFlag == false ) {
-				Thread.count += 1;
-				this.runFlag = true;
-				var self = this;
-				if ( this.delay > 0 ) {
-					self.status = "delay";
-					self.trigger( "delay", self, {
-						type: "delay"
-					} );
-				}
-				setTimeout( function() {
-					self.status = "start";
-					self.trigger( "start", self, {
-						type: "start"
-					} );
-					//self.pauseTime += self.delay;
-
-					self.begin = $.now();
-					self._interval.call( self );
-				}, this.delay );
-			}
-			return this;
-		},
-
-		_interval: function() {
-			/// <summary>私有</summary>
-			var self = this,
-				every = function() {
-					if ( self.runFlag === false || ( self.tick >= self.duration && !self.forever ) ) {
-						every = null;
-						return self.stop();
-					}
-					if ( self.sleepFlag ) {
-						self.sleep();
-						return;
-					}
-					self.status = "run";
-
-					self.tick = $.now() - self.begin - self.pauseTime;
-
-					self.forever ? self._run.call( self, self.tick, self.fps ) : self._run.call( self, self.tick, self.duration );
-					var power = self.power;
-					self.timerId = power( every, self.fps );
-				};
-
-			every();
-		},
-
-		_run: function( step, duration ) {
-			/// <summary>私有</summary>
-			//if (this.sleepTime > 0) return;
-			//this.status = "run";
-			this._executor( step, duration );
-		},
-
-		resume: function() {
-			/// <summary>唤醒进程</summary>
-			/// <param name="time" type="Number">毫秒</param>
-			/// <returns type="Thread" />
-			if ( this.isSleep() ) {
-				var n = $.now();
-				this.pauseTime += n - ( this.sleepBeginTime || 0 );
-				this.sleepStopTime = n;
-				this.status = "run";
-				this.sleepFlag = false;
-				this.trigger( "sleepStop", this, {
-					type: "sleepStop"
-				} );
-				this._interval();
-			}
-			return this;
-		},
-
-		stop: function() {
-			/// <summary>停止进程</summary>
-			/// <returns type="self" />
-			if ( this.runFlag == true ) {
-				this.tick = this.sleepTime = this.pauseTime = 0;
-				this.sleepBeginTime = null;
-				this.sleepId = null;
-				this.begin = null;
-				this.status = "stop";
-				Thread.count -= 1;
-				this.runFlag = false;
-				var clear = this.clear;
-				clear( this.timerId );
-				this.trigger( "stop", this, {
-					type: "stop"
-				} );
-			}
-			return this;
-		},
-
-		_executor: function( a, b ) {
-			/// <summary>内部</summary>
-			this.fun.apply( this, [ a, b ].concat( this.args ) ) === false && this.stop();
-		},
-
-		isRun: function() {
-			/// <summary>是否在运行</summary>
-			/// <returns type="Boolean" />
-			return this.runFlag;
-		},
-		isSleep: function() {
-			/// <summary>是否在睡眠</summary>
-			/// <returns type="Boolean" />
-			return this.status == "sleep"; //(this.sleepFlag && this.sleepTime > 0);
-		},
-
-		getDely: function() {
-			/// <summary>获得延迟启动时间</summary>
-			/// <returns type="Number" />
-			return this.dely;
-		},
-		setDely: function( delay ) {
-			/// <summary>设置延迟启动时间</summary>
-			/// <param name="time" type="Number">毫秒</param>
-			/// <returns type="self" />
-			this.delay = delay || this.delay || 0;
-			return this;
-		},
-
-		setDuration: function( duration ) {
-			/// <summary>设置持续时间</summary>
-			/// <param name="time" type="Number">毫秒</param>
-			/// <returns type="self" />
-			var status = this.getStatus();
-			this.stop();
-			if ( duration == undefined || duration == NaN || ( typeof duration == "number" && duration > 0 ) ) {
-				//this.duration = o.duration;
-				this.forever = false;
-			} else {
-				this.duration = NaN;
-				this.forever = true;
-			}
-			status == "run" && this.start();
-			return this;
-		},
-		getDuration: function() {
-			/// <summary>获得持续时间</summary>
-			/// <para>NaN表示无限</para>
-			/// <returns type="Number" />
-			return this.duration;
-		},
-		setFps: function() {
-			/// <summary>设置帧值</summary>
-			/// <returns type="Number" />
-			var status = this.getStatus();
-			this.stop();
-
-			if ( this.interval == null && this.isAnimFrame == true ) {
-				this.power = requestAnimFrame;
-				this.clear = cancelRequestAnimFrame;
-				this.fps = Thread.fps;
-			} else {
-				this.power = setTimeout;
-				this.clear = clearTimeout;
-				this.fps = this.interval || ( 1000 / this.fps ) || Thread.fps;
-			}
-
-			this.fps = Math.round( this.fps );
-
-			status == "run" && this.start();
-			return this;
-		},
-		getFps: function() {
-			/// <summary>获得帧值</summary>
-			/// <returns type="Number" />
-			return this.fps;
-		},
-		getPercent: function() {
-			/// <summary>获得百分比进度</summary>
-			/// <para>返回值是NaN时说明duration是0并且是永远运行的</para>
-			/// <returns type="Number" />
-			var percent = parseInt( this.tick / this.duration * 100 ) / 100;
-			return percent != NaN ? Math.min( 1, percent ) : percent;
-		},
-
-		getStatus: function() {
-			/// <summary>获得运行状态</summary>
-			/// <para>"delay"</para>
-			/// <para>"start"</para>
-			/// <para>"sleep"</para>
-			/// <para>"stop"</para>
-			/// <para>"run"</para>
-			/// <returns type="String" />
-			return this.status;
-		},
-		getTick: function() {
-			/// <summary>获得时值</summary>
-			/// <returns type="Number" />
-			return this.tick;
-		},
-
-		getPauseTime: function() {
-			/// <summary>获得暂停的时间值</summary>
-			/// <returns type="Number" />
-			return this.pauseTime;
-		},
-		setSleepTime: function( sleepTime ) {
-			/// <summary>设置睡眠时间</summary>
-			/// <param name="sleepTime" type="Number">毫秒</param>
-			/// <returns type="self" />
-			if ( sleepTime ) {
-				this.sleepTime = sleepTime;
-				this.sleepFlag = true;
-			}
-			return this;
-		},
-		getSleepTime: function( isCount ) {
-			/// <summary>获得当前睡眠时间值</summary>
-			/// <returns type="Number" />
-			return this.sleepTime;
-		},
-		sleep: function( sleeTime ) {
-			/// <summary>设置睡眠时间 只有在非睡眠时间有用</summary>
-			/// <param name="sleepTime" type="Number">毫秒</param>
-			/// <param name="time" type="Number">毫秒</param>
-			/// <returns type="self" />
-			var status = this.getStatus();
-			if ( sleeTime ) {
-				return this.setSleepTime( sleeTime );
-			}
-			if ( this.sleepTime == 0 ) {
-				return this;
-			}
-			this.status = "sleep";
-			this.trigger( "sleepBegin", self, {
-				type: "sleepBegin"
-			} );
-			var self = this;
-			clearTimeout( this.sleepId );
-			this.sleepBeginTime = $.now();
-			self.sleepId = setTimeout( function() {
-				self.sleepId && self.resume();
-			}, self.sleepTime );
-
-			return this;
-		}
-	}, {
-		cancelRequestAnimFrame: cancelRequestAnimFrame,
-		count: 0,
-
-		fps: 13,
-
-		requestAnimFrame: requestAnimFrame,
-
-		_defaultSetting: {
-			runFlag: false,
-			forever: false,
-			sleepFlag: false,
-			power: setTimeout,
-			clear: clearTimeout,
-			status: "stop",
-			args: [],
-			tick: 0,
-			sleepTime: 0,
-			pauseTime: 0,
-			sleepId: null,
-			begin: null,
-			timerId: null,
-			fun: function() {},
-			interval: null,
-			isAnimFrame: true,
-			duration: NaN,
-			id: ""
-		}
-	} );
-
-	object.createPropertyGetterSetter( Thread, {
-		args: "-pu -r -w",
-		timeId: "-pa -r",
-		sleepId: "-pa -r",
-		interval: "-pu -r",
-		isAnimFrame: "-pu -r",
-		id: "-pu -r"
-	} );
-
-	return Thread;
-} );
-
-/*=======================================================*/
-
 /*===================animation/tween===========================*/
 ﻿aQuery.define( "animation/tween", [ "base/typed" ], function( $, typed, undefined ) {
 	"use strict";
@@ -16587,7 +16960,7 @@ aQuery.define( "html5/css3.position", [ "base/support", "main/position", "html5/
 
 			duration: 0, //will be go forever
 
-			fun: function() {
+			run: function() {
 				for ( var i = 0, c; c = timers[ i++ ]; ) {
 					c.step( thread.pauseTime );
 				}
@@ -19492,7 +19865,7 @@ aQuery.define( "ui/scrollableview", [
 	keyboard, undefined ) {
 	"use strict";
 	Widget.fetchCSS( "ui/css/scrollableview" );
-	var isTransform3d = !! config.ui.isTransform3d && support.transform3d;
+	var isTransform3d = !!config.ui.isTransform3d && support.transform3d;
 
 	var V = "V",
 		H = "H";
@@ -19627,11 +20000,11 @@ aQuery.define( "ui/scrollableview", [
 				};
 
 			var
-			combinationKeyItem = {
-				type: "keyup",
-				keyCode: "Up",
-				combinationKey: opt.combinationKey.split( /;|,/ )
-			},
+				combinationKeyItem = {
+					type: "keyup",
+					keyCode: "Up",
+					combinationKey: opt.combinationKey.split( /;|,/ )
+				},
 				KeyItem = {
 					type: "keydown",
 					keyCode: "Up"
@@ -19731,7 +20104,18 @@ aQuery.define( "ui/scrollableview", [
 							href = ( $a.attr( "href" ) || "" ).replace( window.location.href, "" ).replace( "#", "" ),
 							elementId = self.getAnimationToElementById( href );
 
-						self.animateToElement( elementId.length ? elementId : self.getAnimationToElementByName( href ) );
+						elementId = elementId.length ? elementId : self.getAnimationToElementByName( href );
+						var type = self.getEventName( "aclick" );
+
+						self.target.trigger( type, self, {
+							type: type,
+							toElement: elementId[ 0 ]
+						} );
+
+						if ( opt.autoToElement ) {
+							self.animateToElement( elementId );
+						}
+
 						break;
 
 					case keyType.CombinationLeft:
@@ -19812,6 +20196,18 @@ aQuery.define( "ui/scrollableview", [
 				}
 			}
 		},
+		toTop: function( callback ) {
+			this.animateY( 0, FX.normal, callback );
+		},
+		toBottom: function() {
+			this.animateY( -this.scrollHeight + this.viewportHeight, FX.normal, callback );
+		},
+		toLeft: function() {
+			this.animateX( 0, FX.normal, callback );
+		},
+		toRight: function() {
+			this.animateX( -this.scrollWidth + this.viewportWidth, FX.normal, callback );
+		},
 		destroy: function() {
 			this.target.destroyUiSwappable();
 			this.container.destroyUiDraggable();
@@ -19866,7 +20262,7 @@ aQuery.define( "ui/scrollableview", [
 
 			return this;
 		},
-		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved" ],
+		customEventName: [ "pulldown", "pullup", "pullleft", "pullright", "animationEnd", "animateToElement", "moved", "aclick" ],
 		options: {
 			"overflow": "HV",
 			"animateDuration": 600,
@@ -19877,6 +20273,7 @@ aQuery.define( "ui/scrollableview", [
 			"enableKeyboard": false,
 			"combinationKey": client.system.mac ? "cmd" : "ctrl",
 			"firstToElement": "",
+			"autoToElement": true,
 			"keyVerticalDistance": 40,
 			"keyHorizontalDistance": 40,
 			"focus": false
@@ -19895,9 +20292,15 @@ aQuery.define( "ui/scrollableview", [
 			"animateToElement": Widget.AllowPublic,
 			"toH": Widget.AllowPublic,
 			"toV": Widget.AllowPublic,
+			"toTop": Widget.AllowPublic,
+			"toBottom": Widget.AllowPublic,
+			"toLeft": Widget.AllowPublic,
+			"toRight": Widget.AllowPublic,
 			"append": Widget.AllowPublic,
 			"remove": Widget.AllowPublic,
-			"replace": Widget.AllowPublic
+			"replace": Widget.AllowPublic,
+			"animateX": Widget.AllowPublic,
+			"animateY": Widget.AllowPublic
 		},
 		render: function( x, y, addtion, boundary ) {
 			if ( !arguments.length ) {
@@ -21057,11 +21460,9 @@ aQuery.define( "@app/views/docnav", [ "base/client", "main/css", "app/View", "ui
 /*=======================================================*/
 
 /*===================../document/controllers/docnav===========================*/
-aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app/Controller", "@app/views/docnav" ], function( $, attr, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/history", "app/Controller", "@app/views/docnav" ], function( $, attr, history, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var ROUTER_MARK = "_",
-		SCROLLTO = "scrollTo",
-		SWAPINDEX = "swapIndex",
 		DOCNAVMENUKEY = "docNavmenuKey";
 
 	var Controller = SuperController.extend( {
@@ -21069,15 +21470,14 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 			this._super( new NavmenuView( contollerElement ), models );
 			this.hash = {};
 			this.navitem = null;
-			this.initSwapIndex = location.getHash( SWAPINDEX );
-			this.initsSrollTo = location.getHash( SCROLLTO );
+			this.DOCNAVMENUKEY = DOCNAVMENUKEY;
 
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#docnav" );
 
 			this.$nav.on( "navmenu.select", function( e ) {
-				controller._modifyLocation( e.navitem );
-				controller.selectNavitem( e.navitem );
+				controller._changeHistory( e.navitem );
+				controller.triggerPath( e.navitem );
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
 					type: "navmenu.dblclick",
@@ -21085,18 +21485,9 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 				} );
 			} );
 
-			this.swapIndexChange = function( e ) {
-				location.removeHash( SCROLLTO );
-				location.setHash( SWAPINDEX, e.index );
-			}
-
-			$.on( "document_iframe.swapIndexChange", this.swapIndexChange );
-
-			this.scrollToChange = function( e ) {
-				location.setHash( SCROLLTO, e.name );
-			}
-
-			$.on( "document_iframe.scrollToChange", this.scrollToChange );
+			history.on( DOCNAVMENUKEY + ".change", function( e ) {
+				controller.selectDefaultNavmenu( e.token );
+			} );
 
 		},
 		activate: function() {
@@ -21105,33 +21496,26 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 		deactivate: function() {
 			SuperController.invoke( "deactivate", this );
 		},
-		_modifyLocation: function( target ) {
+		_changeHistory: function( target ) {
 			var $target = $( target );
 
 			if ( $target.isWidget( "ui.navitem" ) ) {
-				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK );
-				location.setHash( DOCNAVMENUKEY, path );
-				if ( this._modified ) {
-					location.removeHash( SCROLLTO );
-					location.removeHash( SWAPINDEX );
-				}
+				var path = $target.navitem( "getOptionToRoot" ).reverse().join( ROUTER_MARK ),
+					result = {};
+				result[ DOCNAVMENUKEY ] = path;
 
+				// if ( this._modified ) {
+				// 	result[ SCROLLTO ] = '';
+				// 	result[ SWAPINDEX ] = '';
+				// }
+				history.addByKeyValue( result, path );
 			}
 			this._modified = true;
 		},
-		selectNavitem: function( navitem ) {
-			var swapIndex, scrollTo;
-			if ( this.navitem === null ) {
-				swapIndex = this.initSwapIndex;
-				scrollTo = this.initsSrollTo;
-			} else {
-				swapIndex = attr.getAttr( navitem, "swap-index" );
-				scrollTo = attr.getAttr( navitem, "scroll-to" );
-			}
-
+		triggerPath: function( navitem ) {
 			this.navitem = navitem;
 
-			var path = this._getPath( navitem, swapIndex, scrollTo );
+			var path = this._getPath( navitem );
 
 			if ( path != null ) {
 				this.trigger( "navmenu.select", this, {
@@ -21141,26 +21525,18 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 			}
 
 		},
-		_getPath: function( navitem, swapIndex, scrollTo ) {
+		_getPath: function( navitem ) {
 			var target = $( navitem ),
 				ret = target.uiNavitem( "getOptionToRoot" ),
 				path = null;
 			if ( ret.length > 1 ) {
 				ret.push( "source", "assets" );
-
-				path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
-
-				if ( swapIndex != null ) {
-					path += "swapIndex=" + location.getHash( SWAPINDEX ) + "!";
-				}
-				if ( scrollTo != null ) {
-					path += "scrollTo=" + location.getHash( SCROLLTO ) + "!";
-				}
+        path = $.pagePath + ret.reverse().join( "/" ) + ".html#";
 			}
 			return path;
 		},
 		selectDefaultNavmenu: function( target ) {
-			target = target || location.getHash( DOCNAVMENUKEY ) || "guide_AMDQuery";
+			target = target || "guide_AMDQuery";
 			var ret = this.$nav.uiNavmenu( "getNavItemsByHtmlPath", target.split( ROUTER_MARK ) );
 			if ( ret.length ) {
 				this.$nav.uiNavmenu( "selectNavItem", ret[ 0 ] );
@@ -21170,8 +21546,6 @@ aQuery.define( "@app/controllers/docnav", [ "main/attr", "module/location", "app
 		destroy: function() {
 			this.$nav.clearHandlers();
 			this.$nav = null;
-			$.off( "document_iframe.swapIndexChange", this.swapIndexChange );
-			$.off( "document_iframe.scrollToChange", this.scrollToChange );
 			SuperController.invoke( "destroy" );
 		}
 	}, {
@@ -21208,7 +21582,7 @@ aQuery.define( "@app/views/apinav", [ "base/client", "main/css", "app/View", "ui
 /*=======================================================*/
 
 /*===================../document/controllers/apinav===========================*/
-aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app/Controller", "@app/views/apinav" ], function( $, attr, location, SuperController, NavmenuView ) {
+aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/history", "app/Controller", "@app/views/apinav" ], function( $, attr, history, SuperController, NavmenuView ) {
 	"use strict"; //启用严格模式
 	var APINAVMENUKEY = "apiNavmenuKey";
 
@@ -21216,6 +21590,7 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 		init: function( contollerElement, models ) {
 			this._super( new NavmenuView( contollerElement ), models );
 			this.hash = {};
+			this.APINAVMENUKEY = APINAVMENUKEY;
 			var controller = this;
 			this.$nav = $( this.view.topElement ).find( "#apinav" );
 
@@ -21223,7 +21598,7 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 				var link = attr.getAttr( e.navitem, "link" );
 				if ( link ) {
 					controller.linkTo( link );
-					controller._modifyLocation( link );
+					history.addByKeyValue( APINAVMENUKEY, link );
 				}
 			} ).on( "dblclick", function( e ) {
 				controller.trigger( "navmenu.dblclick", controller, {
@@ -21238,15 +21613,15 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 
 			$.on( "api_iframe.hrefChange", this.handleIframeChange );
 
+			history.on( APINAVMENUKEY + ".change", function( e ) {
+				controller.selectDefaultNavmenu( e.token );
+			} );
+
 		},
 		activate: function() {
 
 		},
 		deactivate: function() {
-
-		},
-		_modifyLocation: function( link ) {
-			location.setHash( APINAVMENUKEY, link );
 
 		},
 		linkTo: function( link ) {
@@ -21265,12 +21640,11 @@ aQuery.define( "@app/controllers/apinav", [ "main/attr", "module/location", "app
 			return navitem.length ? navitem[ 0 ] : null;
 		},
 		selectDefaultNavmenu: function( target ) {
-			var src = target || location.getHash( APINAVMENUKEY ) || "index.html";
+			var src = target || "index.html";
 			var navitem = this.findLink( src );
 			if ( navitem ) {
 				this.linkTo( src );
 				this.$nav.uiNavmenu( "selectNavItem", navitem, false );
-				this._modifyLocation( src );
 			}
 		},
 		destroy: function() {
@@ -21321,7 +21695,8 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 		loadPath: function( path ) {
 			if ( this.getSrc() !== path ) {
 				this.$content.src( {
-					src: path
+					src: path,
+					history: false
 				} );
 			}
 		},
@@ -21343,14 +21718,16 @@ aQuery.define( "@app/controllers/content", [ "base/client", "module/src", "app/C
 
 /*===================../document/controllers/index===========================*/
 aQuery.define( "@app/controllers/index", [
-  "module/location",
+  "main/parse",
+  "module/history",
   "app/Controller",
   "@app/views/index",
   "@app/controllers/docnav",
   "@app/controllers/apinav",
   "@app/controllers/content"
   ], function( $,
-	location,
+	parse,
+	history,
 	SuperController,
 	IndexView ) {
 	"use strict"; //启用严格模式
@@ -21366,8 +21743,6 @@ aQuery.define( "@app/controllers/index", [
 				self.document.openWindow();
 			} );
 
-			this.docnav.selectDefaultNavmenu();
-
 			this.apinav.on( "navmenu.select", function( e ) {
 				self.api.loadPath( e.path );
 			} );
@@ -21379,14 +21754,16 @@ aQuery.define( "@app/controllers/index", [
 			var loadAPIFlag = false,
 				navMap = [ this.docnav, this.apinav ];
 			var $swapview = $( this.view.topElement ).find( "#contentview" ).on( "swapview.change", function( e ) {
-				location.setHash( "tab", e.index );
+
 				if ( e.index === 1 && loadAPIFlag === false ) {
 					loadAPIFlag = true;
-					self.apinav.selectDefaultNavmenu();
+          self.apinav.selectDefaultNavmenu( history.getTokenByKey( self.apinav.APINAVMENUKEY ) );
 				}
 
 				navMap[ e.index ].activate();
 				navMap[ e.originIndex ].deactivate();
+
+				history.addByKeyValue( "tab", e.index );
 
 			} );
 
@@ -21395,9 +21772,19 @@ aQuery.define( "@app/controllers/index", [
 				$swapview.uiSwapview( "render", e.index );
 			} );
 
-			if ( location.getHash( "tab" ) != null ) {
-				$tabview.uiTabview( "render", parseInt( location.getHash( "tab" ) ) || 0 );
-			}
+			history.on( 'ready', function( e ) {
+				var tabIndex = this.getTokenByKey( "tab" );
+				if ( parseInt( tabIndex ) === 1 ) {
+					self.apinav.selectDefaultNavmenu( this.getTokenByKey( self.apinav.APINAVMENUKEY ) );
+				}
+				self.docnav.selectDefaultNavmenu( this.getTokenByKey( self.docnav.DOCNAVMENUKEY ) );
+
+				$tabview.uiTabview( 'render', parseInt( tabIndex ) || 0 );
+			} ).on( 'tab.change', function( e ) {
+				$tabview.uiTabview( 'render', parseInt( e.token ) || 0 );
+			} );
+
+			history.init();
 		},
 		destroy: function() {
 			$( this.view.topElement ).find( "#contentview" ).clearHandlers();
@@ -21438,7 +21825,7 @@ aQuery.define( "@app/app", [ "base/Promise", "main/event", "app/Application", "@
 		global: {
 
 		}
-	}, Application );
+	} );
 
 	return app;
 } );
