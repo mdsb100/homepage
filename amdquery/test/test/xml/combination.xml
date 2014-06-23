@@ -19,7 +19,7 @@
                         <ul>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:AMDQuery;img:class"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:Ready;img:class"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class" sort="0" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Promise;img:class" sort="1" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:Require;img:class"></li>
                         </ul>
                     </li>
@@ -32,7 +32,7 @@
                         <ul>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:CustomEvent;img:class" sort="1" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:position;img:class" sort="1" test="true"></li>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Query;img:class" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:communicate;img:class" sort="100" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:parse;img:class" sort="1" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:class;img:class" sort="1" test="true"></li>
@@ -49,7 +49,7 @@
                     </li>
                     <li amdquery-widget="ui.navitem" ui-navitem="html:module;img:module">
                         <ul>
-                            <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class" sort="2" test="true"></li>
+                            <li amdquery-widget="ui.navitem" ui-navitem="html:Test;img:class" sort="0" test="true"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:Color;img:class"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:Thread;img:class"></li>
                             <li amdquery-widget="ui.navitem" ui-navitem="html:location;img:class" sort="2" test="true"></li>
