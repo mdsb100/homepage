@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: module/Keyboard.js</title>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/reset.css" />
+    <link type="text/css" rel="stylesheet" href="../../../global/styles/prettify-tomorrow.css" />
+    <link type="text/css" rel="stylesheet" href="../../../amdquery/ui/css/widget-ui.css" />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <script src="../../../global/js/prettify.js" type="text/javascript"></script>
+    <script src="../../../global/js/lang-css.js"></script>
+    <script src="scripts/amdquery.js" amdquery="debug:false;" amd="detectCR=1" module="transitionToAnimation:1" ui="initWidget:1;isTransform3d:0;autoFetchCss:0"> </script>
+    <script src="scripts/main.js"> </script>
+</head>
+
+<body style="width: 100%; height: 100%;" onload="prettyPrint()">
+
+<div id="main" style="width: 100%; height: 100%;" amdquery-widget="ui.scrollableview" ui-scrollableview="orientation:V;enableKeyboard:true;focus:true">
+
+    <h1 id="page-title" name="page-title" class="page-title">Source: module/Keyboard.js</h1>
+
+    
+
+
+    
+    <section>
+        <a float="false" id="Back" class="Back">Back</a>
+        <article>
+            <pre class="prettyprint source">aQuery.define( "module/Keyboard", [ "base/config", "base/typed", "base/extend", "base/array", "main/event", "main/CustomEvent", "main/object", "hash/charcode" ], function( $, config, typed, utilExtend, array, event, CustomEvent, object, charcode ) {
+  "use strict";
+  /**
+   * @global
+   * @typedef {Object} KeyboardOptions
+   * @link module:hash/charcode
+   * @property KeyboardOptions {Object}
+   * @property KeyboardOptions.keyCode {Number|String|Array&lt;String>|Array&lt;Number>} - "Up", 38, ["Up", "Down"], [38, 39]
+   * @property KeyboardOptions.keyType {String} - "keydown", "keyup", "keypress"
+   * @property KeyboardOptions.combinationKey {Array&lt;String>} - "cmd", "ctrl", "alt", "shift"
+   * @property KeyboardOptions.todo {Function}
+   */
+
+  /**
+   * Handle Keyboard.
+   * @constructor
+   * @requires base/config
+   * @requires base/typed
+   * @requires base/extend
+   * @requires base/array
+   * @requires main/event
+   * @requires main/CustomEvent
+   * @requires main/object
+   * @requires hash/charcode
+   * @requires module:main/object
+   * @augments module:main/object
+   * @exports module/Keyboard
+   * @mixes ObjectClassStaticMethods
+   */
+  var Keyboard = CustomEvent.extend( "Keyboard", /** @lends module:module/Keyboard.prototype */ {
+    /**
+     * @constructs module:module/Keyboard
+     * @param {Element}
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions} [keyList=]
+     */
+    init: function( container, keyList ) {
+      this._super();
+      this.keyList = [];
+      this.container = container;
+      this.commandStatus = false;
+      if ( this.container.getAttribute( "tabindex" ) == undefined ) {
+        this.container.setAttribute( "tabindex", Keyboard.tableindex++ );
+      }
+      this._initHandler().enable().addKeys( keyList );
+    },
+    /**
+     * @private
+     */
+    _initHandler: function() {
+      var self = this;
+      this.event = function( e ) {
+        self.routing( this, e );
+      };
+      return this;
+    },
+    /**
+     * Enable keyboard.
+     * @returns {this}
+     */
+    enable: function() {
+      event.on( this.container, "keydown keypress keyup", this.event );
+      return this;
+    },
+    /**
+     * Disable keyboard.
+     * @returns {this}
+     */
+    disable: function() {
+      event.off( this.container, "keydown keypress keyup", this.event );
+      return this;
+    },
+    /**
+     * @private
+     */
+    _push: function( ret ) {
+      if ( !( this.iterationKeyList( ret ) ) ) {
+        this.keyList.push( ret );
+      }
+      return this;
+    },
+    /**
+     * Add key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    addKey: function( obj ) {
+      var keyCode = obj.keyCode,
+        ret;
+      if ( typed.isArray( keyCode ) ) {
+        for ( var i = 0, len = keyCode.length, nObj; i &lt; len; i++ ) {
+          nObj = {};
+          utilExtend.easyExtend( nObj, obj );
+          nObj.keyCode = keyCode[ i ];
+          this.addKey( nObj );
+        }
+        return this;
+      } else {
+        ret = Keyboard.createOpt( obj );
+        this._push( ret );
+      }
+      config.amdquery.debug && $.logger( "keyboard.addKey", "handlerName:", Keyboard.getHandlerName( ret ) );
+      ret.todo && this.on( Keyboard.getHandlerName( ret ), ret.todo );
+      return this;
+    },
+    /**
+     * Add a list of key.
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions}
+     * @returns {this}
+     */
+    addKeys: function( keyList ) {
+      if ( !keyList ) {
+        return this;
+      }
+      var i = 0,
+        len;
+      if ( !typed.isArray( keyList ) ) {
+        keyList = [ keyList ];
+      }
+      for ( len = keyList.length; i &lt; len; i++ ) {
+        this.addKey( keyList[ i ] );
+      }
+      return this;
+    },
+    /**
+     * Change key.
+     * @param {KeyboardOptions}
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    changeKey: function( origin, evolution ) {
+      origin = Keyboard.createOpt( origin );
+      var item;
+      if ( item = this.iterationKeyList( origin ) ) {
+        utilExtend.extend( item, evolution );
+      }
+      return this;
+    },
+    /**
+     * Remove key.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    removeKey: function( obj ) {
+      var item, ret, keyCode = obj.keyCode;
+      if ( typed.isArray( keyCode ) ) {
+        for ( var i = 0, len = keyCode.length, nObj; i &lt; len; i++ ) {
+          utilExtend.easyExtend( {}, obj );
+          nObj = obj;
+          nObj.keyCode = keyCode[ i ];
+          this.removeKey( nObj );
+        }
+        return this;
+      } else {
+        ret = Keyboard.createOpt( obj );
+        if ( item = this.iterationKeyList( ret ) ) {
+          this.keyList.splice( array.inArray( this.keyList, item ), 1 );
+          config.amdquery.debug && $.logger( "keyboard.removeKey", "handlerName:", Keyboard.getHandlerName( item ) );
+          this.clearHandlers( Keyboard.getHandlerName( item ) );
+        }
+      }
+      return this;
+    },
+    /**
+     * Remove event listener.
+     * @param {KeyboardOptions}
+     * @returns {this}
+     */
+    removeTodo: function( obj ) {
+      var opt = Keyboard.createOpt( obj );
+      this.off( Keyboard.getHandlerName( opt ), obj.todo );
+      return this;
+    },
+    /**
+     * Iterate key list and search out matching key.
+     * @param {KeyEvent}
+     * @returns {KeyboardOptions|null}
+     */
+    iterationKeyList: function( e ) {
+      for ( var i = 0, keyList = this.keyList, len = keyList.length, item, code, result = 0; i &lt; len; i++ ) {
+        code = e.keyCode || e.which;
+
+        item = keyList[ i ];
+
+        config.amdquery.debug && $.logger( "keyboard.iterationKeyList", "type:code", e.type + ":" + code );
+
+        if (
+          e.type == item.type &&
+          code == item.keyCode &&
+          Keyboard.checkCombinationKey( e, item.combinationKey )
+        ) {
+          return item;
+        }
+      }
+      return null;
+    },
+    /**
+     * @private
+     */
+    routing: function( target, e ) {
+      e = event.document.getEvent( e );
+      var item;
+      if ( item = this.iterationKeyList( e ) ) {
+        //item.todo.call(this, e);i
+        var type = Keyboard.getHandlerName( item );
+        config.amdquery.debug && $.logger( "keyboard.routing", "handlerName", type );
+        this.trigger( CustomEvent.createEvent( type, target, {
+          event: e,
+          keyItem: item
+        } ) );
+        event.document.preventDefault( e );
+        event.document.stopPropagation( e );
+      }
+    }
+  }, /** @lends module:module/Keyboard */ {
+    /**
+     * Create option of keyboard.
+     * @param {Object}
+     * @return {KeyboardOptions}
+     */
+    createOpt: function( obj ) {
+      var keyCode = obj.keyCode;
+      //若有组合键 会把type强制转换
+      if ( obj.combinationKey && obj.combinationKey.length ) {
+        if ( typed.isString( keyCode ) ) {
+          keyCode = keyCode.length > 1 ? keyCode : keyCode.toUpperCase();
+        }
+        obj.type = array.inArray( obj.combinationKey, "cmd" ) > -1 ? "keydown" : "keyup";
+      }
+      if ( typed.isString( keyCode ) ) {
+        obj.keyCode = Keyboard.stringToCode( keyCode );
+      }
+
+      return obj;
+    },
+    /**
+     * @param {Number}
+     * @return {String}
+     */
+    codeToChar: function( code ) {
+      return typed.isNumber( code ) ? String.fromCharCode( code ) : code;
+    },
+    /**
+     * 38 ==> "Up".
+     * @param {Number}
+     * @return {String}
+     */
+    codeToString: function( code ) {
+      return charcode.codeToStringReflect[ code ] || Keyboard.codeToChar( code );
+    },
+    /**
+     * @param {String}
+     * @return {Number}
+     */
+    charToCode: function( c ) {
+      return typed.isString( c ) ? c.charCodeAt( 0 ) : c;
+    },
+    /**
+     * "Up" ==> 38.
+     * @param {String}
+     * @return {Number}
+     */
+    stringToCode: function( s ) {
+      return charcode.stringToCodeReflect[ s ] || Keyboard.charToCode( s );
+    },
+    /**
+     * Whether e.combinationKey equals combinationKey.
+     * @param {KeyEvent}
+     * @param {Array&lt;String>} - [ "ctrl", "alt", "shift" ]
+     * @return {Boolean}
+     */
+    checkCombinationKey: function( e, combinationKey ) {
+      var i = 0,
+        j = 0,
+        defCon = [ "ctrl", "alt", "shift" ],
+        len = combinationKey ? combinationKey.length : 0,
+        count1 = 0;
+      if ( e.combinationKey ) {
+        if ( e.combinationKey.length == len ) {
+          for ( ; i &lt; len; i++ ) {
+            for ( ; j &lt; len; j++ ) {
+              e.combinationKey[ i ] != combinationKey[ j ] && count1++;
+            }
+          }
+          if ( len == count1 ) {
+            return 1;
+          }
+        } else {
+          return 0;
+        }
+      } else {
+        for ( var count2 = combinationKey ? combinationKey.length : 0; i &lt; len; i++ ) {
+          if ( combinationKey[ i ] === "cmd" ) {
+            if ( Keyboard.commandStatus == true ) {
+              count1++;
+            } else {
+              return 0;
+            }
+            continue;
+          }
+
+          if ( e[ defCon[ i ] + "Key" ] == true ) count1++;
+
+          if ( e[ combinationKey[ i ] + "Key" ] == false ) {
+            return 0;
+          }
+        }
+        if ( count1 > count2 ) {
+          return 0;
+        }
+      }
+      return 1;
+    },
+    /**
+     * @param {KeyboardOptions}
+     * @return {String}
+     */
+    getHandlerName: function( obj ) {
+      obj = Keyboard.createOpt( obj );
+      var combinationKey = obj.combinationKey ? obj.combinationKey.join( "+" ) + "+" : "";
+      return obj.type + ":" + combinationKey + Keyboard.stringToCode( obj.keyCode );
+    },
+    tableindex: 9000,
+    cache: [],
+    /**
+     * Get an instance.
+     * @param {Element}
+     * @param {Array&lt;KeyboardOptions>|KeyboardOptions} [keyList=]
+     * @return {module:module/Keyboard}
+     */
+    getInstance: function( container, keyList ) {
+      var keyboard, i = 0,
+        cache = Keyboard.cache,
+        len = cache.length;
+      for ( ; i &lt; len; i++ ) {
+        if ( cache[ i ].container == container ) {
+          keyboard = cache[ i ];
+        }
+      }
+      if ( !keyboard ) {
+        keyboard = new Keyboard( container, keyList );
+        Keyboard.cache.push( keyboard );
+      }
+      return keyboard;
+    }
+  } );
+
+  event.on( document.documentElement, "keydown keypress keyup", function( e ) {
+    var code = e.keyCode || e.which;
+    if ( code === charcode.stringToCodeReflect[ "LeftCommand" ] ||
+      code === charcode.stringToCodeReflect[ "RightCommand" ] ||
+      code === charcode.stringToCodeReflect[ "Command" ] ) {
+      switch ( e.type ) {
+        case "keydown":
+        case "keypress":
+          Keyboard.commandStatus = true;
+          break;
+        case "keyup":
+          Keyboard.commandStatus = false;
+          break;
+      }
+    }
+  } );
+
+  return Keyboard;
+} );</pre>
+        </article>
+        <script type="text/javascript">
+          var Back = document.getElementById("Back");
+          if (Back){
+            Back.onclick = function(){
+              if (window.history && window.history.length) {
+                window.history.back();
+              }
+            }
+          }
+        </script>
+    </section>
+
+
+
+
+
+    <a float="false" href="#page-title" class="Top">Top</a>
+</div>
+
+<br clear="both">
+
+</body>
+</html>
